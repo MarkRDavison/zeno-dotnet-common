@@ -27,12 +27,10 @@ package mark.davison.common:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    #  changes:
-    #    - src/mark.davison.common/mark.davison.common/*
       when: always
     - when: never
   script:
-    - git version
+    - echo $CI_COMMIT_TAG
     - cd src/mark.davison.common/mark.davison.common
     - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
@@ -44,12 +42,10 @@ package mark.davison.common.server.abstractions:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-   #   changes:
-   #     - src/mark.davison.common/mark.davison.common.server.abstractions/*
       when: always
     - when: never
   script:
-    - git version
+    - echo $CI_COMMIT_TAG
     - cd src/mark.davison.common/mark.davison.common.server.abstractions
     - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
@@ -61,12 +57,10 @@ package mark.davison.common.server:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    #  changes:
-    #    - src/mark.davison.common/mark.davison.common.server/*
       when: always
     - when: never
   script:
-    - git version
+    - echo $CI_COMMIT_TAG
     - cd src/mark.davison.common/mark.davison.common.server
     - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
