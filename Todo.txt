@@ -1,0 +1,5 @@
+Todo:
+	-	Add cicd submodule
+	-	Script to modify the version in all the appropriate csproj files and recommit with a *no ci*
+
+Done:

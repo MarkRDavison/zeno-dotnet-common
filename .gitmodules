@@ -1,0 +1,3 @@
+[submodule "cicd"]
+	path = cicd
+	url = https://gitlab.markdavison.kiwi/mark.davison/cicd
