@@ -9,7 +9,7 @@ build:
   stage: build
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
-    - cd src
+    - cd src/mark.davison.common
     - dotnet restore
     - dotnet build
     - dotnet test --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
