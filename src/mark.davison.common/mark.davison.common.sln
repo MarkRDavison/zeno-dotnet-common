@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common", "mark.davison.common\mark.davison.common.csproj", "{C248DA37-0EF2-4295-8FF7-21A58BEA0486}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.abstractions", "mark.davison.common.server.abstractions\mark.davison.common.server.abstractions.csproj", "{85F1A085-5FAF-4F88-B991-8C5CA1CB9F12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server", "mark.davison.common.server\mark.davison.common.server.csproj", "{E6079600-89AD-4B1C-8639-59F5C20838B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{AB6060AB-1134-458E-86B8-65609A815A91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.tests", "mark.davison.common.server.tests\mark.davison.common.server.tests.csproj", "{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A3C3912D-C720-4871-A097-DBDED99CB1F9}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.gitattributes = ..\..\.gitattributes
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\.gitlab-ci.yml = ..\..\.gitlab-ci.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C248DA37-0EF2-4295-8FF7-21A58BEA0486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C248DA37-0EF2-4295-8FF7-21A58BEA0486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C248DA37-0EF2-4295-8FF7-21A58BEA0486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C248DA37-0EF2-4295-8FF7-21A58BEA0486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85F1A085-5FAF-4F88-B991-8C5CA1CB9F12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85F1A085-5FAF-4F88-B991-8C5CA1CB9F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85F1A085-5FAF-4F88-B991-8C5CA1CB9F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85F1A085-5FAF-4F88-B991-8C5CA1CB9F12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6079600-89AD-4B1C-8639-59F5C20838B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6079600-89AD-4B1C-8639-59F5C20838B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6079600-89AD-4B1C-8639-59F5C20838B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6079600-89AD-4B1C-8639-59F5C20838B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F} = {AB6060AB-1134-458E-86B8-65609A815A91}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C3DD14FA-86D9-4C81-B641-8C5CB3A57E71}
+	EndGlobalSection
+EndGlobal
