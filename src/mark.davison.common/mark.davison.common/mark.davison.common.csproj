@@ -4,6 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<PackageId>mark.davison.common</PackageId>
+	<IsPackable>true</IsPackable>
+	<Author>Mark Davison</Author>
+	<Description>Common client and server utilities</Description>
+	<PackageVersion>0.1.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

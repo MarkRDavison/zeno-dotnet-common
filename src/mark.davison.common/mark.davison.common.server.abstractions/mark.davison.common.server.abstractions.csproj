@@ -4,6 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<PackageId>mark.davison.common.server.abstractions</PackageId>
+	<IsPackable>true</IsPackable>
+	<Author>Mark Davison</Author>
+	<Description>Common server abstractions</Description>
+	<PackageVersion>0.1.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
