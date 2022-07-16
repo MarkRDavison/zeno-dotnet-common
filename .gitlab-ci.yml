@@ -27,8 +27,8 @@ package mark.davison.common:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      changes:
-        - src/mark.davison.common/mark.davison.common/*
+    #  changes:
+    #    - src/mark.davison.common/mark.davison.common/*
       when: always
     - when: never
   script:
@@ -44,8 +44,8 @@ package mark.davison.common.server.abstractions:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      changes:
-        - src/mark.davison.common/mark.davison.common.server.abstractions/*
+   #   changes:
+   #     - src/mark.davison.common/mark.davison.common.server.abstractions/*
       when: always
     - when: never
   script:
@@ -61,8 +61,8 @@ package mark.davison.common.server:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      changes:
-        - src/mark.davison.common/mark.davison.common.server/*
+    #  changes:
+    #    - src/mark.davison.common/mark.davison.common.server/*
       when: always
     - when: never
   script:
