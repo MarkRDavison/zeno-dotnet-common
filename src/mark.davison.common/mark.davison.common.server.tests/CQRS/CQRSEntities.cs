@@ -17,3 +17,21 @@ public class ExampleCommandHandler : ICommandHandler<ExampleCommandRequest, Exam
         return Task.FromResult(new ExampleCommandResponse());
     }
 }
+
+public class ExampleQueryRequest : IQuery<ExampleQueryRequest, ExampleQueryResponse>
+{
+
+}
+
+public class ExampleQueryResponse
+{
+
+}
+
+public class ExampleQueryHandler : IQueryHandler<ExampleQueryRequest, ExampleQueryResponse>
+{
+    public Task<ExampleQueryResponse> Handle(ExampleQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    {
+        return Task.FromResult(new ExampleQueryResponse());
+    }
+}
