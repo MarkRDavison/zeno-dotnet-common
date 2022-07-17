@@ -1,6 +1,7 @@
 variables:
   GIT_STRATEGY: clone
   GIT_SUBMODULE_STRATEGY: recursive
+  NUGET_VERSION: 1.2.5
 
 stages:
   - build
@@ -33,17 +34,17 @@ package:
     - echo $CI_COMMIT_TAG
     - apt-get update -y && apt-get install python3 -y
     - python3 --version
-    - python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version 1.2.3
+    - python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version $NUGET_VERSION
     - cd src/mark.davison.common
     - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
     - git --version
-    - git remote set-url origin https://${CI_USERNAME}:${CI_PUSH_TOKEN}@gitlab.markdavison.kiwi/mark.davison/${CI_PROJECT_NAME}.git
+    - git remote set-url origin https://${GIT_CI_USERNAME}:${GIT_CI_PASSWORD}@gitlab.markdavison.kiwi/mark.davison/${CI_PROJECT_NAME}.git
     - git config --global user.email '${GITLAB_USER_EMAIL}'
     - git config --global user.name '${GITLAB_USER_ID}'
     - git add -A
     - git status
-    - git commit -m "Set project version to 1.2.3 [ci skip]"
+    - git commit -m "Set project version to $NUGET_VERSION [ci skip]"
     - git push origin HEAD:main -o ci.skip
  #   - dotnet nuget push "$PWD/nuget/**/*.nupkg" --source gitlab
   needs: [ "build" ]
