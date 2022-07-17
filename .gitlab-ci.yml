@@ -31,9 +31,10 @@ package:
   #  - when: never
   script:
     - echo $CI_COMMIT_TAG
-    - cd src/mark.davison.common
     - apt-get update -y && apt-get install python3 -y
     - python3 --version
+    - python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version 1.2.3
+    - cd src/mark.davison.common
     - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
  #   - dotnet nuget push "$PWD/nuget/**/*.nupkg" --source gitlab
