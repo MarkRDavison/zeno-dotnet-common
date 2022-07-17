@@ -1,7 +1,7 @@
 variables:
   GIT_STRATEGY: clone
   GIT_SUBMODULE_STRATEGY: recursive
-  NUGET_VERSION: 1.2.5
+  NUGET_VERSION: 1.2.6
 
 stages:
   - build
