@@ -41,5 +41,7 @@ package:
     - git status
     - git add -A
     - git status
+    - git commit -m "Set project version to 1.2.3 [ci skip]"
+    - git push -o ci.skip
  #   - dotnet nuget push "$PWD/nuget/**/*.nupkg" --source gitlab
   needs: [ "build" ]
