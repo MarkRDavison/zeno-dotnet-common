@@ -38,7 +38,8 @@ package:
     - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
     - git --version
-    - git status
+    - git config user.email "bot@gitlab.markdavison.kiwi"
+    - git config user.name "Bot"
     - git add -A
     - git status
     - git commit -m "Set project version to 1.2.3 [ci skip]"
