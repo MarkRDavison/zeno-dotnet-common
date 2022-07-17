@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<PackageId>mark.davison.common.client</PackageId>
+	<IsPackable>true</IsPackable>
+	<Author>Mark Davison</Author>
+	<Description>Common client utilities</Description>
+	<PackageVersion>1.2.6</PackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
