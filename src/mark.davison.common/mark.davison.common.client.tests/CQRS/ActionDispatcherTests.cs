@@ -8,7 +8,7 @@ public class ActionDispatcherTests
     private readonly Mock<IActionHandler<ExampleAction>> _handler;
     private readonly Mock<IServiceProvider> _serviceProvider;
     private readonly Mock<IServiceScope> _serviceScope;
-    private readonly ActionDispatcher actionDispatcher;
+    private readonly ActionDispatcher _actionDispatcher;
 
     public ActionDispatcherTests()
     {
@@ -16,7 +16,7 @@ public class ActionDispatcherTests
         _handler = new(MockBehavior.Strict);
         _serviceProvider = new(MockBehavior.Strict);
         _serviceScope = new(MockBehavior.Strict);
-        actionDispatcher = new(_serviceScopeFactory.Object);
+        _actionDispatcher = new(_serviceScopeFactory.Object);
         _serviceScopeFactory.Setup(_ => _.CreateScope()).Returns(() => _serviceScope.Object);
         _serviceScope.Setup(_ => _.ServiceProvider).Returns(() => _serviceProvider.Object);
         _serviceScope.Setup(_ => _.Dispose());
@@ -39,7 +39,7 @@ public class ActionDispatcherTests
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        await actionDispatcher.Dispatch<ExampleAction>(new ExampleAction(), CancellationToken.None);
+        await _actionDispatcher.Dispatch<ExampleAction>(new ExampleAction(), CancellationToken.None);
 
         _handler
             .Verify(_ => _
