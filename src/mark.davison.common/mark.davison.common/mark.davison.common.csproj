@@ -7,7 +7,7 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common client and server utilities</Description>
-		<PackageVersion>1.3.1</PackageVersion>
+		<PackageVersion>1.3.2</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
