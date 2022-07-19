@@ -10,8 +10,8 @@ public class CommandDispatcher : ICommandDispatcher
         where TCommand : class, ICommand<TCommand, TCommandResult>, new()
         where TCommandResult : class, new()
     {
-        var handler = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<ICommandHandler<TCommand, TCommandResult>>();
-        var currentUserContext = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<ICurrentUserContext>();
+        var handler = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<ICommandHandler<TCommand, TCommandResult>>();
+        var currentUserContext = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<ICurrentUserContext>();
         return handler.Handle(command, currentUserContext, cancellation);
     }
 }

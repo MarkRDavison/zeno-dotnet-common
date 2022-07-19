@@ -10,8 +10,8 @@ public class QueryDispatcher : IQueryDispatcher
         where TQuery : class, IQuery<TQuery, TQueryResult>, new()
         where TQueryResult : class, new()
     {
-        var handler = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IQueryHandler<TQuery, TQueryResult>>();
-        var currentUserContext = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<ICurrentUserContext>();
+        var handler = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IQueryHandler<TQuery, TQueryResult>>();
+        var currentUserContext = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<ICurrentUserContext>();
         return handler.Handle(Query, currentUserContext, cancellation);
     }
 }
