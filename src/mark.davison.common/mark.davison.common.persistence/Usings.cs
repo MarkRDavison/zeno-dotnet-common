@@ -1,0 +1,13 @@
+﻿global using mark.davison.common.Instrumentation;
+global using mark.davison.common.persistence.EntityDefaulter;
+global using mark.davison.common.server.abstractions;
+global using mark.davison.common.server.abstractions.Authentication;
+global using mark.davison.common.server.abstractions.Identification;
+global using mark.davison.common.server.abstractions.Repository;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Primitives;
+global using System.Linq.Expressions;
