@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.CQRS;
 
+[ExcludeFromCodeCoverage]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class GetRequestAttribute : Attribute
 {

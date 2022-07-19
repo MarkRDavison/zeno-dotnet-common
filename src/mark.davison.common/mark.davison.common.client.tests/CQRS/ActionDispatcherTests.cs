@@ -50,4 +50,33 @@ public class ActionDispatcherTests
 
         _serviceProvider.VerifyAll();
     }
+
+    [TestMethod]
+    public async Task Dispatch_RetrievesRequiredServices_ForConstructedAction()
+    {
+        _serviceProvider
+            .Setup(_ => _
+                .GetService(typeof(IActionHandler<ExampleAction>)))
+            .Returns(_handler.Object)
+            .Verifiable();
+
+        _handler
+            .Setup(_ => _
+                .Handle(
+                    It.IsAny<ExampleAction>(),
+                    It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+
+        await _actionDispatcher.Dispatch<ExampleAction>(CancellationToken.None);
+
+        _handler
+            .Verify(_ => _
+                .Handle(
+                    It.IsAny<ExampleAction>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+
+        _serviceProvider.VerifyAll();
+    }
 }
