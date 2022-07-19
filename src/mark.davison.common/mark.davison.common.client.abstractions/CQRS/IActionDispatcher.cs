@@ -2,7 +2,7 @@
 
 public interface IActionDispatcher
 {
-    Task Dispatch<TAction>(TAction command, CancellationToken cancellation)
+    Task Dispatch<TAction>(TAction action, CancellationToken cancellation)
         where TAction : class, IAction<TAction>;
     Task Dispatch<TAction>(CancellationToken cancellation)
         where TAction : class, IAction<TAction>, new();

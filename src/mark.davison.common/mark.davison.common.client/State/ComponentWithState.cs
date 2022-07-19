@@ -14,8 +14,8 @@ public abstract class ComponentWithState : ComponentBase, IComponentWithState, I
     [Inject]
     public IComponentSubscriptions ComponentSubscriptions { get; set; } = default!;
 
-    //[Inject]
-    //public ICQRSDispatcher Dispatcher { get; set; } = default!;
+    [Inject]
+    public ICQRSDispatcher Dispatcher { get; set; } = default!;
 
     public IStateInstance<TState> GetState<TState>() where TState : class, IState, new()
     {
