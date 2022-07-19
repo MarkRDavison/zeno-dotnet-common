@@ -51,4 +51,35 @@ public class CommandDispatcherTests
 
         _serviceProvider.VerifyAll();
     }
+
+    [TestMethod]
+    public async Task Dispatch_RetrievesRequiredServices_ForConstructedCommand()
+    {
+        _serviceProvider
+            .Setup(_ => _
+                .GetService(typeof(ICommandHandler<ExampleCommandRequest, ExampleCommandResponse>)))
+            .Returns(_handler.Object)
+            .Verifiable();
+
+        _handler
+            .Setup(_ => _
+                .Handle(
+                    It.IsAny<ExampleCommandRequest>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ExampleCommandResponse())
+            .Verifiable();
+
+        var response = await commandDispatcher.Dispatch<ExampleCommandRequest, ExampleCommandResponse>(CancellationToken.None);
+
+        Assert.IsNotNull(response);
+
+        _handler
+            .Verify(_ => _
+                .Handle(
+                    It.IsAny<ExampleCommandRequest>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+
+        _serviceProvider.VerifyAll();
+    }
 }

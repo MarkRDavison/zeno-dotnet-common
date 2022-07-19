@@ -52,4 +52,35 @@ public class QueryDispatcherTests
 
         _serviceProvider.VerifyAll();
     }
+
+    [TestMethod]
+    public async Task Dispatch_RetrievesRequiredServices_ForConstructedQuery()
+    {
+        _serviceProvider
+            .Setup(_ => _
+                .GetService(typeof(IQueryHandler<ExampleQueryRequest, ExampleQueryResponse>)))
+            .Returns(_handler.Object)
+            .Verifiable();
+
+        _handler
+            .Setup(_ => _
+                .Handle(
+                    It.IsAny<ExampleQueryRequest>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ExampleQueryResponse())
+            .Verifiable();
+
+        var response = await queryDispatcher.Dispatch<ExampleQueryRequest, ExampleQueryResponse>(CancellationToken.None);
+
+        Assert.IsNotNull(response);
+
+        _handler
+            .Verify(_ => _
+                .Handle(
+                    It.IsAny<ExampleQueryRequest>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+
+        _serviceProvider.VerifyAll();
+    }
 }
