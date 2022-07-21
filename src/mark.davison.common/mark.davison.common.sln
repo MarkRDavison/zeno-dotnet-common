@@ -28,9 +28,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.client"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.client.tests", "mark.davison.common.client.tests\mark.davison.common.client.tests.csproj", "{F1D4675B-22E6-44CE-A3B3-D9C04E4C1762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.persistence", "mark.davison.common.persistence\mark.davison.common.persistence.csproj", "{E8435337-7656-4AB3-8BAD-128BB066D084}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.persistence", "mark.davison.common.persistence\mark.davison.common.persistence.csproj", "{E8435337-7656-4AB3-8BAD-128BB066D084}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.test", "mark.davison.common.server.test\mark.davison.common.server.test.csproj", "{E01C9170-A867-45C9-9FBE-D5A94C277AFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.test", "mark.davison.common.server.test\mark.davison.common.server.test.csproj", "{E01C9170-A867-45C9-9FBE-D5A94C277AFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.abstratctions.tests", "Tests\mark.davison.common.server.abstratctions.tests\mark.davison.common.server.abstratctions.tests.csproj", "{F329BAAA-6F2A-4904-B802-4F6F080DF172}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{E01C9170-A867-45C9-9FBE-D5A94C277AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E01C9170-A867-45C9-9FBE-D5A94C277AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E01C9170-A867-45C9-9FBE-D5A94C277AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F} = {AB6060AB-1134-458E-86B8-65609A815A91}
 		{F1D4675B-22E6-44CE-A3B3-D9C04E4C1762} = {AB6060AB-1134-458E-86B8-65609A815A91}
+		{F329BAAA-6F2A-4904-B802-4F6F080DF172} = {AB6060AB-1134-458E-86B8-65609A815A91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3DD14FA-86D9-4C81-B641-8C5CB3A57E71}
