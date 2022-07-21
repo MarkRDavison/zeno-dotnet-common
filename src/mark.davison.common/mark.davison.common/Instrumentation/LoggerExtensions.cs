@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace mark.davison.common.Instrumentation;
+﻿namespace mark.davison.common.Instrumentation;
 
 public static class LoggerExtensions
 {

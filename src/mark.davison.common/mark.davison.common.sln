@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.abstratctions.tests", "Tests\mark.davison.common.server.abstratctions.tests\mark.davison.common.server.abstratctions.tests.csproj", "{F329BAAA-6F2A-4904-B802-4F6F080DF172}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.tests", "Tests\mark.davison.common.tests\mark.davison.common.tests.csproj", "{A9181D89-F465-4674-BBDB-4DA33FF2D42F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F329BAAA-6F2A-4904-B802-4F6F080DF172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{051D97D0-CE2F-4ED3-B8B1-DB273E297A6F} = {AB6060AB-1134-458E-86B8-65609A815A91}
 		{F1D4675B-22E6-44CE-A3B3-D9C04E4C1762} = {AB6060AB-1134-458E-86B8-65609A815A91}
 		{F329BAAA-6F2A-4904-B802-4F6F080DF172} = {AB6060AB-1134-458E-86B8-65609A815A91}
+		{A9181D89-F465-4674-BBDB-4DA33FF2D42F} = {AB6060AB-1134-458E-86B8-65609A815A91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3DD14FA-86D9-4C81-B641-8C5CB3A57E71}

@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.Instrumentation;
 
+[ExcludeFromCodeCoverage]
 public static class LoggerEvents
 {
 
