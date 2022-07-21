@@ -3,21 +3,32 @@
 public class HydrateAuthenticationFromSessionMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IZenoAuthenticationSession _zenoAuthenticationSession;
 
     public HydrateAuthenticationFromSessionMiddleware(
-        RequestDelegate next)
+        RequestDelegate next,
+        IZenoAuthenticationSession zenoAuthenticationSession)
     {
         _next = next;
+        _zenoAuthenticationSession = zenoAuthenticationSession;
     }
+
     public async Task Invoke(HttpContext context, ICurrentUserContext currentUserContext)
     {
-        var token = context.Session.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken);
-        var userContent = context.Session.GetString(ZenoAuthenticationConstants.SessionNames.User);
-        var userProfileContent = context.Session.GetString(ZenoAuthenticationConstants.SessionNames.UserProfile);
+        var token = _zenoAuthenticationSession.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken);
+        var userContent = _zenoAuthenticationSession.GetString(ZenoAuthenticationConstants.SessionNames.User);
+        var userProfileContent = _zenoAuthenticationSession.GetString(ZenoAuthenticationConstants.SessionNames.UserProfile);
         if (!string.IsNullOrEmpty(userContent) && !string.IsNullOrEmpty(userProfileContent) && !string.IsNullOrEmpty(token))
         {
-            var user = JsonSerializer.Deserialize<User>(userContent);
-            var userProfile = JsonSerializer.Deserialize<UserProfile>(userProfileContent);
+            User? user = null;
+            UserProfile? userProfile = null;
+            try
+            {
+                user = JsonSerializer.Deserialize<User>(userContent);
+                userProfile = JsonSerializer.Deserialize<UserProfile>(userProfileContent);
+            }
+            catch { }
+
             if (user != null && user.Sub != Guid.Empty && userProfile != null && userProfile.sub != Guid.Empty)
             {
                 currentUserContext.CurrentUser = user;
@@ -37,6 +48,7 @@ public class HydrateAuthenticationFromSessionMiddleware
                             ZenoAuthenticationConstants.ZenoAuthenticationScheme));
             }
         }
+
         await _next(context);
     }
 }
