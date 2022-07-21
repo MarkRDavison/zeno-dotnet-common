@@ -3,6 +3,7 @@
 public abstract class ComponentWithState : ComponentBase, IComponentWithState, IDisposable
 {
 
+    [ExcludeFromCodeCoverage]
     public virtual void ReRender()
     {
         InvokeAsync(StateHasChanged);

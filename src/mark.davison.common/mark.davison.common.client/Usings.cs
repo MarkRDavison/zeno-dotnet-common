@@ -9,5 +9,6 @@ global using mark.davison.common.Identification;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Http;
 global using Microsoft.Extensions.DependencyInjection;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Reflection;
 global using System.Text.Json;

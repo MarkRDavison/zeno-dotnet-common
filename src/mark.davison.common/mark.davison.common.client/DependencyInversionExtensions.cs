@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.client;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
 {
     private static void AddSingleton<TAbstraction, TImplementation>(IServiceCollection services)
@@ -26,6 +27,7 @@ public static class DependencyInversionExtensions
         var method = methodInfo.MakeGenericMethod(abstraction, implementation);
         method.Invoke(null, new[] { services });
     }
+
     private static void InvokeAction(IServiceCollection services, MethodInfo methodInfo, Type genericType, Type type)
     {
         var interfaceType = type.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == genericType);
