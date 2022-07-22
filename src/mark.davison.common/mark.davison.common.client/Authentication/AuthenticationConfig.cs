@@ -8,9 +8,9 @@ public class AuthenticationConfig : IAuthenticationConfig
     public string BffBase { get; private set; } = string.Empty;
     public void SetBffBase(string bffBase)
     {
-        BffBase = bffBase;
-        LoginEndpoint = bffBase + "/auth/login";
-        LogoutEndpoint = bffBase + "/auth/logout";
-        UserEndpoint = bffBase + "/auth/user";
+        BffBase = bffBase.TrimEnd('/');
+        LoginEndpoint = BffBase + "/auth/login";
+        LogoutEndpoint = BffBase + "/auth/logout";
+        UserEndpoint = BffBase + "/auth/user";
     }
 }

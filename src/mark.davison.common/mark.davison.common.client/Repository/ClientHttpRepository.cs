@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.client.Repository;
 
+[ExcludeFromCodeCoverage]
 public class ClientHttpRepository : IClientHttpRepository
 {
     public Task<TResponse> Get<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken)

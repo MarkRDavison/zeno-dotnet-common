@@ -19,8 +19,6 @@ public partial class AuthenticationContext : IAuthenticationContext
     }
 
 
-    public Guid UserId { get; set; }
-
     public bool IsAuthenticated { get; set; }
 
     public bool IsAuthenticating { get; set; } = true;
@@ -49,6 +47,12 @@ public partial class AuthenticationContext : IAuthenticationContext
                     IsAuthenticating = false;
                     User = user;
                 }
+                else
+                {
+                    IsAuthenticated = false;
+                    IsAuthenticating = false;
+                    User = null;
+                }
             }
             else
             {
@@ -69,12 +73,14 @@ public partial class AuthenticationContext : IAuthenticationContext
             await Login();
         }
     }
+
     public async Task Login()
     {
         await Task.CompletedTask;
         var relative = _navigationManager.Uri.Replace(_navigationManager.BaseUri.Trim('/'), "");
         _navigationManager.NavigateTo(_authenticationConfig.LoginEndpoint + "?redirect_uri=" + relative);
     }
+
     public async Task Logout()
     {
         await Task.CompletedTask;

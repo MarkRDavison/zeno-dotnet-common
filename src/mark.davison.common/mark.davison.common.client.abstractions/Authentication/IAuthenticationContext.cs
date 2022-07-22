@@ -2,7 +2,6 @@
 
 public interface IAuthenticationContext
 {
-    Guid UserId { get; set; }
     bool IsAuthenticated { get; set; }
     bool IsAuthenticating { get; set; }
     UserProfile? User { get; set; }
