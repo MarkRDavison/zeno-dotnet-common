@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.test;
 
+[ExcludeFromCodeCoverage]
 public class MockHttpMessageHandler : HttpMessageHandler
 {
     public Func<HttpRequestMessage, HttpResponseMessage>? SendAsyncFunc { get; set; }

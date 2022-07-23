@@ -7,6 +7,7 @@ public static class WebUtilities
         public const string Json = "application/json";
         public const string FormUrlEncoded = "application/x-www-form-urlencoded";
     }
+
     public static Uri CreateQueryUri(string uri, IDictionary<string, string> queryParams)
     {
         var encodedQueryStringParams = queryParams.Select(p => string.Format("{0}={1}", p.Key, HttpUtility.UrlEncode(p.Value)));

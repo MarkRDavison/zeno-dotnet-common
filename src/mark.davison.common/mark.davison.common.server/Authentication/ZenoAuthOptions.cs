@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.server.Authentication;
 
+[ExcludeFromCodeCoverage]
 public class ZenoAuthOptions : IOptions<ZenoAuthOptions>
 {
     ZenoAuthOptions IOptions<ZenoAuthOptions>.Value => this;

@@ -11,6 +11,7 @@ global using mark.davison.common.server.CQRS;
 global using mark.davison.common.server.Health;
 global using mark.davison.common.server.Health.Checks;
 global using mark.davison.common.server.Repository;
+global using mark.davison.common.server.Utilities;
 global using mark.davison.common.test;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;

@@ -24,4 +24,10 @@
     <ProjectReference Include="..\mark.davison.common.test\mark.davison.common.test.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="openid-configuration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

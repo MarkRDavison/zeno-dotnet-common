@@ -15,8 +15,8 @@ internal class TestHttpRepository : HttpRepository
 [TestClass]
 public class HttpRepositoryTests
 {
-    private HttpRepository _httpRepository;
-    private MockHttpMessageHandler _httpMessageHandler;
+    private HttpRepository _httpRepository = default!;
+    private MockHttpMessageHandler _httpMessageHandler = default!;
     private string _remoteEndpoint = "https://localhost:8080/";
 
     [TestInitialize]
