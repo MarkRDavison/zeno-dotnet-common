@@ -2,7 +2,7 @@
 
 public class ReadyHealthCheck : IHealthCheck
 {
-    public static string Name = "ReadyHealthCheck";
+    public static string Name = nameof(ReadyHealthCheck);
 
     private readonly IApplicationHealthState _applicationHealthState;
 
