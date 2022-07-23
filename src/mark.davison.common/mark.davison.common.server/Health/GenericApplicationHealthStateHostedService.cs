@@ -37,16 +37,16 @@ public class GenericApplicationHealthStateHostedService : IApplicationHealthStat
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await AdditionalStopAsync(cancellationToken);
+        _applicationHealthState.Ready = false;
     }
 
     protected virtual Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
-        _applicationHealthState.Ready = true;
         return Task.CompletedTask;
     }
+
     protected virtual Task AdditionalStopAsync(CancellationToken cancellationToken)
     {
-        _applicationHealthState.Ready = false;
         return Task.CompletedTask;
     }
 }

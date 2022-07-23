@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.server;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
 {
 
@@ -28,6 +29,7 @@ public static class DependencyInversionExtensions
         method.Invoke(null, new[] { services });
     }
 
+    // TODO: SourceGenerator
     public static IServiceCollection UseCQRS(this IServiceCollection services, params Type[] types)
     {
         services.AddSingleton<ICommandDispatcher, CommandDispatcher>();

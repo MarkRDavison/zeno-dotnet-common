@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\mark.davison.common.server\mark.davison.common.server.csproj" />
+    <ProjectReference Include="..\mark.davison.common.test\mark.davison.common.test.csproj" />
   </ItemGroup>
 
 </Project>

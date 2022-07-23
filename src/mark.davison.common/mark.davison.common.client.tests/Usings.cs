@@ -6,6 +6,7 @@ global using mark.davison.common.client.CQRS;
 global using mark.davison.common.client.State;
 global using mark.davison.common.CQRS;
 global using mark.davison.common.Identification;
+global using mark.davison.common.test;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;

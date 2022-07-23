@@ -1,6 +1,5 @@
-﻿namespace mark.davison.common.client.tests.Authentication;
+﻿namespace mark.davison.common.test;
 
-// TODO: Move to test assembly
 public class MockHttpMessageHandler : HttpMessageHandler
 {
     public Func<HttpRequestMessage, HttpResponseMessage>? SendAsyncFunc { get; set; }

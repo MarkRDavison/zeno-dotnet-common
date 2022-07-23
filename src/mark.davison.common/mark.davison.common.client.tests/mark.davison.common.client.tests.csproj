@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\mark.davison.common.client\mark.davison.common.client.csproj" />
+    <ProjectReference Include="..\mark.davison.common.test\mark.davison.common.test.csproj" />
   </ItemGroup>
 
 </Project>

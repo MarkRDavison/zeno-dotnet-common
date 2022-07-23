@@ -32,9 +32,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.persist
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.test", "mark.davison.common.server.test\mark.davison.common.server.test.csproj", "{E01C9170-A867-45C9-9FBE-D5A94C277AFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.abstratctions.tests", "Tests\mark.davison.common.server.abstratctions.tests\mark.davison.common.server.abstratctions.tests.csproj", "{F329BAAA-6F2A-4904-B802-4F6F080DF172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.abstratctions.tests", "Tests\mark.davison.common.server.abstratctions.tests\mark.davison.common.server.abstratctions.tests.csproj", "{F329BAAA-6F2A-4904-B802-4F6F080DF172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.tests", "Tests\mark.davison.common.tests\mark.davison.common.tests.csproj", "{A9181D89-F465-4674-BBDB-4DA33FF2D42F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.tests", "Tests\mark.davison.common.tests\mark.davison.common.tests.csproj", "{A9181D89-F465-4674-BBDB-4DA33FF2D42F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.test", "mark.davison.common.test\mark.davison.common.test.csproj", "{6E994F7E-CA98-45AF-BB1D-2B6F918430A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,10 @@ Global
 		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9181D89-F465-4674-BBDB-4DA33FF2D42F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E994F7E-CA98-45AF-BB1D-2B6F918430A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E994F7E-CA98-45AF-BB1D-2B6F918430A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E994F7E-CA98-45AF-BB1D-2B6F918430A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E994F7E-CA98-45AF-BB1D-2B6F918430A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

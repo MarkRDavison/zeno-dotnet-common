@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.server.Middleware;
 
+[ExcludeFromCodeCoverage]
 public class RequestResponseLoggingMiddleware
 {
     private readonly RequestDelegate _next;

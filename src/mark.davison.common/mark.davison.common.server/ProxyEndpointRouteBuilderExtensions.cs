@@ -1,8 +1,9 @@
 ﻿namespace mark.davison.common.server;
 
+[ExcludeFromCodeCoverage]
 public static class ProxyEndpointRouteBuilderExtensions
 {
-
+    // TODO: WebUtilities
     public static async Task<string> GetRequestBody(HttpRequest request)
     {
         try
@@ -19,6 +20,7 @@ public static class ProxyEndpointRouteBuilderExtensions
         }
     }
 
+    // TODO: SourceGenerator
     private static async Task<object> PerformCommand<TRequest, TResponse>(HttpContext context, ICommandDispatcher dispatcher, CancellationToken cancellationToken)
         where TRequest : class, ICommand<TRequest, TResponse>, new()
         where TResponse : class, new()
@@ -38,11 +40,11 @@ public static class ProxyEndpointRouteBuilderExtensions
         return responseObject;
     }
 
+    // TODO: SourceGenerator
     private static async Task<object> PerformQuery<TRequest, TResponse>(HttpContext context, ICommandDispatcher dispatcher, CancellationToken cancellationToken)
         where TRequest : class, ICommand<TRequest, TResponse>, new()
         where TResponse : class, new()
     {
-        //context.Request.Query
         var requestProperties = typeof(TRequest)
             .GetProperties()
             .Where(_ => _.CanWrite)
@@ -91,13 +93,15 @@ public static class ProxyEndpointRouteBuilderExtensions
         return responseObject;
     }
 
+    // TODO: SourceGenerator
     public static IEndpointRouteBuilder ConfigureCQRSEndpoints(this IEndpointRouteBuilder endpoints, params Type[] types)
     {
         const string cqrsPath = "api";
         var commandInterfaceType = typeof(ICommand<,>);
+        var queryInterfaceType = typeof(IQuery<,>);
         var assemblyTypes = types
             .SelectMany(_ => _.Assembly.ExportedTypes)
-            .Where(_ => _.GetInterfaces().Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandInterfaceType))
+            .Where(_ => _.GetInterfaces().Any(__ => __.IsGenericType && (__.GetGenericTypeDefinition() == queryInterfaceType || __.GetGenericTypeDefinition() == commandInterfaceType)))
             .ToList();
 
         var thisType = typeof(ProxyEndpointRouteBuilderExtensions);
@@ -110,7 +114,7 @@ public static class ProxyEndpointRouteBuilderExtensions
             if (getAttribute != null)
             {
                 var path = getAttribute.NamedArguments.First(_ => _.MemberName == nameof(GetRequestAttribute.Path));
-                var interfaceType = commandType.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandInterfaceType);
+                var interfaceType = commandType.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryInterfaceType);
                 var genArgs = interfaceType.GetGenericArguments();
                 if (genArgs.Length != 2)
                 {
