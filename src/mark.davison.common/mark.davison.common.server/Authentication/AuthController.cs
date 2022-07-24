@@ -60,7 +60,6 @@ public class AuthController : ControllerBase
     [HttpGet(ZenoRouteNames.LoginCallbackRoute)]
     public async Task<IActionResult> LoginCallback(CancellationToken cancellationToken)
     {
-        var zenoAuthenticationSession = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IZenoAuthenticationSession>();
         var error = _httpContextAccessor.HttpContext!.Request.Query[OauthQueryNames.Error];
         var error_description = _httpContextAccessor.HttpContext.Request.Query[OauthQueryNames.ErrorDescription];
         var state = _httpContextAccessor.HttpContext.Request.Query[OauthQueryNames.State];
@@ -76,6 +75,7 @@ public class AuthController : ControllerBase
             return WebUtilities.RedirectPreserveMethod(WebUtilities.CreateQueryUri(_zenoAuthOptions.WebOrigin + ZenoRouteNames.WebErrorRoute, webErrorQueryParams).ToString());
         }
 
+        var zenoAuthenticationSession = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IZenoAuthenticationSession>();
         await zenoAuthenticationSession.LoadSessionAsync(cancellationToken);
         if (zenoAuthenticationSession.GetString(SessionNames.State) != state)
         {
@@ -198,6 +198,8 @@ public class AuthController : ControllerBase
         var profile = JsonSerializer.Deserialize<UserProfile>(userString);
         if (profile == null)
         {
+            zenoAuthenticationSession.Clear();
+            await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
             return new StatusCodeResult(401);
         }
 
