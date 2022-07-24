@@ -1,6 +1,4 @@
-﻿using mark.davison.common.client.Repository;
-
-namespace mark.davison.common.client.tests.Repository;
+﻿namespace mark.davison.common.client.tests.Repository;
 
 internal class TestClientHttpRepository : ClientHttpRepository
 {
