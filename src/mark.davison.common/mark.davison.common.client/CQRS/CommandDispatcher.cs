@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.common.client.CQRS;
 
-public class CommandDispatcher
+public class CommandDispatcher : ICommandDispatcher
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 

@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.common.client.CQRS;
 
-public class ActionDispatcher
+public class ActionDispatcher : IActionDispatcher
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 

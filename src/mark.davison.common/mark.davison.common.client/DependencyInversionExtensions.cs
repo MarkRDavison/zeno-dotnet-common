@@ -55,9 +55,9 @@ public static class DependencyInversionExtensions
     // TODO: Source Generator
     public static IServiceCollection UseCQRS(this IServiceCollection services, params Type[] types)
     {
-        services.AddSingleton<IQueryDispatcher, CQRSDispatcher>();
-        services.AddSingleton<ICommandDispatcher, CQRSDispatcher>();
-        services.AddSingleton<IActionDispatcher, CQRSDispatcher>();
+        services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
+        services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
+        services.AddSingleton<IActionDispatcher, ActionDispatcher>();
         services.AddSingleton<ICQRSDispatcher, CQRSDispatcher>();
 
         var thisType = typeof(DependencyInversionExtensions);

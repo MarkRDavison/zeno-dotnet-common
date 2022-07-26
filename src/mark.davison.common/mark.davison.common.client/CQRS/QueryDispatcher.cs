@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.common.client.CQRS;
 
-public class QueryDispatcher
+public class QueryDispatcher : IQueryDispatcher
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
