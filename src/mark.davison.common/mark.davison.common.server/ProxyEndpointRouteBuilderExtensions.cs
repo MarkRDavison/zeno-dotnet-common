@@ -41,8 +41,8 @@ public static class ProxyEndpointRouteBuilderExtensions
     }
 
     // TODO: SourceGenerator
-    private static async Task<object> PerformQuery<TRequest, TResponse>(HttpContext context, ICommandDispatcher dispatcher, CancellationToken cancellationToken)
-        where TRequest : class, ICommand<TRequest, TResponse>, new()
+    private static async Task<object> PerformQuery<TRequest, TResponse>(HttpContext context, IQueryDispatcher dispatcher, CancellationToken cancellationToken)
+        where TRequest : class, IQuery<TRequest, TResponse>, new()
         where TResponse : class, new()
     {
         var requestProperties = typeof(TRequest)
@@ -129,9 +129,9 @@ public static class ProxyEndpointRouteBuilderExtensions
                 // Look at mvvm toolkit as an example
                 endpoints.MapGet(
                     $"/{cqrsPath}/{path.TypedValue.Value as string}",
-                    async (HttpContext context, ICommandDispatcher commandDispatcher, CancellationToken cancellationToken) =>
+                    async (HttpContext context, IQueryDispatcher queryDispatcher, CancellationToken cancellationToken) =>
                     {
-                        var result = getMethod.Invoke(null, new object[] { context, commandDispatcher, cancellationToken }) as Task<object>;
+                        var result = getMethod.Invoke(null, new object[] { context, queryDispatcher, cancellationToken }) as Task<object>;
                         return await result!;
                     });
             }
