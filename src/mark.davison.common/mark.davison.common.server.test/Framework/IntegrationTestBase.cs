@@ -45,6 +45,16 @@ public class IntegrationTestBase<TFactory, TSettings>
         return await ReadAsAsync<List<T>>(response);
     }
 
+    protected async Task<string> GetRawAsync(string uri, bool requireSuccess = false)
+    {
+        var response = await CallAsync(HttpMethod.Get, uri, null);
+        if (requireSuccess)
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        return await response.Content.ReadAsStringAsync();
+    }
+
     protected async Task<T> GetAsync<T>(string uri, bool requireSuccess = false)
     {
         var response = await CallAsync(HttpMethod.Get, uri, null);

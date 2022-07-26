@@ -24,7 +24,7 @@ public abstract class ClientHttpRepository : IClientHttpRepository
 
         var requestMessage = new HttpRequestMessage(
             HttpMethod.Get,
-            $"{_remoteEndpoint}/api/{pathValue.TrimStart('/')}");
+            $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}");
         using var response = await _httpClient.SendAsync(requestMessage);
         var body = await response.Content.ReadAsStringAsync();
         var obj = JsonSerializer.Deserialize<TResponse>(body, new JsonSerializerOptions
@@ -56,7 +56,7 @@ public abstract class ClientHttpRepository : IClientHttpRepository
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var requestMessage = new HttpRequestMessage(
             HttpMethod.Post,
-            $"{_remoteEndpoint}/api/{pathValue.TrimStart('/')}")
+            $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}")
         {
             Content = content
         };

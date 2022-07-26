@@ -268,7 +268,7 @@ public class AuthControllerTests
 
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            if (_.RequestUri.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
+            if (_.RequestUri!.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
             {
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {
@@ -354,7 +354,7 @@ public class AuthControllerTests
 
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            if (_.RequestUri.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
+            if (_.RequestUri!.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
             {
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {
@@ -443,7 +443,7 @@ public class AuthControllerTests
 
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            if (_.RequestUri.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
+            if (_.RequestUri!.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
             {
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {

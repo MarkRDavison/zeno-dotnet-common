@@ -12,4 +12,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common.server.abstractions\mark.davison.common.server.abstractions.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
+	</ItemGroup>
 </Project>

@@ -42,6 +42,10 @@ public class GenericApplicationHealthStateHostedService : IApplicationHealthStat
 
     protected virtual Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
+        _hostApplicationLifetime.ApplicationStarted.Register(() =>
+        {
+            _applicationHealthState.Ready = true;
+        });
         return Task.CompletedTask;
     }
 
