@@ -72,4 +72,6 @@ public class IntegrationTestBase<TFactory, TSettings>
     }
 
     protected HttpClient Client { get; }
+
+    protected IServiceProvider Services => _factory.ServiceProvider;
 }

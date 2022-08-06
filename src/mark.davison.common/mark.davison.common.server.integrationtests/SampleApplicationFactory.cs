@@ -3,6 +3,7 @@
 public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {
     public Func<IRepository, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
+    public IServiceProvider ServiceProvider => base.Services;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
