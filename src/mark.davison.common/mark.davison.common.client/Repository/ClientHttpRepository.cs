@@ -3,12 +3,20 @@
 public abstract class ClientHttpRepository : IClientHttpRepository
 {
     private readonly string _remoteEndpoint;
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _options;
 
     public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient)
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;
+        _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    }
+    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
+    {
+        _remoteEndpoint = remoteEndpoint.TrimEnd('/');
+        _httpClient = httpClient;
+        _options = options;
     }
 
     public async Task<TResponse> Get<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken)
@@ -27,10 +35,7 @@ public abstract class ClientHttpRepository : IClientHttpRepository
             $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}");
         using var response = await _httpClient.SendAsync(requestMessage);
         var body = await response.Content.ReadAsStringAsync();
-        var obj = JsonSerializer.Deserialize<TResponse>(body, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
         return obj ?? new TResponse();
     }
 
@@ -52,7 +57,7 @@ public abstract class ClientHttpRepository : IClientHttpRepository
         var path = attribute.NamedArguments.First(_ => _.MemberName == nameof(PostRequestAttribute.Path));
         var pathValue = path.TypedValue.Value as string;
 
-        var json = JsonSerializer.Serialize(request);
+        var json = JsonSerializer.Serialize(request, _options);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var requestMessage = new HttpRequestMessage(
             HttpMethod.Post,
@@ -62,10 +67,7 @@ public abstract class ClientHttpRepository : IClientHttpRepository
         };
         using var response = await _httpClient.SendAsync(requestMessage);
         var body = await response.Content.ReadAsStringAsync();
-        var obj = JsonSerializer.Deserialize<TResponse>(body, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
         return obj ?? new TResponse();
     }
 
