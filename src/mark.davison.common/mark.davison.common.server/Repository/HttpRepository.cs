@@ -17,6 +17,13 @@ public abstract class HttpRepository : IHttpRepository
         return await GetEntitiesAsync<T>(typeof(T).Name.ToLower(), query, header, cancellationToken);
     }
 
+    private Uri CreateUriFromRelative(string relativeUri)
+    {
+        return string.IsNullOrEmpty(_remoteEndpoint)
+                ? new Uri(relativeUri, UriKind.Relative)
+                : new Uri($"{_remoteEndpoint}{relativeUri}", UriKind.Absolute);
+    }
+
     public async Task<List<T>> GetEntitiesAsync<T>(string path, QueryParameters query, HeaderParameters header, CancellationToken cancellationToken)
     {
         if (!string.IsNullOrEmpty(path))
@@ -26,7 +33,7 @@ public abstract class HttpRepository : IHttpRepository
 
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"{_remoteEndpoint}/api{path}{query.CreateQueryString()}");
+            CreateUriFromRelative($"/api{path}{query.CreateQueryString()}"));
         header.CopyHeaders(request);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
@@ -44,7 +51,7 @@ public abstract class HttpRepository : IHttpRepository
 
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"{_remoteEndpoint}/api/{entityRouteName}/{id}");
+            CreateUriFromRelative($"/api/{entityRouteName}/{id}"));
         header.CopyHeaders(request);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
@@ -76,7 +83,7 @@ public abstract class HttpRepository : IHttpRepository
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
-            RequestUri = new Uri($"{_remoteEndpoint}/api/{entityRouteName}"),
+            RequestUri = CreateUriFromRelative($"/api/{entityRouteName}"),
             Content = new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, WebUtilities.ContentType.Json)
         };
         header.CopyHeaders(request);
