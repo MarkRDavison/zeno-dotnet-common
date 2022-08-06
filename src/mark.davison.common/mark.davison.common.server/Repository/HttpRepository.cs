@@ -3,13 +3,21 @@
 public abstract class HttpRepository : IHttpRepository
 {
     private readonly string _remoteEndpoint;
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _options;
 
 
     protected HttpRepository(string remoteEndpoint, HttpClient httpClient)
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;
+        _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    }
+    protected HttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
+    {
+        _remoteEndpoint = remoteEndpoint.TrimEnd('/');
+        _httpClient = httpClient;
+        _options = options;
     }
 
     public async Task<List<T>> GetEntitiesAsync<T>(QueryParameters query, HeaderParameters header, CancellationToken cancellationToken) where T : BaseEntity
@@ -41,7 +49,7 @@ public abstract class HttpRepository : IHttpRepository
             return new List<T>();
         }
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        var result = JsonSerializer.Deserialize<T[]>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var result = JsonSerializer.Deserialize<T[]>(content, _options);
         return result?.ToList() ?? new List<T>();
     }
 
@@ -59,7 +67,7 @@ public abstract class HttpRepository : IHttpRepository
             return null;
         }
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        return JsonSerializer.Deserialize<T>(content, _options);
     }
 
     // TODO: Make this a separate endpoint in the service, only one entity in network traffic required.
@@ -92,7 +100,7 @@ public abstract class HttpRepository : IHttpRepository
         {
             Method = HttpMethod.Post,
             RequestUri = CreateUriFromRelative($"/api/{entityRouteName}"),
-            Content = new StringContent(JsonSerializer.Serialize(entity), Encoding.UTF8, WebUtilities.ContentType.Json)
+            Content = new StringContent(JsonSerializer.Serialize(entity, _options), Encoding.UTF8, WebUtilities.ContentType.Json)
         };
         header.CopyHeaders(request);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -101,6 +109,6 @@ public abstract class HttpRepository : IHttpRepository
             return null;
         }
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        return JsonSerializer.Deserialize<T>(content, _options);
     }
 }
