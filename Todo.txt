@@ -1,5 +1,6 @@
 Todo:
-	-	Add cicd submodule
-	-	Script to modify the version in all the appropriate csproj files and recommit with a *no ci*
+	-	Make HttpRepository.UpsertEntitiesAsync not do it one by one
 
 Done:
+	-	Add cicd submodule
+	-	Script to modify the version in all the appropriate csproj files and recommit with a *no ci*

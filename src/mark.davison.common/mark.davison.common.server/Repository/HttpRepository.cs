@@ -69,11 +69,19 @@ public abstract class HttpRepository : IHttpRepository
         return entities.FirstOrDefault();
     }
 
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage] // TODO: This is bad
     public async Task<List<T>> UpsertEntitiesAsync<T>(List<T> entities, HeaderParameters header, CancellationToken cancellationToken) where T : BaseEntity
     {
-        await Task.CompletedTask;
-        throw new NotImplementedException("Create post multiple endpoint");
+        var persisted = new List<T>();
+        foreach (var entity in entities)
+        {
+            var p = await UpsertEntityAsync<T>(entity, header, cancellationToken);
+            if (p != null)
+            {
+                persisted.Add(p);
+            }
+        }
+        return persisted;
     }
 
     public async Task<T?> UpsertEntityAsync<T>(T entity, HeaderParameters header, CancellationToken cancellationToken) where T : BaseEntity
