@@ -2,5 +2,5 @@
 
 public interface ICustomZenoAuthenticationActions
 {
-    Task OnUserAuthenticated(UserProfile userProfile, CancellationToken cancellationToken);
+    Task OnUserAuthenticated(UserProfile userProfile, IZenoAuthenticationSession session, CancellationToken cancellationToken);
 }

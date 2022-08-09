@@ -143,7 +143,7 @@ public class AuthController : ControllerBase
         var customActions = _serviceProvider.GetService<ICustomZenoAuthenticationActions>();
         if (customActions != null)
         {
-            await customActions.OnUserAuthenticated(userProfile, cancellationToken);
+            await customActions.OnUserAuthenticated(userProfile, zenoAuthenticationSession, cancellationToken);
         }
 
         await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);

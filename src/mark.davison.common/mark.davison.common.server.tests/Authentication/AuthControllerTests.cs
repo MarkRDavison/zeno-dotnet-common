@@ -433,7 +433,7 @@ public class AuthControllerTests
             .Setup(_ => _.SetString(SessionNames.UserProfile, It.IsAny<string>()));
 
         _customZenoAuthenticationActions
-            .Setup(_ => _.OnUserAuthenticated(It.IsAny<UserProfile>(), It.IsAny<CancellationToken>()))
+            .Setup(_ => _.OnUserAuthenticated(It.IsAny<UserProfile>(), _zenoAuthenticationSession.Object, It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask)
             .Verifiable();
 
@@ -469,7 +469,7 @@ public class AuthControllerTests
         await _authController.LoginCallback(CancellationToken.None);
 
         _customZenoAuthenticationActions
-            .Verify(_ => _.OnUserAuthenticated(It.IsAny<UserProfile>(), It.IsAny<CancellationToken>()),
+            .Verify(_ => _.OnUserAuthenticated(It.IsAny<UserProfile>(), _zenoAuthenticationSession.Object, It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 
