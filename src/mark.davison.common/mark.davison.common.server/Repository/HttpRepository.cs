@@ -11,7 +11,7 @@ public abstract class HttpRepository : IHttpRepository
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;
-        _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _options = SerializationHelpers.CreateStandardSerializationOptions();
     }
     protected HttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
     {

@@ -68,7 +68,7 @@ public class IntegrationTestBase<TFactory, TSettings>
     protected async Task<T> ReadAsAsync<T>(HttpResponseMessage response)
     {
         string res = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(res, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        return JsonSerializer.Deserialize<T>(res, SerializationHelpers.CreateStandardSerializationOptions())!;
     }
 
     protected HttpClient Client { get; }

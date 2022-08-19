@@ -20,7 +20,7 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddleware
             User? user = null;
             if (context.Request.Headers.TryGetValue(ZenoAuthenticationConstants.HeaderNames.User, out var headerUserString))
             {
-                user = JsonSerializer.Deserialize<User>(headerUserString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                user = JsonSerializer.Deserialize<User>(headerUserString, SerializationHelpers.CreateStandardSerializationOptions());
             }
 
             if (user == null)

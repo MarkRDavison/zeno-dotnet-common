@@ -10,7 +10,7 @@ public abstract class ClientHttpRepository : IClientHttpRepository
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;
-        _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _options = SerializationHelpers.CreateStandardSerializationOptions();
     }
     public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
     {

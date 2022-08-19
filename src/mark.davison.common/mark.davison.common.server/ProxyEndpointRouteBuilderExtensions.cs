@@ -30,7 +30,7 @@ public static class ProxyEndpointRouteBuilderExtensions
         {
             return new TResponse() as object;
         }
-        var request = JsonSerializer.Deserialize<TRequest>(bodyText, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var request = JsonSerializer.Deserialize<TRequest>(bodyText, SerializationHelpers.CreateStandardSerializationOptions());
         if (request == null)
         {
             return new TResponse() as object;
