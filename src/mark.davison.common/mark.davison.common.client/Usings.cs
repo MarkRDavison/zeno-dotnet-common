@@ -6,6 +6,7 @@ global using mark.davison.common.client.CQRS;
 global using mark.davison.common.client.State;
 global using mark.davison.common.CQRS;
 global using mark.davison.common.Identification;
+global using mark.davison.common.Repository;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Http;
 global using Microsoft.Extensions.DependencyInjection;

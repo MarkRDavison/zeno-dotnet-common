@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.server.abstractions.Repository;
+﻿namespace mark.davison.common.Repository;
 
 public class QueryParameters : Dictionary<string, string>
 {

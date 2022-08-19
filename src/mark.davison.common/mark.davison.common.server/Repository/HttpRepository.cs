@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.Repository;
+﻿using mark.davison.common.Repository;
+
+namespace mark.davison.common.server.Repository;
 
 public abstract class HttpRepository : IHttpRepository
 {

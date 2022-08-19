@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.server.abstratctions.tests.Repository;
+﻿namespace mark.davison.common.tests.Repository;
 
 [TestClass]
 public class QueryParametersTests

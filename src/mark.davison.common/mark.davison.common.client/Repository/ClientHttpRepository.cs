@@ -6,12 +6,10 @@ public abstract class ClientHttpRepository : IClientHttpRepository
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
 
-    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient)
+    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient) : this(remoteEndpoint, httpClient, SerializationHelpers.CreateStandardSerializationOptions())
     {
-        _remoteEndpoint = remoteEndpoint.TrimEnd('/');
-        _httpClient = httpClient;
-        _options = SerializationHelpers.CreateStandardSerializationOptions();
     }
+
     public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
@@ -30,9 +28,11 @@ public abstract class ClientHttpRepository : IClientHttpRepository
         var path = attribute.NamedArguments.First(_ => _.MemberName == nameof(GetRequestAttribute.Path));
         var pathValue = path.TypedValue.Value as string;
 
+        var queryParameters = CreateQueryParameters<TRequest, TResponse>(request);
+
         var requestMessage = new HttpRequestMessage(
             HttpMethod.Get,
-            $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}");
+            $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}{queryParameters.CreateQueryString()}");
         using var response = await _httpClient.SendAsync(requestMessage);
         var body = await response.Content.ReadAsStringAsync();
         var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
@@ -76,5 +76,25 @@ public abstract class ClientHttpRepository : IClientHttpRepository
         where TResponse : class, new()
     {
         return Post<TResponse, TRequest>(new TRequest(), cancellationToken);
+    }
+
+    public QueryParameters CreateQueryParameters<TQuery, TResponse>(TQuery query)
+        where TQuery : class, IQuery<TQuery, TResponse>
+        where TResponse : class, new()
+    {
+        var queryParameters = new QueryParameters();
+
+        foreach (var property in typeof(TQuery).GetProperties())
+        {
+            var propertyName = property.Name;
+            var propertyValue = property.GetValue(query)?.ToString();
+
+            if (!string.IsNullOrEmpty(propertyValue))
+            {
+                queryParameters.Add(propertyName, propertyValue);
+            }
+        }
+
+        return queryParameters;
     }
 }

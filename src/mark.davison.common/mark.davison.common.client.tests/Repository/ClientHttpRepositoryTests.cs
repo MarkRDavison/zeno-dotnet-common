@@ -22,10 +22,11 @@ internal class TestPostResponse
     public string TestValue { get; set; } = string.Empty;
 }
 
-[GetRequest(Path = "/post")]
+[GetRequest(Path = "/get")]
 internal class TestGetRequest : IQuery<TestGetRequest, TestGetResponse>, ICommand<TestGetRequest, TestGetResponse>
 {
-
+    public string Value { get; set; } = string.Empty;
+    public string? NullableValue { get; set; }
 }
 
 [PostRequest(Path = "/post")]
@@ -58,7 +59,7 @@ public class ClientHttpRepositoryTests
 
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/post", _.RequestUri?.ToString());
+            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/get", _.RequestUri?.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(JsonSerializer.Serialize(expectedResponse))
@@ -74,6 +75,35 @@ public class ClientHttpRepositoryTests
     }
 
     [TestMethod]
+    public async Task Get_PopulatesQueryParameter()
+    {
+        var expectedResponse = new TestGetResponse
+        {
+            TestValue = "abcdefghijklmnopqrstuvwxy"
+        };
+        var request = new TestGetRequest
+        {
+            Value = "abc"
+        };
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/get?Value=abc", _.RequestUri?.ToString());
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(expectedResponse))
+            };
+        };
+
+        var response = await _clientHttpRepository
+            .Get<TestGetResponse, TestGetRequest>(
+                request,
+                CancellationToken.None);
+
+        Assert.AreEqual(expectedResponse.TestValue, response.TestValue);
+    }
+
+    [TestMethod]
     public async Task Get_ByType_RetrievesResponseViaAttributePath()
     {
         var expectedResponse = new TestGetResponse
@@ -83,7 +113,7 @@ public class ClientHttpRepositoryTests
 
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/post", _.RequestUri?.ToString());
+            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/get", _.RequestUri?.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(JsonSerializer.Serialize(expectedResponse))
@@ -101,7 +131,7 @@ public class ClientHttpRepositoryTests
     {
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/post", _.RequestUri?.ToString());
+            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/get", _.RequestUri?.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent("null")
