@@ -83,9 +83,20 @@ public static class ProxyEndpointRouteBuilderExtensions
                     throw new InvalidOperationException("Invalid long format");
                 }
             }
+            else if (property.PropertyType == typeof(bool))
+            {
+                if (bool.TryParse(queryProperty, out var bval))
+                {
+                    property.SetValue(request, bval);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Invalid bool format");
+                }
+            }
             else
             {
-                throw new InvalidOperationException("Unhandled get property type");
+                throw new InvalidOperationException($"Unhandled get property type {property.PropertyType.Name}");
             }
         }
 
