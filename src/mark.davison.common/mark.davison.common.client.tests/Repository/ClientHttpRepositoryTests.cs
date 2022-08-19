@@ -88,7 +88,7 @@ public class ClientHttpRepositoryTests
 
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
-            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/get?Value=abc", _.RequestUri?.ToString());
+            Assert.AreEqual($"{_remoteEndpoint.Trim('/')}/api/get?value=abc", _.RequestUri?.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(JsonSerializer.Serialize(expectedResponse))

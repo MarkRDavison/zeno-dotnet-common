@@ -1,5 +1,12 @@
+global using mark.davison.common.client.abstractions.Authentication;
+global using mark.davison.common.client.abstractions.Repository;
+global using mark.davison.common.client.Authentication;
+global using mark.davison.common.client.Repository;
+global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.Repository;
+global using mark.davison.common.server.Authentication;
 global using mark.davison.common.server.sample.api;
+global using mark.davison.common.server.sample.api.Scenarios.ExampleGet;
 global using mark.davison.common.server.test.Framework;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Mvc.Testing;

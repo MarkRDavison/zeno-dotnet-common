@@ -36,6 +36,8 @@ public class Startup
         services
             .AddHttpClient()
             .AddHttpContextAccessor();
+
+        services.UseCQRS(typeof(Startup));
     }
 
     public void Configure(IApplicationBuilder app)
@@ -49,6 +51,8 @@ public class Startup
                 .MapHealthChecks();
             endpoints
                 .MapControllers();
+            endpoints
+                .ConfigureCQRSEndpoints(typeof(Startup));
         });
     }
 

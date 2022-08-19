@@ -13,8 +13,18 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
             loggingBuilder.ClearProviders();
             loggingBuilder.AddConsole();
         });
+
     }
     protected virtual void ConfigureServices(IServiceCollection services)
     {
+        var config = new AuthenticationConfig();
+        config.SetBffBase("http://localhost/");
+        services.AddSingleton<ICurrentUserContext, CurrentUserContext>();
+        services.AddHttpClient("API");
+        services.AddSingleton<IAuthenticationConfig>(config);
+        services.AddSingleton<IClientHttpRepository>(_ => new SampleClientHttpRepository(
+            _.GetRequiredService<IAuthenticationConfig>().BffBase,
+            CreateClient()));
+
     }
 }

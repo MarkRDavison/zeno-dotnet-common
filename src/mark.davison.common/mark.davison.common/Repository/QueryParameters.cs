@@ -8,7 +8,7 @@ public class QueryParameters : Dictionary<string, string>
         if (this.Any())
         {
             uri += "?";
-            uri += string.Join("&", this.Select((kv) => $"{kv.Key}={kv.Value}"));
+            uri += string.Join("&", this.Select((kv) => $"{kv.Key.ToLowerInvariant()}={kv.Value}"));
         }
         return uri;
     }

@@ -84,7 +84,7 @@ public class HttpRepositoryTests
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
             Assert.AreEqual(
-                $"{_remoteEndpoint.TrimEnd('/')}/api{path}?Name=EntityName",
+                $"{_remoteEndpoint.TrimEnd('/')}/api{path}?name=EntityName",
                 _.RequestUri!.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -106,7 +106,7 @@ public class HttpRepositoryTests
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
             Assert.AreEqual(
-                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}?Name=EntityName",
+                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}?name=EntityName",
                 _.RequestUri!.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -161,7 +161,7 @@ public class HttpRepositoryTests
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
             Assert.AreEqual(
-                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}?Name=EntityName",
+                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}?name=EntityName",
                 _.RequestUri!.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -187,7 +187,7 @@ public class HttpRepositoryTests
         _httpMessageHandler.SendAsyncFunc = _ =>
         {
             Assert.AreEqual(
-                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}?Name=EntityName",
+                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}?name=EntityName",
                 _.RequestUri!.ToString());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
