@@ -117,10 +117,15 @@ public class AuthController : ControllerBase
 
         using (HttpResponseMessage responseMessage = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, _httpContextAccessor.HttpContext.RequestAborted))
         {
-            tokens = await responseMessage.Content.ReadFromJsonAsync<AuthTokens>();
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                _logger.LogError("Retrieving auth tokens returned {0}", responseMessage.StatusCode);
+            }
+            var tokenString = await responseMessage.Content.ReadAsStringAsync();
+            tokens = JsonSerializer.Deserialize<AuthTokens>(tokenString);
             if (tokens == null || string.IsNullOrEmpty(tokens.access_token) || string.IsNullOrEmpty(tokens.refresh_token))
             {
-                return new BadRequestObjectResult(await responseMessage.Content.ReadAsStringAsync());
+                return new BadRequestObjectResult(tokenString);
             }
         }
 
@@ -132,10 +137,15 @@ public class AuthController : ControllerBase
         };
         using (HttpResponseMessage responseMessage = await client.SendAsync(userMessage, HttpCompletionOption.ResponseHeadersRead, _httpContextAccessor.HttpContext.RequestAborted))
         {
-            userProfile = await responseMessage.Content.ReadFromJsonAsync<UserProfile>();
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                _logger.LogError("Retrieving userInfo returned {0}", responseMessage.StatusCode);
+            }
+            var userProfileString = await responseMessage.Content.ReadAsStringAsync();
+            userProfile = JsonSerializer.Deserialize<UserProfile>(userProfileString);
             if (userProfile == null || userProfile.sub == Guid.Empty)
             {
-                return new BadRequestObjectResult(await responseMessage.Content.ReadAsStringAsync());
+                return new BadRequestObjectResult(userProfileString);
             }
         }
 
