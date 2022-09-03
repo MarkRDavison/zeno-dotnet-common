@@ -118,7 +118,7 @@ public class AuthController : ControllerBase
         using (HttpResponseMessage responseMessage = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, _httpContextAccessor.HttpContext.RequestAborted))
         {
             tokens = await responseMessage.Content.ReadFromJsonAsync<AuthTokens>();
-            if (tokens == null)
+            if (tokens == null || string.IsNullOrEmpty(tokens.access_token) || string.IsNullOrEmpty(tokens.refresh_token))
             {
                 return new BadRequestObjectResult(await responseMessage.Content.ReadAsStringAsync());
             }
@@ -133,7 +133,7 @@ public class AuthController : ControllerBase
         using (HttpResponseMessage responseMessage = await client.SendAsync(userMessage, HttpCompletionOption.ResponseHeadersRead, _httpContextAccessor.HttpContext.RequestAborted))
         {
             userProfile = await responseMessage.Content.ReadFromJsonAsync<UserProfile>();
-            if (userProfile == null)
+            if (userProfile == null || userProfile.sub == Guid.Empty)
             {
                 return new BadRequestObjectResult(await responseMessage.Content.ReadAsStringAsync());
             }
