@@ -6,18 +6,21 @@ namespace mark.davison.common.server.Authentication;
 [ApiController]
 public class AuthController : ControllerBase
 {
+    private readonly ILogger _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IServiceProvider _serviceProvider;
     private readonly ZenoAuthOptions _zenoAuthOptions;
 
     public AuthController(
+        ILogger<AuthController> logger,
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
         IServiceProvider serviceProvider,
         IOptions<ZenoAuthOptions> options
     )
     {
+        _logger = logger;
         _httpClientFactory = httpClientFactory;
         _httpContextAccessor = httpContextAccessor;
         _serviceProvider = serviceProvider;
@@ -84,6 +87,9 @@ public class AuthController : ControllerBase
                     { ZenoQueryNames.Error, ZenoAuthErrors.AuthError },
                     { ZenoQueryNames.ErrorDescription, ZenoAuthErrors.StateMismatch }
                 };
+
+            _logger.LogError("Auth state mismatch, session state: {0}, url state: {1}", zenoAuthenticationSession.GetString(SessionNames.State), state);
+
             return WebUtilities.RedirectPreserveMethod(WebUtilities.CreateQueryUri(_zenoAuthOptions.WebOrigin + ZenoRouteNames.WebErrorRoute, webErrorQueryParams).ToString());
         }
 
