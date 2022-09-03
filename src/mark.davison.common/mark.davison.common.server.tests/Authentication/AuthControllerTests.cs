@@ -5,6 +5,7 @@ namespace mark.davison.common.server.tests.Authentication;
 [TestClass]
 public class AuthControllerTests
 {
+    private readonly Mock<ILogger<AuthController>> _logger;
     private readonly Mock<IHttpClientFactory> _httpClientFactory;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     private readonly Mock<IServiceProvider> _serviceProvider;
@@ -20,6 +21,7 @@ public class AuthControllerTests
 
     public AuthControllerTests()
     {
+        _logger = new();
         _httpClientFactory = new(MockBehavior.Strict);
         _httpContextAccessor = new(MockBehavior.Strict);
         _serviceProvider = new(MockBehavior.Strict);
@@ -45,7 +47,7 @@ public class AuthControllerTests
         _httpMessageHandler = new();
         _httpContextAccessor.Setup(_ => _.HttpContext).Returns(_httpContext);
 
-        _authController = new(_httpClientFactory.Object, _httpContextAccessor.Object, _serviceProvider.Object, _zenoAuthOptions);
+        _authController = new(_logger.Object, _httpClientFactory.Object, _httpContextAccessor.Object, _serviceProvider.Object, _zenoAuthOptions);
     }
 
     [TestMethod]

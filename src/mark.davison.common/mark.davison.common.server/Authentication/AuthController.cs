@@ -80,7 +80,8 @@ public class AuthController : ControllerBase
 
         var zenoAuthenticationSession = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IZenoAuthenticationSession>();
         await zenoAuthenticationSession.LoadSessionAsync(cancellationToken);
-        if (zenoAuthenticationSession.GetString(SessionNames.State) != state)
+        var sessionState = zenoAuthenticationSession.GetString(SessionNames.State);
+        if (sessionState != state)
         {
             var webErrorQueryParams = new Dictionary<string, string>
                 {
@@ -88,7 +89,7 @@ public class AuthController : ControllerBase
                     { ZenoQueryNames.ErrorDescription, ZenoAuthErrors.StateMismatch }
                 };
 
-            _logger.LogError("Auth state mismatch, session state: {0}, url state: {1}", zenoAuthenticationSession.GetString(SessionNames.State), state);
+            _logger.LogError("Auth state mismatch, session state: {0}, url state: {1}", sessionState, state);
 
             return WebUtilities.RedirectPreserveMethod(WebUtilities.CreateQueryUri(_zenoAuthOptions.WebOrigin + ZenoRouteNames.WebErrorRoute, webErrorQueryParams).ToString());
         }
