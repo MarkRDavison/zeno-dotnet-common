@@ -150,7 +150,12 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
 
     protected string GenerateIncludesClause(IQueryCollection query)
     {
-        return query["includes"];
+        if (query.ContainsKey("include"))
+        {
+            return query["include"];
+        }
+
+        return string.Empty;
     }
 
     protected Expression<Func<T, bool>>? GenerateWhereClause(IQueryCollection query)
