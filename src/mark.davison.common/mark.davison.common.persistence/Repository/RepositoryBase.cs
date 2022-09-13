@@ -19,7 +19,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
-        return GetEntitiesAsync<T>(null, null, cancellationToken);
+        return GetEntitiesAsync<T>(null, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
 
     public Task<List<T>> GetEntitiesAsync<T>(
@@ -27,7 +27,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
-        return GetEntitiesAsync<T>(predicate, null, cancellationToken);
+        return GetEntitiesAsync<T>(predicate, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
 
     public Task<List<T>> GetEntitiesAsync<T>(
@@ -39,8 +39,25 @@ public abstract class RepositoryBase<TContext> : IRepository
     }
 
     public Task<List<T>> GetEntitiesAsync<T>(
+        string includes,
+        CancellationToken cancellationToken = default)
+        where T : BaseEntity
+    {
+        return GetEntitiesAsync<T>(null, includes, cancellationToken);
+    }
+
+    public Task<List<T>> GetEntitiesAsync<T>(
         Expression<Func<T, bool>>? predicate,
         Expression<Func<T, object>>[]? includes,
+        CancellationToken cancellationToken = default)
+        where T : BaseEntity
+    {
+        return GetEntitiesAsync<T, T>(predicate, includes, null, cancellationToken);
+    }
+
+    public Task<List<T>> GetEntitiesAsync<T>(
+        Expression<Func<T, bool>>? predicate,
+        string includes,
         CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
@@ -57,17 +74,35 @@ public abstract class RepositoryBase<TContext> : IRepository
         return await (await QueryUnitOfWorkAsync(predicate, includes, projection, cancellationToken)).ToListAsync(cancellationToken);
     }
 
+    public async Task<List<TProjection>> GetEntitiesAsync<TEntity, TProjection>(
+        Expression<Func<TEntity, bool>>? predicate,
+        string includes,
+        Expression<Func<TEntity, TProjection>>? projection,
+        CancellationToken cancellationToken = default)
+        where TEntity : BaseEntity
+    {
+        return await (await QueryUnitOfWorkAsync(predicate, includes, projection, cancellationToken)).ToListAsync(cancellationToken);
+    }
+
     public Task<T?> GetEntityAsync<T>(
         Guid id,
         CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
-        return GetEntityAsync<T>(id, null, cancellationToken);
+        return GetEntityAsync<T>(id, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
 
     public Task<T?> GetEntityAsync<T>(
         Guid id,
         Expression<Func<T, object>>[]? include,
+        CancellationToken cancellationToken = default)
+        where T : BaseEntity
+    {
+        return GetEntityAsync<T>(_ => _.Id == id, include, cancellationToken);
+    }
+    public Task<T?> GetEntityAsync<T>(
+        Guid id,
+        string include,
         CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
@@ -79,13 +114,18 @@ public abstract class RepositoryBase<TContext> : IRepository
         CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
-        return GetEntityAsync<T>(predicate, null, cancellationToken);
+        return GetEntityAsync<T>(predicate, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
 
     public async Task<T?> GetEntityAsync<T>(
         Expression<Func<T, bool>>? predicate,
         Expression<Func<T, object>>[]? include,
         CancellationToken cancellationToken = default)
+        where T : BaseEntity
+    {
+        return await (await QueryUnitOfWorkAsync(predicate, include, _ => _, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+    }
+    public async Task<T?> GetEntityAsync<T>(Expression<Func<T, bool>>? predicate, string include, CancellationToken cancellationToken = default)
         where T : BaseEntity
     {
         return await (await QueryUnitOfWorkAsync(predicate, include, _ => _, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
@@ -274,6 +314,49 @@ public abstract class RepositoryBase<TContext> : IRepository
         }
     }
 
+    private async Task<IQueryable<TProjection>> QueryUnitOfWorkAsync<TEntity, TProjection>(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        string includes = "",
+        Expression<Func<TEntity, TProjection>>? projection = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : BaseEntity
+    {
+        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        var set = context.Set<TEntity>();
+
+        var query = set.Where(_ => true).AsNoTracking();
+
+        query = AttachIncludes<TEntity>(query, includes.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+
+        try
+        {
+            IQueryable<TProjection> result;
+
+            if (projection != null)
+            {
+                result = query
+                    .Select(projection);
+            }
+            else
+            {
+                result = query
+                    .OfType<TProjection>();
+            }
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("QueryUnitOfWorkAsync<{0}> - {1}", nameof(TEntity), e);
+            throw;
+        }
+    }
+
     private async Task<TEntity?> DeleteUnitOfWorkAsync<TEntity>(
         TEntity item,
         CancellationToken cancellationToken = default)
@@ -282,7 +365,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         context.Set<TEntity>();
 
-        var existingItem = await GetEntityAsync<TEntity>(item.Id, null, cancellationToken)
+        var existingItem = await GetEntityAsync<TEntity>(item.Id, (Expression<Func<TEntity, object>>[]?)null, cancellationToken)
             .ConfigureAwait(false);
 
         if (existingItem != null)
@@ -343,6 +426,23 @@ public abstract class RepositoryBase<TContext> : IRepository
 
             var navigationPath = string.Join(".", parts);
             query = query.Include(navigationPath);
+        }
+
+        return query;
+    }
+    private static IQueryable<TEntity> AttachIncludes<TEntity>(
+        IQueryable<TEntity> query,
+        string[]? includes)
+        where TEntity : BaseEntity
+    {
+        if (includes == null)
+        {
+            return query;
+        }
+
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
         }
 
         return query;

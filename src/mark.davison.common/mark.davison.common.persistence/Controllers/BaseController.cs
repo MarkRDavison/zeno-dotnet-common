@@ -148,11 +148,9 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
         }
     }
 
-    protected Expression<Func<T, object>>[]? GenerateIncludesClause(IQueryCollection query)
+    protected string GenerateIncludesClause(IQueryCollection query)
     {
-        var includes = query["includes"].Select(x => x.ToString()).SelectMany(_ => _.Split('|'));
-
-        return null;
+        return query["includes"];
     }
 
     protected Expression<Func<T, bool>>? GenerateWhereClause(IQueryCollection query)
