@@ -232,4 +232,63 @@ public class HttpRepositoryTests
 
         Assert.IsNotNull(entity);
     }
+
+    [TestMethod]
+    public async Task DeleteEntityAsync_CreatesCorrectRequest()
+    {
+        var id = Guid.NewGuid();
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            Assert.AreEqual(
+                $"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}/{id}",
+                _.RequestUri!.ToString());
+            Assert.AreEqual(HttpMethod.Delete, _.Method);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        };
+
+        var response = await _httpRepository.DeleteEntityAsync<TestEntity>(id, HeaderParameters.None, CancellationToken.None);
+        Assert.IsTrue(response);
+    }
+
+    [TestMethod]
+    public async Task DeleteEntityAsync_WhereFail_ReturnsFalse()
+    {
+        var id = Guid.NewGuid();
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.BadRequest);
+        };
+
+        var response = await _httpRepository.DeleteEntityAsync<TestEntity>(id, HeaderParameters.None, CancellationToken.None);
+        Assert.IsFalse(response);
+    }
+
+    [TestMethod]
+    public async Task DeleteEntitiesAsync_CreatesCorrectRequests()
+    {
+        var ids = new List<Guid>
+        {
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid()
+        };
+
+        int requestCount = 0;
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            requestCount++;
+            Assert.IsTrue(_.RequestUri!.ToString().StartsWith($"{_remoteEndpoint.TrimEnd('/')}/api/{nameof(TestEntity).ToLower()}/"));
+            Assert.IsTrue(ids.Any(id => _.RequestUri!.ToString().EndsWith(id.ToString())));
+            Assert.AreEqual(HttpMethod.Delete, _.Method);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        };
+
+        var response = await _httpRepository.DeleteEntitiesAsync<TestEntity>(ids, HeaderParameters.None, CancellationToken.None);
+
+        Assert.IsTrue(response);
+        Assert.AreEqual(ids.Count, requestCount);
+    }
 }

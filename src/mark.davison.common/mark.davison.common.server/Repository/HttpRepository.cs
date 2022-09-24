@@ -1,6 +1,4 @@
-﻿using mark.davison.common.Repository;
-
-namespace mark.davison.common.server.Repository;
+﻿namespace mark.davison.common.server.Repository;
 
 public abstract class HttpRepository : IHttpRepository
 {
@@ -113,4 +111,28 @@ public abstract class HttpRepository : IHttpRepository
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         return JsonSerializer.Deserialize<T>(content, _options);
     }
+
+    public async Task<bool> DeleteEntityAsync<T>(Guid id, HeaderParameters header, CancellationToken cancellationToken) where T : BaseEntity
+    {
+        var entityRouteName = typeof(T).Name.ToLowerInvariant();
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = CreateUriFromRelative($"/api/{entityRouteName}/{id}")
+        };
+        header.CopyHeaders(request);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteEntitiesAsync<T>(List<Guid> entityIds, HeaderParameters header, CancellationToken cancellationToken) where T : BaseEntity
+    {
+        var tasks = entityIds.Select(_ => DeleteEntityAsync<T>(_, header, cancellationToken)).ToList();
+
+        var results = await Task.WhenAll(tasks);
+
+        return results.All(_ => _);
+    }
+
 }

@@ -6,4 +6,6 @@ public class Blog : BaseEntity
     public Guid AuthorId { get; set; }
     public virtual Author? Author { get; set; }
 
+    public virtual List<Post>? Posts { get; set; }
+
 }

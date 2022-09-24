@@ -5,3 +5,4 @@ global using mark.davison.common.server.abstractions.Identification;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.Extensions.Logging;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;

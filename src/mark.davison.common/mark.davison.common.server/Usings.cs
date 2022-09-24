@@ -1,5 +1,6 @@
 ﻿global using mark.davison.common.CQRS;
 global using mark.davison.common.Identification;
+global using mark.davison.common.Repository;
 global using mark.davison.common.server.abstractions;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.CQRS;
@@ -26,7 +27,6 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Net;
-global using System.Net.Http.Json;
 global using System.Reflection;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
