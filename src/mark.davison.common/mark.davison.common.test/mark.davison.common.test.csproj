@@ -7,6 +7,6 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common test utilities</Description>
-		<PackageVersion>1.4.5</PackageVersion>
+		<PackageVersion>1.5.1</PackageVersion>
 	</PropertyGroup>
 </Project>
