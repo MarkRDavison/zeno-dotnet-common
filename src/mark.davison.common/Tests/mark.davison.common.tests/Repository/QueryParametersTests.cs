@@ -1,8 +1,15 @@
-﻿namespace mark.davison.common.tests.Repository;
+﻿using System.Linq.Expressions;
+
+namespace mark.davison.common.tests.Repository;
 
 [TestClass]
 public class QueryParametersTests
 {
+    private class TestClass
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+    }
 
     [DataTestMethod]
     [DataRow("a|b", "a", "b")]
@@ -52,5 +59,17 @@ public class QueryParametersTests
         queryParams.Add(name2, value2);
 
         Assert.AreEqual($"?{name1}={value1}&{name2}={value2}", queryParams.CreateQueryString());
+    }
+
+    [TestMethod]
+    public void Where_SerializesExpressionCorrectly()
+    {
+        Expression<Func<TestClass, bool>> where = _ => _.Id.StartsWith("a") && _.Name.Contains("b");
+
+        var queryParams = new QueryParameters();
+        queryParams.Where(where);
+
+        Assert.IsTrue(queryParams.ContainsKey("where"));
+        Assert.IsFalse(string.IsNullOrEmpty(queryParams["where"]));
     }
 }

@@ -6,6 +6,7 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
     protected readonly IRepository _repository;
     protected readonly IServiceScopeFactory _serviceScopeFactory;
     protected readonly ICurrentUserContext _currentUserContext;
+    private static readonly JsonSerializerOptions _options = new JsonSerializerOptions().ConfigureRemoteLinq();
 
     public BaseController(
         ILogger logger,
@@ -22,7 +23,8 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var where = GenerateWhereClause(HttpContext.Request.Query);
+        var body = ExtractBody();
+        var where = GenerateWhereClause(HttpContext.Request.Query, body);
         var include = GenerateIncludesClause(HttpContext.Request.Query);
 
         using (_logger.ProfileOperation(context: $"GET api/{typeof(T).Name.ToLowerInvariant()}"))
@@ -158,7 +160,22 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
         return string.Empty;
     }
 
-    protected Expression<Func<T, bool>>? GenerateWhereClause(IQueryCollection query)
+    protected JsonObject? ExtractBody()
+    {
+        JsonObject? body = null;
+        if (HttpContext.Request.Body.Length > 0)
+        {
+            using var streamWriter = new StreamReader(HttpContext.Request.Body, System.Text.Encoding.UTF8);
+            body = JsonSerializer
+                .Deserialize<JsonObject>(streamWriter.BaseStream, _options);
+        }
+
+        return body;
+    }
+
+    protected Expression<Func<T, bool>>? GenerateWhereClause(
+        IQueryCollection query,
+        JsonObject? body)
     {
         // TODO: Only ands are supported - or is that the intention???
         IDictionary<Type, Func<StringValues, object>> typeCoersions = new Dictionary<Type, Func<StringValues, object>>
@@ -169,36 +186,48 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
             { typeof(string), _ => _.ToString() },
         };
 
-        var properties = typeof(T).GetProperties();
-
-        var tParam = Expression.Parameter(typeof(T));
-
-        List<BinaryExpression> lambdaParts = new();
-
-        foreach (var q in query)
+        if (body != null && body.ContainsKey("where"))
         {
-            var p = properties.FirstOrDefault(_ => string.Equals(_.Name, q.Key, StringComparison.OrdinalIgnoreCase));
-            if (p != null)
-            {
-                var argParam = Expression.Property(tParam, p.Name);
-                var valParam = Expression.Constant(typeCoersions[p.PropertyType](q.Value));
-                var eqParam = Expression.Equal(argParam, valParam);
-
-                lambdaParts.Add(eqParam);
-            }
+            var expressionText = body["where"]!.GetValue<string>();
+            var deserialized = JsonSerializer
+                .Deserialize<Remote.Linq.Expressions.Expression>(
+                    expressionText,
+                    _options);
+            return deserialized?.ToLinqExpression() as Expression<Func<T, bool>>;
         }
-
-
-        if (lambdaParts.Count > 0)
+        else
         {
-            Expression? where = lambdaParts[0];
-            for (int i = 1; i < lambdaParts.Count; i++)
+            var properties = typeof(T).GetProperties();
+
+            var tParam = Expression.Parameter(typeof(T));
+
+            List<BinaryExpression> lambdaParts = new();
+
+            foreach (var q in query)
             {
-                var rhs = lambdaParts[i + 0];
-                where = Expression.AndAlso(where, rhs);
+                var p = properties.FirstOrDefault(_ => string.Equals(_.Name, q.Key, StringComparison.OrdinalIgnoreCase));
+                if (p != null)
+                {
+                    var argParam = Expression.Property(tParam, p.Name);
+                    var valParam = Expression.Constant(typeCoersions[p.PropertyType](q.Value));
+                    var eqParam = Expression.Equal(argParam, valParam);
+
+                    lambdaParts.Add(eqParam);
+                }
             }
 
-            return Expression.Lambda<Func<T, bool>>(where, tParam);
+
+            if (lambdaParts.Count > 0)
+            {
+                Expression? where = lambdaParts[0];
+                for (int i = 1; i < lambdaParts.Count; i++)
+                {
+                    var rhs = lambdaParts[i + 0];
+                    where = Expression.AndAlso(where, rhs);
+                }
+
+                return Expression.Lambda<Func<T, bool>>(where, tParam);
+            }
         }
 
         return null;

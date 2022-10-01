@@ -1,6 +1,4 @@
-﻿using mark.davison.common.Repository;
-
-namespace mark.davison.common.server.abstractions.Repository;
+﻿namespace mark.davison.common.server.abstractions.Repository;
 
 public interface IHttpRepository
 {
