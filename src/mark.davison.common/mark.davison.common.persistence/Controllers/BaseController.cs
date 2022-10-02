@@ -163,12 +163,14 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
     protected JsonObject? ExtractBody()
     {
         JsonObject? body = null;
-        if (HttpContext.Request.Body.Length > 0)
+
+        try
         {
             using var streamWriter = new StreamReader(HttpContext.Request.Body, System.Text.Encoding.UTF8);
             body = JsonSerializer
                 .Deserialize<JsonObject>(streamWriter.BaseStream, _options);
         }
+        catch (Exception) { }
 
         return body;
     }
