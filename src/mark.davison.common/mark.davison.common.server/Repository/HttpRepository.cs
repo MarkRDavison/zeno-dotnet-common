@@ -44,6 +44,10 @@ public abstract class HttpRepository : IHttpRepository
             CreateUriFromRelative($"/api{path}{query.CreateQueryString()}"));
         header.CopyHeaders(request);
         var bodyContent = query.CreateBody();
+        if (!string.IsNullOrEmpty(bodyContent))
+        {
+            request.Content = new StringContent(bodyContent, Encoding.UTF8, WebUtilities.ContentType.Json);
+        }
         using var response = await _httpClient.SendAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
