@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
+    <ProjectReference Include="..\..\mark.davison.common.server.sample.api\mark.davison.common.server.sample.api.csproj" />
   </ItemGroup>
 
 </Project>

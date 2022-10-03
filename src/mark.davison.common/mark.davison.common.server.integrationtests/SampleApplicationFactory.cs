@@ -19,12 +19,25 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
     {
         var config = new AuthenticationConfig();
         config.SetBffBase("http://localhost/");
-        services.AddSingleton<ICurrentUserContext, CurrentUserContext>();
+        services.AddLogging();
         services.AddHttpClient("API");
         services.AddSingleton<IAuthenticationConfig>(config);
         services.AddSingleton<IClientHttpRepository>(_ => new SampleClientHttpRepository(
             _.GetRequiredService<IAuthenticationConfig>().BffBase,
             CreateClient()));
 
+        services.UseSampleApp(new()
+        {
+            API_ORIGIN = "http://localhost/"
+        }, CreateClient);
+
+        services.AddTransient<ITestDataSeeder, TestDataSeeder>(_ =>
+            new TestDataSeeder(
+                _.GetRequiredService<IRepository>(),
+                _.GetRequiredService<IOptions<AppSettings>>()
+            )
+            {
+                SeedData = SeedDataFunc
+            });
     }
 }

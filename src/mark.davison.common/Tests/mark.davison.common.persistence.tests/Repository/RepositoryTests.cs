@@ -66,29 +66,6 @@ public class RepositoryTests
         Assert.IsNotNull(await _repository.GetEntityAsync<Author>(author.Id));
     }
 
-    public static MemberExpression CreateNestedPropertyExpression(object root, params string[] propertyPath)
-    {
-        MemberExpression memberExpression = Expression.Property(Expression.Constant(root, root.GetType()), propertyPath[0]);
-
-        foreach (var member in propertyPath.Skip(1))
-        {
-            memberExpression = Expression.Property(memberExpression, member);
-        }
-
-        return memberExpression;
-    }
-
-    static LambdaExpression CreateExpression(Type type, IEnumerable<string> propertyName)
-    {
-        var param = Expression.Parameter(type, "x");
-        Expression body = param;
-        foreach (var member in propertyName)
-        {
-            body = Expression.PropertyOrField(body, member);
-        }
-        return Expression.Lambda(body, param);
-    }
-
     [TestMethod]
     public async Task GetEntity_WithInclude_Works()
     {

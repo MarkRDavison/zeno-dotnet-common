@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.persistence.tests.Context.Configuration;
+﻿namespace mark.davison.common.server.sample.api.Context.Configuration;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {

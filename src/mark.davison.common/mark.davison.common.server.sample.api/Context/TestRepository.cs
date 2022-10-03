@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.persistence.tests.Context;
+﻿namespace mark.davison.common.server.sample.api.Context;
 
 public class TestRepository : RepositoryBase<TestDbContext>
 {

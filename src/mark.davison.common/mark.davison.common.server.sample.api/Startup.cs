@@ -31,11 +31,12 @@ public class Startup
             .AddControllers();
 
         services
-            .ConfigureHealthCheckServices();
+            .ConfigureHealthCheckServices<InitializationHostedService>();
 
         services
             .AddHttpClient()
             .AddHttpContextAccessor();
+
 
         services.UseCQRS(typeof(Startup));
     }

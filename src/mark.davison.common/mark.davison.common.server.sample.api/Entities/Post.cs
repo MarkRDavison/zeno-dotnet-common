@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.persistence.tests.Entities;
+﻿namespace mark.davison.common.server.sample.api.Entities;
 
 public class Post : BaseEntity
 {

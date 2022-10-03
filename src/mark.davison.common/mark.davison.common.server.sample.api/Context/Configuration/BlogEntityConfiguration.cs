@@ -1,8 +1,8 @@
-﻿namespace mark.davison.common.persistence.tests.Context.Configuration;
+﻿namespace mark.davison.common.server.sample.api.Context.Configuration;
 
-public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
+public class BlogEntityConfiguration : IEntityTypeConfiguration<Blog>
 {
-    public void Configure(EntityTypeBuilder<Post> builder)
+    public void Configure(EntityTypeBuilder<Blog> builder)
     {
         builder
             .HasKey(e => e.Id);
@@ -18,12 +18,12 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .Property(_ => _.LastModified);
 
         builder
-            .Property(_ => _.Title)
+            .Property(_ => _.Name)
             .HasMaxLength(255);
 
         builder
-            .HasOne(_ => _.Blog)
+            .HasOne(_ => _.Author)
             .WithMany()
-            .HasForeignKey(_ => _.BlogId);
+            .HasForeignKey(_ => _.AuthorId);
     }
 }
