@@ -7,11 +7,7 @@ public static class SerializationHelpers
         {
             PropertyNameCaseInsensitive = true,
             Converters =
-                {
-                    new TimeOnlyConverter(),
-                    new NullableTimeOnlyConverter(),
-                    new DateOnlyConverter(),
-                    new NullableDateOnlyConverter()
-                }
+            {
+            }
         };
 }

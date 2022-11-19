@@ -1,5 +1,4 @@
-﻿global using mark.davison.common.Converters;
-global using mark.davison.common.CQRS;
+﻿global using mark.davison.common.CQRS;
 global using mark.davison.common.persistence.Controllers;
 global using mark.davison.common.persistence.Repository;
 global using mark.davison.common.server.abstractions;

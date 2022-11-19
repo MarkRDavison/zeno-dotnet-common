@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
         zenoAuthenticationSession.SetString(SessionNames.Verifier, verifier);
         zenoAuthenticationSession.SetString(SessionNames.Challenge, challenge);
         zenoAuthenticationSession.SetString(SessionNames.State, state);
-        zenoAuthenticationSession.SetString(SessionNames.RedirectUri, _httpContextAccessor.HttpContext.Request.Query[ZenoQueryNames.RedirectUri]);
+        zenoAuthenticationSession.SetString(SessionNames.RedirectUri, _httpContextAccessor.HttpContext.Request.Query[ZenoQueryNames.RedirectUri]!);
         zenoAuthenticationSession.Remove(SessionNames.AccessToken);
         zenoAuthenticationSession.Remove(SessionNames.RefreshToken);
         zenoAuthenticationSession.Remove(SessionNames.UserProfile);
@@ -72,8 +72,8 @@ public class AuthController : ControllerBase
         {
             var webErrorQueryParams = new Dictionary<string, string>
                 {
-                    { ZenoQueryNames.Error, error },
-                    { ZenoQueryNames.ErrorDescription, error_description }
+                    { ZenoQueryNames.Error, error! },
+                    { ZenoQueryNames.ErrorDescription, error_description! }
                 };
             return WebUtilities.RedirectPreserveMethod(WebUtilities.CreateQueryUri(_zenoAuthOptions.WebOrigin + ZenoRouteNames.WebErrorRoute, webErrorQueryParams).ToString());
         }
@@ -98,7 +98,7 @@ public class AuthController : ControllerBase
 
         var queryParams = new Dictionary<string, string> {
                 { OauthParamNames.CodeVerifier,     zenoAuthenticationSession.GetString(SessionNames.Verifier)! },
-                { OauthParamNames.Code,             code },
+                { OauthParamNames.Code,             code! },
                 { OauthParamNames.GrantType,        OauthParams.AuthorizationCodeGrantType },
                 { OauthParamNames.ClientId,         _zenoAuthOptions.ClientId },
                 { OauthParamNames.ClientSecret,     _zenoAuthOptions.ClientSecret },
