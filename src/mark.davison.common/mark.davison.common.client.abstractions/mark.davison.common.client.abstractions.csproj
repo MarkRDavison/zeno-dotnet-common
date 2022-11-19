@@ -7,7 +7,7 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common client abstractions</Description>
-		<PackageVersion>1.5.4</PackageVersion>
+		<PackageVersion>1.5.5</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />

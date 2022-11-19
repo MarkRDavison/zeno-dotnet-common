@@ -7,9 +7,9 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common test utilities</Description>
-		<PackageVersion>1.5.4</PackageVersion>
+		<PackageVersion>1.5.5</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
 	</ItemGroup>
 </Project>
