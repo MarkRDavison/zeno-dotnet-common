@@ -8,7 +8,7 @@ stages:
 
 build:
   stage: build
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:7.0
   script:
     - cd src/mark.davison.common
     - dotnet restore
@@ -24,7 +24,7 @@ build:
        
 package:
   stage: package
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:7.0
   rules:
     - if: $CI_COMMIT_TAG
       when: always

@@ -16,18 +16,7 @@ public static class SampleAppDependencyInjection
 
         services.AddSingleton<IHttpRepository>(_ =>
         {
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                PropertyNameCaseInsensitive = true,
-                Converters =
-                {
-                    new TimeOnlyConverter(),
-                    new NullableTimeOnlyConverter(),
-                    new DateOnlyConverter(),
-                    new NullableDateOnlyConverter()
-                }
-            };
+            var options = SerializationHelpers.CreateStandardSerializationOptions();
             if (client == null)
             {
                 return new SampleHttpRepository(appSettings.API_ORIGIN, options);
