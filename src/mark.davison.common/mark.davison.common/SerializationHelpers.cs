@@ -8,6 +8,7 @@ public static class SerializationHelpers
             PropertyNameCaseInsensitive = true,
             Converters =
             {
+                new JsonStringEnumConverter()
             }
         };
 }
