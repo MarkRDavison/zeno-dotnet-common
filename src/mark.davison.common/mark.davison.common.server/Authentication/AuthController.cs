@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet(ZenoRouteNames.LoginRoute)]
-    public async Task<IActionResult> Login(CancellationToken cancellationToken)
+    public virtual async Task<IActionResult> Login(CancellationToken cancellationToken)
     {
         using var mySHA256 = SHA256.Create();
         var verifier = WebEncoders.Base64UrlEncode(RandomNumberGenerator.GetBytes(32));
@@ -61,7 +61,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet(ZenoRouteNames.LoginCallbackRoute)]
-    public async Task<IActionResult> LoginCallback(CancellationToken cancellationToken)
+    public virtual async Task<IActionResult> LoginCallback(CancellationToken cancellationToken)
     {
         var error = _httpContextAccessor.HttpContext!.Request.Query[OauthQueryNames.Error];
         var error_description = _httpContextAccessor.HttpContext.Request.Query[OauthQueryNames.ErrorDescription];
@@ -169,7 +169,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet(ZenoRouteNames.LogoutRoute)]
-    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    public virtual async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
         var zenoAuthenticationSession = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IZenoAuthenticationSession>();
         var refreshToken = zenoAuthenticationSession.GetString(SessionNames.RefreshToken);
@@ -193,13 +193,13 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet(ZenoRouteNames.LogoutCallbackRoute)]
-    public IActionResult LogoutCallback(CancellationToken cancellationToken)
+    public virtual IActionResult LogoutCallback(CancellationToken cancellationToken)
     {
         return WebUtilities.RedirectPreserveMethod(_zenoAuthOptions.WebOrigin);
     }
 
     [HttpGet(ZenoRouteNames.UserRoute)]
-    public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
+    public virtual async Task<IActionResult> GetUser(CancellationToken cancellationToken)
     {
         var zenoAuthenticationSession = _httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<IZenoAuthenticationSession>();
         var userString = zenoAuthenticationSession.GetString(SessionNames.UserProfile);
