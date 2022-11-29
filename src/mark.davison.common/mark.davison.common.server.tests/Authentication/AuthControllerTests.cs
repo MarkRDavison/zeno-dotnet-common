@@ -582,6 +582,9 @@ public class AuthControllerTests
             .Returns(() => _zenoAuthenticationSession.Object);
 
         _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
             .Setup(_ => _.GetString(SessionNames.UserProfile))
             .Returns(userProfile);
         _zenoAuthenticationSession
@@ -620,6 +623,9 @@ public class AuthControllerTests
             .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
             .Returns(() => _zenoAuthenticationSession.Object);
 
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
         _zenoAuthenticationSession
             .Setup(_ => _.GetString(SessionNames.UserProfile))
             .Returns(JsonSerializer.Serialize(userProfile));
