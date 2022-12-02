@@ -18,7 +18,7 @@ public class IntegrationTestBase<TFactory, TSettings>
         _factory?.Dispose();
     }
 
-    protected virtual async Task SeedData(IRepository repository)
+    protected virtual async Task SeedData(IServiceProvider serviceProvider)
     {
         await Task.CompletedTask;
     }

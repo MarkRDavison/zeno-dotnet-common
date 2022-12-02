@@ -7,23 +7,23 @@ public interface ITestDataSeeder
 
 public class TestDataSeeder : ITestDataSeeder
 {
-    protected readonly IRepository _repository;
+    protected readonly IServiceProvider _serviceProvider;
     protected readonly AppSettings _appSettings;
 
     public TestDataSeeder(
-        IRepository repository,
+        IServiceProvider serviceProvider,
         IOptions<AppSettings> options
     )
     {
-        _repository = repository;
+        _serviceProvider = serviceProvider;
         _appSettings = options.Value;
     }
 
     public async Task EnsureDataSeeded(CancellationToken cancellationToken)
     {
-        await SeedData(_repository);
+        await SeedData(_serviceProvider);
     }
 
-    public Func<IRepository, Task> SeedData { get; set; } = _ => Task.CompletedTask;
+    public Func<IServiceProvider, Task> SeedData { get; set; } = _ => Task.CompletedTask;
 
 }

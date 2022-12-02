@@ -11,8 +11,9 @@ public class HttpRepositoryTests : IntegrationTestBase<SampleApplicationFactory,
         new Author { Id = Guid.NewGuid(), FirstName = "ba" },
     };
 
-    protected override async Task SeedData(IRepository repository)
+    protected override async Task SeedData(IServiceProvider serviceProvider)
     {
+        var repository = serviceProvider.GetRequiredService<IRepository>();
         await repository.UpsertEntitiesAsync(_authors);
     }
 

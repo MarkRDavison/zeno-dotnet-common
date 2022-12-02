@@ -2,7 +2,7 @@
 
 public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {
-    public Func<IRepository, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
+    public Func<IServiceProvider, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
     public IServiceProvider ServiceProvider => base.Services;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -33,7 +33,7 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
 
         services.AddTransient<ITestDataSeeder, TestDataSeeder>(_ =>
             new TestDataSeeder(
-                _.GetRequiredService<IRepository>(),
+                _.GetRequiredService<IServiceProvider>(),
                 _.GetRequiredService<IOptions<AppSettings>>()
             )
             {
