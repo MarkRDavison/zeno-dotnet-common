@@ -3,6 +3,7 @@ global using mark.davison.common.client.abstractions.Repository;
 global using mark.davison.common.client.Authentication;
 global using mark.davison.common.client.Repository;
 global using mark.davison.common.Repository;
+global using mark.davison.common.server.abstractions.Health;
 global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.common.server.sample.api;
 global using mark.davison.common.server.sample.api.Entities;

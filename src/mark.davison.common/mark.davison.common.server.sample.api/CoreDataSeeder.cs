@@ -1,21 +1,24 @@
 ﻿namespace mark.davison.common.server.sample.api;
 
-public interface ITestDataSeeder
+public interface ICoreDataSeeder
 {
     Task EnsureDataSeeded(CancellationToken cancellationToken);
 }
 
-public class TestDataSeeder : ITestDataSeeder
+public class CoreDataSeeder : ICoreDataSeeder
 {
     protected readonly IServiceProvider _serviceProvider;
+    protected readonly IApplicationHealthState _applicationHealthState;
     protected readonly AppSettings _appSettings;
 
-    public TestDataSeeder(
+    public CoreDataSeeder(
         IServiceProvider serviceProvider,
+        IApplicationHealthState applicationHealthState,
         IOptions<AppSettings> options
     )
     {
         _serviceProvider = serviceProvider;
+        _applicationHealthState = applicationHealthState;
         _appSettings = options.Value;
     }
 

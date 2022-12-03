@@ -31,9 +31,10 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
             API_ORIGIN = "http://localhost/"
         }, CreateClient);
 
-        services.AddTransient<ITestDataSeeder, TestDataSeeder>(_ =>
-            new TestDataSeeder(
+        services.AddTransient<ICoreDataSeeder, CoreDataSeeder>(_ =>
+            new CoreDataSeeder(
                 _.GetRequiredService<IServiceProvider>(),
+                _.GetRequiredService<IApplicationHealthState>(),
                 _.GetRequiredService<IOptions<AppSettings>>()
             )
             {

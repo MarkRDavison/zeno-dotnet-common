@@ -44,6 +44,7 @@ public class GenericApplicationHealthStateHostedService : IApplicationHealthStat
     protected virtual Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
         _applicationHealthState.Ready = true;
+        _applicationHealthState.ReadySource.SetResult();
         return Task.CompletedTask;
     }
 

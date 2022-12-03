@@ -18,6 +18,12 @@ public class IntegrationTestBase<TFactory, TSettings>
         _factory?.Dispose();
     }
 
+    private async Task SeedDataInternal(IServiceProvider serviceProvider)
+    {
+        var healthState = serviceProvider.GetRequiredService<IApplicationHealthState>();
+        await healthState.ReadySource.Task;
+        await SeedData(serviceProvider);
+    }
     protected virtual async Task SeedData(IServiceProvider serviceProvider)
     {
         await Task.CompletedTask;

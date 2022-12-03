@@ -2,23 +2,23 @@
 
 public class InitializationHostedService : GenericApplicationHealthStateHostedService
 {
-    private readonly ITestDataSeeder _dataSeeder;
+    private readonly ICoreDataSeeder _coreDataSeeder;
 
     public InitializationHostedService(
         IHostApplicationLifetime hostApplicationLifetime,
         IApplicationHealthState applicationHealthState,
-        ITestDataSeeder dataSeeder
+        ICoreDataSeeder coreDataSeeder
     ) : base(
         hostApplicationLifetime,
         applicationHealthState
     )
     {
-        _dataSeeder = dataSeeder;
+        _coreDataSeeder = coreDataSeeder;
     }
 
     protected override async Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
-        await _dataSeeder.EnsureDataSeeded(cancellationToken);
+        await _coreDataSeeder.EnsureDataSeeded(cancellationToken);
         await base.AdditionalStartAsync(cancellationToken);
     }
 
