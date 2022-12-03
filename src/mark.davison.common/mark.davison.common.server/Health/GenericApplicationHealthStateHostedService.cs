@@ -16,6 +16,7 @@ public class GenericApplicationHealthStateHostedService : IApplicationHealthStat
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        await Task.CompletedTask;
         _hostApplicationLifetime.ApplicationStarted.Register(() =>
         {
             _applicationHealthState.Started = true;
@@ -31,7 +32,7 @@ public class GenericApplicationHealthStateHostedService : IApplicationHealthStat
             _applicationHealthState.Ready = false;
         });
 
-        await AdditionalStartAsync(cancellationToken);
+        _ = AdditionalStartAsync(cancellationToken);
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
@@ -42,10 +43,7 @@ public class GenericApplicationHealthStateHostedService : IApplicationHealthStat
 
     protected virtual Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
-        _hostApplicationLifetime.ApplicationStarted.Register(() =>
-        {
-            _applicationHealthState.Ready = true;
-        });
+        _applicationHealthState.Ready = true;
         return Task.CompletedTask;
     }
 
