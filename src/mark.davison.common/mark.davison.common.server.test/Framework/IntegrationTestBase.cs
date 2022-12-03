@@ -1,5 +1,8 @@
-﻿namespace mark.davison.common.server.test.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+namespace mark.davison.common.server.test.Framework;
+
+[TestClass]
 public class IntegrationTestBase<TFactory, TSettings>
     where TFactory : ICommonWebApplicationFactory<TSettings>, IDisposable, new()
 {
@@ -8,7 +11,6 @@ public class IntegrationTestBase<TFactory, TSettings>
     public IntegrationTestBase()
     {
         _factory = new TFactory();
-        _factory.SeedDataFunc = SeedData;
         Client = _factory.CreateClient();
     }
 
@@ -16,6 +18,12 @@ public class IntegrationTestBase<TFactory, TSettings>
     {
         Client?.Dispose();
         _factory?.Dispose();
+    }
+
+    [TestInitialize]
+    public async Task TestInitialize()
+    {
+        await SeedDataInternal(Services.GetRequiredService<IServiceProvider>());
     }
 
     private async Task SeedDataInternal(IServiceProvider serviceProvider)

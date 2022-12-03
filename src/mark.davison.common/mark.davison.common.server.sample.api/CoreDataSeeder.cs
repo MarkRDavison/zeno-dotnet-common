@@ -24,9 +24,7 @@ public class CoreDataSeeder : ICoreDataSeeder
 
     public async Task EnsureDataSeeded(CancellationToken cancellationToken)
     {
-        await SeedData(_serviceProvider);
+        await Task.CompletedTask;
     }
-
-    public Func<IServiceProvider, Task> SeedData { get; set; } = _ => Task.CompletedTask;
 
 }

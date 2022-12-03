@@ -36,9 +36,6 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
                 _.GetRequiredService<IServiceProvider>(),
                 _.GetRequiredService<IApplicationHealthState>(),
                 _.GetRequiredService<IOptions<AppSettings>>()
-            )
-            {
-                SeedData = SeedDataFunc
-            });
+            ));
     }
 }
