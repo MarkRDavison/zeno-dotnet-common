@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace mark.davison.common.server.test.Framework;
+﻿namespace mark.davison.common.server.test.Framework;
 
 [TestClass]
 public class IntegrationTestBase<TFactory, TSettings>
@@ -23,8 +21,11 @@ public class IntegrationTestBase<TFactory, TSettings>
     [TestInitialize]
     public async Task TestInitialize()
     {
-        await SeedDataInternal(Services.GetRequiredService<IServiceProvider>());
+        var provider = Services.GetRequiredService<IServiceProvider>();
+        await OnTestInitialize(provider);
+        await SeedDataInternal(provider);
     }
+    protected virtual Task OnTestInitialize(IServiceProvider serviceProvider) => Task.CompletedTask;
 
     private async Task SeedDataInternal(IServiceProvider serviceProvider)
     {
