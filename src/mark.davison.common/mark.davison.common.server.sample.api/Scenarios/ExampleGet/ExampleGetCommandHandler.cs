@@ -6,7 +6,8 @@ public class ExampleGetCommandHandler : IQueryHandler<ExampleGetRequest, Example
     {
         return Task.FromResult(new ExampleGetResponse
         {
-            ResponseValue = query.RequestValue
+            ResponseValue = query.RequestValue,
+            DateOnlyValue = query.DateOnlyValue
         });
     }
 }

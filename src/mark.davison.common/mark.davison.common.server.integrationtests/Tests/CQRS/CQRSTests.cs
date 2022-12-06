@@ -10,7 +10,8 @@ public class CQRSTests : IntegrationTestBase<SampleApplicationFactory, AppSettin
         var repository = Services.GetRequiredService<IClientHttpRepository>();
         var request = new ExampleGetRequest
         {
-            RequestValue = "sihjbdsfuihjdfsiuhjdfs"
+            RequestValue = "sihjbdsfuihjdfsiuhjdfs",
+            DateOnlyValue = DateOnly.FromDateTime(DateTime.Now)
         };
 
         var response = await repository.Get<ExampleGetResponse, ExampleGetRequest>(request, CancellationToken.None);

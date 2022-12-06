@@ -94,6 +94,13 @@ public static class ProxyEndpointRouteBuilderExtensions
                     throw new InvalidOperationException("Invalid bool format");
                 }
             }
+            else if (property.PropertyType == typeof(DateOnly))
+            {
+                if (DateOnly.TryParse(queryProperty, out var dval))
+                {
+                    property.SetValue(request, dval);
+                }
+            }
             else
             {
                 throw new InvalidOperationException($"Unhandled get property type {property.PropertyType.Name}");

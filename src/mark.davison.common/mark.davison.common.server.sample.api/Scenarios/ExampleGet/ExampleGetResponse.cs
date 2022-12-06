@@ -3,4 +3,5 @@
 public class ExampleGetResponse
 {
     public string ResponseValue { get; set; } = string.Empty;
+    public DateOnly DateOnlyValue { get; set; }
 }
