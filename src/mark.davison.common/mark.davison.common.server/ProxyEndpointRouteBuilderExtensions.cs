@@ -100,6 +100,10 @@ public static class ProxyEndpointRouteBuilderExtensions
                 {
                     property.SetValue(request, dval);
                 }
+                else
+                {
+                    throw new InvalidOperationException("Invalid DateOnly format");
+                }
             }
             else
             {
