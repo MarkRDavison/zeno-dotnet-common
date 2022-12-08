@@ -30,7 +30,11 @@ public class IntegrationTestBase<TFactory, TSettings>
     private async Task SeedDataInternal(IServiceProvider serviceProvider)
     {
         var healthState = serviceProvider.GetRequiredService<IApplicationHealthState>();
-        await healthState.ReadySource.Task;
+        await Task.WhenAny(healthState.ReadySource.Task, Task.Delay(SeedDataTimeout));
+        if (!healthState.ReadySource.Task.IsCompletedSuccessfully)
+        {
+            throw new InvalidOperationException("Seed data timed out");
+        }
         await SeedData(serviceProvider);
     }
     protected virtual async Task SeedData(IServiceProvider serviceProvider)
@@ -89,4 +93,6 @@ public class IntegrationTestBase<TFactory, TSettings>
     protected HttpClient Client { get; }
 
     protected IServiceProvider Services => _factory.ServiceProvider;
+
+    protected TimeSpan SeedDataTimeout { get; } = TimeSpan.FromSeconds(10);
 }
