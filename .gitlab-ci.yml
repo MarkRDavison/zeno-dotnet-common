@@ -17,8 +17,9 @@ build:
   artifacts:
     when: always
     reports:
-      cobertura:
-       - ./**/coverage.cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: ./**/coverage.cobertura.xml
       junit: 
        - ./**/*test-result.xml
        
@@ -40,8 +41,8 @@ package:
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
     - dotnet nuget push "$PWD/nuget/**/*.nupkg" --source gitlab
     - git --version
-    - git remote set-url origin https://${GIT_CI_USERNAME}:${GIT_CI_PASSWORD}@gitlab.markdavison.kiwi/mark.davison/${CI_PROJECT_NAME}.git
-    - git config --global user.email 'ci@gitlab.markdavison.kiwi'
+    - git remote set-url origin https://${GIT_CI_USERNAME}:${GIT_CI_PASSWORD}@gitlab.com/markdavison0/${CI_PROJECT_NAME}.git
+    - git config --global user.email 'ci@gitlab.com'
     - git config --global user.name 'ci'
     - git add -A
     - git status
