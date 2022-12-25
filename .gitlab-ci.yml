@@ -41,11 +41,11 @@ package:
     - dotnet pack -c Release -o "$PWD/nuget" --include-symbols
     - dotnet nuget push "$PWD/nuget/**/*.nupkg" --source gitlab
     - git --version
-    - git remote set-url origin https://${GIT_CI_USERNAME}:${GIT_CI_PASSWORD}@gitlab.markdavison.kiwi/mark.davison/${CI_PROJECT_NAME}.git
+    - git remote add gitlab_origin https://${GIT_CI_USERNAME}:${GIT_CI_PASSWORD}@gitlab.markdavison.kiwi/mark.davison/${CI_PROJECT_NAME}.git
     - git config --global user.email 'ci@gitlab.markdavison.kiwi'
     - git config --global user.name 'ci'
     - git add -A
     - git status
     - git commit -m "Set project version to $CI_COMMIT_TAG [ci skip]"
-    - git push origin HEAD:main -o ci.skip
+    - git push gitlab_origin HEAD:main -o ci.skip
   needs: [ "build" ]
