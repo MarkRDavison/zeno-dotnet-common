@@ -47,5 +47,5 @@ package:
     - git add -A
     - git status
     - git commit -m "Set project version to $CI_COMMIT_TAG [ci skip]"
-    - git push gitlab_origin HEAD:main -o ci.skip
+    - git push "https://${GIT_CI_USERNAME}:${GIT_CI_PASSWORD}@${CI_REPOSITORY_URL#*@}" HEAD:main
   needs: [ "build" ]
