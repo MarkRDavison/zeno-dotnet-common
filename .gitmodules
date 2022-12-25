@@ -1,3 +1,0 @@
-[submodule "cicd"]
-	path = cicd
-	url = https://gitlab.markdavison.kiwi/zeno/cicd
