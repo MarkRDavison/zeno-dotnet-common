@@ -7,3 +7,12 @@ public interface IActionHandler<in TAction>
     Task Handle(TAction action, CancellationToken cancellation);
 
 }
+
+public interface IResponseActionHandler<in TActionRequest, TActionResponse>
+    where TActionRequest : class, IResponseAction<TActionRequest, TActionResponse>
+    where TActionResponse : class
+{
+
+    Task<TActionResponse> Handle(TActionRequest action, CancellationToken cancellation);
+
+}

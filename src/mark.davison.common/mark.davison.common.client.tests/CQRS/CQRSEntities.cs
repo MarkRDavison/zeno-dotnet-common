@@ -49,3 +49,21 @@ public class ExampleActionHandler : IActionHandler<ExampleAction>
         return Task.CompletedTask;
     }
 }
+
+public class ExampleResponseActionRequest : IResponseAction<ExampleResponseActionRequest, ExampleResponseActionResponse>
+{
+
+}
+
+public class ExampleResponseActionResponse
+{
+
+}
+
+public class ExampleActionResponseHandler : IResponseActionHandler<ExampleResponseActionRequest, ExampleResponseActionResponse>
+{
+    public Task<ExampleResponseActionResponse> Handle(ExampleResponseActionRequest query, CancellationToken cancellation)
+    {
+        return Task.FromResult(new ExampleResponseActionResponse());
+    }
+}

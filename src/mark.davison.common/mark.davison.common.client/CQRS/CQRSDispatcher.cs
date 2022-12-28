@@ -39,4 +39,13 @@ public class CQRSDispatcher : ICQRSDispatcher
     Task IActionDispatcher.Dispatch<TAction>(
         CancellationToken cancellation
     ) => _actionDispatcher.Dispatch<TAction>(cancellation);
+
+    Task<TActionResponse> IActionDispatcher.Dispatch<TActionRequest, TActionResponse>(
+        TActionRequest action,
+        CancellationToken cancellation
+    ) => _actionDispatcher.Dispatch<TActionRequest, TActionResponse>(action, cancellation);
+
+    Task<TActionResponse> IActionDispatcher.Dispatch<TActionRequest, TActionResponse>(
+        CancellationToken cancellation
+    ) => _actionDispatcher.Dispatch<TActionRequest, TActionResponse>(cancellation);
 }

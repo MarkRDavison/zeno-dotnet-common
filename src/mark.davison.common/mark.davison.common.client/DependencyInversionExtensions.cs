@@ -114,6 +114,22 @@ public static class DependencyInversionExtensions
                 InvokeAction(services, methodInfo, actionHandlerType, t);
             }
         }
+        {
+            var actionHandlerType = typeof(IResponseActionHandler<,>);
+            var assemblyTypes = types
+                .SelectMany(_ => _.Assembly.ExportedTypes)
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == actionHandlerType);
+                })
+                .ToList();
+
+            foreach (var t in assemblyTypes)
+            {
+                InvokeRequestResponse(services, methodInfo, actionHandlerType, t);
+            }
+        }
 
         return services;
     }
