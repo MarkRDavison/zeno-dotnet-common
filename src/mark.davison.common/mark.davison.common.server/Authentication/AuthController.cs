@@ -160,6 +160,8 @@ public class AuthController : ControllerBase
         var customActions = _serviceProvider.GetService<ICustomZenoAuthenticationActions>();
         if (customActions != null)
         {
+            // TODO:    Make OnUserAuthenticated return a User objectm which we then add to the session.
+            //          Currently everyone has to do it themselves
             await customActions.OnUserAuthenticated(userProfile, zenoAuthenticationSession, cancellationToken);
         }
 
