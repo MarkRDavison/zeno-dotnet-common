@@ -7,7 +7,7 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common components</Description>
-		<PackageVersion>2.0.16</PackageVersion>
+		<PackageVersion>2.0.17</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
