@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.integrationtests.Tests.CQRS;
+﻿using mark.davison.common.server.sample.api.Scenarios.ExamplePost;
+
+namespace mark.davison.common.server.integrationtests.Tests.CQRS;
 
 [TestClass]
 public class CQRSTests : IntegrationTestBase<SampleApplicationFactory, AppSettings>
@@ -18,5 +20,21 @@ public class CQRSTests : IntegrationTestBase<SampleApplicationFactory, AppSettin
 
         Assert.IsNotNull(response);
         Assert.AreEqual(request.RequestValue, response.ResponseValue);
+    }
+
+
+    [TestMethod]
+    public async Task ExamplePostQuery_WorksAsExpected()
+    {
+        var repository = Services.GetRequiredService<IClientHttpRepository>();
+        var request = new ExamplePostRequest
+        {
+            TestEnumValue = TestEnum.ValueThree
+        };
+
+        var response = await repository.Post<ExamplePostResponse, ExamplePostRequest>(request, CancellationToken.None);
+
+        Assert.IsNotNull(response);
+        Assert.AreEqual(request.TestEnumValue, response.TestEnumValue);
     }
 }
