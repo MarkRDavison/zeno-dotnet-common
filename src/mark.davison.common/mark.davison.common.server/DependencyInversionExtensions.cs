@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server;
+﻿using mark.davison.common.server.Cron;
+
+namespace mark.davison.common.server;
 
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
@@ -141,4 +143,17 @@ public static class DependencyInversionExtensions
             .AllowAnonymous();
     }
 
+    public static IServiceCollection AddCronJob<T>(this IServiceCollection services, Action<IScheduleConfig<T>> options) where T : CronJobService
+    {
+        var config = new ScheduleConfig<T>();
+        options.Invoke(config);
+        if (string.IsNullOrWhiteSpace(config.CronExpression))
+        {
+            throw new ArgumentNullException(nameof(ScheduleConfig<T>.CronExpression), @"Empty Cron Expression is not allowed.");
+        }
+
+        services.AddSingleton<IScheduleConfig<T>>(config);
+        services.AddHostedService<T>();
+        return services;
+    }
 }
