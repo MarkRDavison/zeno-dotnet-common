@@ -26,7 +26,7 @@ public abstract class ComponentWithState : ComponentBase, IComponentWithState, I
 
     public void SetState<TState>(TState state) where TState : class, IState, new() => StateStore.SetState(state);
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         ComponentSubscriptions.Remove(this);
     }
