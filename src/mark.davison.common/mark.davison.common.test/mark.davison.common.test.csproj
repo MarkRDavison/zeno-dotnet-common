@@ -10,6 +10,7 @@
 		<PackageVersion>2.0.19</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="JunitXml.TestLogger" Version="3.0.114" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
 	</ItemGroup>
 	<ItemGroup>
