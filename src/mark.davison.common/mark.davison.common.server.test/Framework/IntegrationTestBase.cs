@@ -84,6 +84,28 @@ public class IntegrationTestBase<TFactory, TSettings>
         return await ReadAsAsync<T>(response);
     }
 
+    protected async Task<T?> DeleteAsync<T>(string uri, bool requireSuccess = false)
+    {
+        HttpResponseMessage httpResponseMessage = await CallAsync(HttpMethod.Delete, uri, null);
+        if (requireSuccess)
+        {
+            httpResponseMessage.EnsureSuccessStatusCode();
+        }
+
+        return await ReadAsAsync<T?>(httpResponseMessage);
+    }
+
+    protected async Task<T?> UpsertAsync<T>(string uri, T content, bool requireSuccess = false)
+    {
+        HttpResponseMessage httpResponseMessage = await CallAsync(HttpMethod.Post, uri, content);
+        if (requireSuccess)
+        {
+            httpResponseMessage.EnsureSuccessStatusCode();
+        }
+
+        return await ReadAsAsync<T?>(httpResponseMessage);
+    }
+
     protected async Task<T> ReadAsAsync<T>(HttpResponseMessage response)
     {
         string res = await response.Content.ReadAsStringAsync();
