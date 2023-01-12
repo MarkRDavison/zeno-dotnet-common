@@ -72,7 +72,7 @@ public static class DependencyInversionExtensions
                 .Where(_ =>
                 {
                     var interfaces = _.GetInterfaces();
-                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandHandlerType);
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandHandlerType);
                 })
                 .ToList();
 
@@ -89,7 +89,7 @@ public static class DependencyInversionExtensions
                 .Where(_ =>
                 {
                     var interfaces = _.GetInterfaces();
-                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryHandlerType);
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryHandlerType);
                 })
                 .ToList();
 
@@ -105,7 +105,7 @@ public static class DependencyInversionExtensions
                 .Where(_ =>
                 {
                     var interfaces = _.GetInterfaces();
-                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == actionHandlerType);
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == actionHandlerType);
                 })
                 .ToList();
 
@@ -121,7 +121,7 @@ public static class DependencyInversionExtensions
                 .Where(_ =>
                 {
                     var interfaces = _.GetInterfaces();
-                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == actionHandlerType);
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == actionHandlerType);
                 })
                 .ToList();
 
