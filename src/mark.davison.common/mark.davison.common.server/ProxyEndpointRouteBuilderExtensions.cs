@@ -130,13 +130,17 @@ public static class ProxyEndpointRouteBuilderExtensions
         var postMethodInfo = thisType.GetMethod(nameof(ProxyEndpointRouteBuilderExtensions.PerformCommand), BindingFlags.NonPublic | BindingFlags.Static)!;
         var getMethodInfo = thisType.GetMethod(nameof(ProxyEndpointRouteBuilderExtensions.PerformQuery), BindingFlags.NonPublic | BindingFlags.Static)!;
 
-        foreach (var commandType in assemblyTypes)
+        foreach (var type in assemblyTypes)
         {
-            var getAttribute = commandType.CustomAttributes.FirstOrDefault(_ => _.AttributeType == typeof(GetRequestAttribute));
+            var getAttribute = type.CustomAttributes.FirstOrDefault(_ => _.AttributeType == typeof(GetRequestAttribute));
             if (getAttribute != null)
             {
                 var path = getAttribute.NamedArguments.First(_ => _.MemberName == nameof(GetRequestAttribute.Path));
-                var interfaceType = commandType.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryInterfaceType);
+                var interfaceType = type.GetInterfaces().FirstOrDefault(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryInterfaceType);
+                if (interfaceType == null)
+                {
+                    continue;
+                }
                 var genArgs = interfaceType.GetGenericArguments();
                 if (genArgs.Length != 2)
                 {
@@ -158,12 +162,16 @@ public static class ProxyEndpointRouteBuilderExtensions
                     });
             }
 
-            var postAttribute = commandType.CustomAttributes.FirstOrDefault(_ => _.AttributeType == typeof(PostRequestAttribute));
+            var postAttribute = type.CustomAttributes.FirstOrDefault(_ => _.AttributeType == typeof(PostRequestAttribute));
             if (postAttribute != null)
             {
                 var path = postAttribute.NamedArguments.First(_ => _.MemberName == nameof(PostRequestAttribute.Path));
 
-                var interfaceType = commandType.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandInterfaceType);
+                var interfaceType = type.GetInterfaces().FirstOrDefault(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandInterfaceType);
+                if (interfaceType == null)
+                {
+                    continue;
+                }
                 var genArgs = interfaceType.GetGenericArguments();
                 if (genArgs.Length != 2)
                 {
