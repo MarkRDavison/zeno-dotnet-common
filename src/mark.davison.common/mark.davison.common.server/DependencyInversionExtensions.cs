@@ -15,7 +15,13 @@ public static class DependencyInversionExtensions
 
     private static void InvokeRequestResponse(IServiceCollection services, MethodInfo methodInfo, Type genericType, Type type)
     {
-        var interfaceType = type.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == genericType);
+        var interfaces = type.GetInterfaces();
+        if (!interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == genericType))
+        {
+            return;
+        }
+
+        var interfaceType = interfaces.First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == genericType);
         var genArgs = interfaceType.GetGenericArguments();
         if (genArgs.Length != 2)
         {
@@ -45,7 +51,7 @@ public static class DependencyInversionExtensions
                 .Where(_ =>
                 {
                     var interfaces = _.GetInterfaces();
-                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandHandlerType);
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandHandlerType);
                 })
                 .ToList();
 
@@ -65,7 +71,7 @@ public static class DependencyInversionExtensions
                 .Where(_ =>
                 {
                     var interfaces = _.GetInterfaces();
-                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryHandlerType);
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryHandlerType);
                 })
                 .ToList();
 
