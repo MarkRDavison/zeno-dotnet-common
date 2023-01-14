@@ -31,7 +31,7 @@ public class ComponentSubscriptions : IComponentSubscriptions
     {
         if (_components.ContainsKey(stateType))
         {
-            foreach (var component in _components[stateType])
+            foreach (var component in _components[stateType].ToList())
             {
                 component.ReRender();
             }
