@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.sample.api;
+﻿using mark.davison.common.server.Endpoints;
+
+namespace mark.davison.common.server.sample.api;
 
 public class Startup
 {
@@ -54,6 +56,11 @@ public class Startup
                 .MapControllers();
             endpoints
                 .ConfigureCQRSEndpoints(typeof(Startup));
+
+            endpoints.UseGet<Comment>();
+            endpoints.UseGetById<Comment>();
+            endpoints.UsePost<Comment>();
+            endpoints.UseDelete<Comment>();
         });
     }
 

@@ -13,5 +13,6 @@ global using Microsoft.Extensions.Primitives;
 global using Remote.Linq;
 global using Remote.Linq.Text.Json;
 global using System.Linq.Expressions;
+global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Nodes;

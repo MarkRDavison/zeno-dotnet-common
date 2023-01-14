@@ -22,6 +22,7 @@
 		<PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.23.1" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
 		<ProjectReference Include="..\mark.davison.common.server.abstractions\mark.davison.common.server.abstractions.csproj" />
 	</ItemGroup>
 	<ItemGroup>

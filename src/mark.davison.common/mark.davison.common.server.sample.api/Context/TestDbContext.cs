@@ -11,4 +11,5 @@ public class TestDbContext : DbContext
     public DbSet<Blog> Blogs => Set<Blog>();
     public DbSet<Post> Posts => Set<Post>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<Comment> Comments => Set<Comment>();
 }

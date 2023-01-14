@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.test.Framework;
+﻿using mark.davison.common.Repository;
+
+namespace mark.davison.common.server.test.Framework;
 
 [TestClass]
 public class IntegrationTestBase<TFactory, TSettings>
@@ -51,12 +53,22 @@ public class IntegrationTestBase<TFactory, TSettings>
             Content = data == null ? null : new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json")
         };
 
+        if (data is QueryParameters qp)
+        {
+            message.Content = new StringContent(qp.CreateBody(), Encoding.UTF8, "application/json");
+        }
+
         return await Client.SendAsync(message);
     }
 
-    protected async Task<List<T>> GetMultipleAsync<T>(string uri, bool requireSuccess = false)
+    protected Task<List<T>> GetMultipleAsync<T>(string uri, bool requireSuccess = false)
     {
-        var response = await CallAsync(HttpMethod.Get, uri, null);
+        return GetMultipleAsync<T>(uri, null, requireSuccess);
+    }
+
+    protected async Task<List<T>> GetMultipleAsync<T>(string uri, QueryParameters? queryParams, bool requireSuccess = false)
+    {
+        var response = await CallAsync(HttpMethod.Get, uri, queryParams);
         if (requireSuccess)
         {
             response.EnsureSuccessStatusCode();
@@ -74,14 +86,21 @@ public class IntegrationTestBase<TFactory, TSettings>
         return await response.Content.ReadAsStringAsync();
     }
 
-    protected async Task<T> GetAsync<T>(string uri, bool requireSuccess = false)
+    protected async Task<T?> GetAsync<T>(string uri, bool requireSuccess = false)
     {
         var response = await CallAsync(HttpMethod.Get, uri, null);
         if (requireSuccess)
         {
             response.EnsureSuccessStatusCode();
         }
-        return await ReadAsAsync<T>(response);
+        try
+        {
+            return await ReadAsAsync<T>(response);
+        }
+        catch
+        {
+            return default(T);
+        }
     }
 
     protected async Task<T?> DeleteAsync<T>(string uri, bool requireSuccess = false)
@@ -93,6 +112,15 @@ public class IntegrationTestBase<TFactory, TSettings>
         }
 
         return await ReadAsAsync<T?>(httpResponseMessage);
+    }
+
+    protected async Task DeleteAsync(string uri, bool requireSuccess = false)
+    {
+        HttpResponseMessage httpResponseMessage = await CallAsync(HttpMethod.Delete, uri, null);
+        if (requireSuccess)
+        {
+            httpResponseMessage.EnsureSuccessStatusCode();
+        }
     }
 
     protected async Task<T?> UpsertAsync<T>(string uri, T content, bool requireSuccess = false)

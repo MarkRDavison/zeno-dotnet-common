@@ -2,6 +2,7 @@
 using Remote.Linq.Text.Json;
 using System.Linq.Expressions;
 using System.Text.Json.Nodes;
+using System.Web;
 
 namespace mark.davison.common.Repository;
 
@@ -16,7 +17,7 @@ public class QueryParameters : Dictionary<string, string>
         if (this.Any())
         {
             uri += "?";
-            uri += string.Join("&", this.Where(_ => !BodyParameters.Contains(_.Key)).Select((kv) => $"{kv.Key.ToLowerInvariant()}={kv.Value}"));
+            uri += string.Join("&", this.Where(_ => !BodyParameters.Contains(_.Key)).Select((kv) => $"{kv.Key.ToLowerInvariant()}={HttpUtility.UrlEncode(kv.Value)}"));
         }
         return uri;
     }
