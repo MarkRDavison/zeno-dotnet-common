@@ -83,6 +83,17 @@ public static class ProxyEndpointRouteBuilderExtensions
                     throw new InvalidOperationException("Invalid long format");
                 }
             }
+            else if (property.PropertyType == typeof(int))
+            {
+                if (int.TryParse(queryProperty, out var lnum))
+                {
+                    property.SetValue(request, lnum);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Invalid int format");
+                }
+            }
             else if (property.PropertyType == typeof(bool))
             {
                 if (bool.TryParse(queryProperty, out var bval))
