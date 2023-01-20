@@ -10,7 +10,8 @@ public class GetEndpointsTests : IntegrationTestBase<SampleApplicationFactory, A
         var persisted = await repository.UpsertEntitiesAsync(new List<Comment> {
             new Comment { Id = Guid.NewGuid(), Content = "Comment #1" },
             new Comment { Id = Guid.NewGuid(), Content = "Comment #2" },
-            new Comment { Id = Guid.NewGuid(), Content = "Comment #3" }
+            new Comment { Id = Guid.NewGuid(), Content = "Comment #3" },
+            new Comment { Id = Guid.NewGuid(), Content = "Comment #4", Date = DateOnly.FromDateTime(DateTime.Now) }
         });
 
         _existing.AddRange(persisted);
@@ -40,6 +41,19 @@ public class GetEndpointsTests : IntegrationTestBase<SampleApplicationFactory, A
         var query = new QueryParameters
         {
             { nameof(Comment.Content), _existing.First().Content }
+        };
+        var comments = await GetMultipleAsync<Comment>($"/api/comment{query.CreateQueryString()}");
+        Assert.IsNotNull(comments);
+        Assert.AreEqual(1, comments.Count);
+    }
+
+    [TestMethod]
+    public async Task GetAll_ReturnsCorrectly_WithQueryParamFilter_UsingDateOnly()
+    {
+        var dateString = DateOnly.FromDateTime(DateTime.Now).ToString();
+        var query = new QueryParameters
+        {
+            { nameof(Comment.Date), dateString }
         };
         var comments = await GetMultipleAsync<Comment>($"/api/comment{query.CreateQueryString()}");
         Assert.IsNotNull(comments);

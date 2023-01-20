@@ -34,6 +34,7 @@ public static class EndpointHelpers
             { typeof(long), _ => long.Parse(_.ToString()) },
             { typeof(int), _ => int.Parse(_.ToString()) },
             { typeof(string), _ => _.ToString() },
+            { typeof(DateOnly), _ => DateOnly.Parse(_) },
         };
 
         if (body != null && body.ContainsKey("where"))
