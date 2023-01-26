@@ -1,6 +1,4 @@
-﻿using mark.davison.common.server.Cron;
-
-namespace mark.davison.common.server;
+﻿namespace mark.davison.common.server;
 
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
@@ -161,5 +159,78 @@ public static class DependencyInversionExtensions
         services.AddSingleton<IScheduleConfig<T>>(config);
         services.AddHostedService<T>();
         return services;
+    }
+
+    public static void UseCQRSValidatorsAndProcessors(this IServiceCollection services, params Type[] types)
+    {
+        var assemblyTypes = types
+            .SelectMany(_ => _.Assembly.ExportedTypes)
+            .ToList();
+
+        var methodInfo = typeof(DependencyInversionExtensions)
+            .GetMethod(
+                nameof(DependencyInversionExtensions.AddSingleton),
+                BindingFlags.NonPublic | BindingFlags.Static)!;
+
+        {
+            var commandValidatorType = typeof(ICommandValidator<,>);
+            var validatorTypes = assemblyTypes
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandValidatorType);
+                })
+                .ToList();
+
+            foreach (var t in validatorTypes)
+            {
+                InvokeRequestResponse(services, methodInfo, commandValidatorType, t);
+            }
+        }
+        {
+            var queryValidatorType = typeof(IQueryValidator<,>);
+            var validatorTypes = assemblyTypes
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryValidatorType);
+                })
+                .ToList();
+
+            foreach (var t in validatorTypes)
+            {
+                InvokeRequestResponse(services, methodInfo, queryValidatorType, t);
+            }
+        }
+        {
+            var commandProcessorType = typeof(ICommandProcessor<,>);
+            var validatorTypes = assemblyTypes
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandProcessorType);
+                })
+                .ToList();
+
+            foreach (var t in validatorTypes)
+            {
+                InvokeRequestResponse(services, methodInfo, commandProcessorType, t);
+            }
+        }
+        {
+            var queryProcessorType = typeof(IQueryProcessor<,>);
+            var validatorTypes = assemblyTypes
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return !_.IsGenericType && interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == queryProcessorType);
+                })
+                .ToList();
+
+            foreach (var t in validatorTypes)
+            {
+                InvokeRequestResponse(services, methodInfo, queryProcessorType, t);
+            }
+        }
     }
 }

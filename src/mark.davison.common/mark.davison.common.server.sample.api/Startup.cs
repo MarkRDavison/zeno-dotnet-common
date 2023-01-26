@@ -41,6 +41,7 @@ public class Startup
 
 
         services.UseCQRS(typeof(Startup));
+        services.UseCQRSValidatorsAndProcessors(typeof(Startup));
     }
 
     public void Configure(IApplicationBuilder app)
