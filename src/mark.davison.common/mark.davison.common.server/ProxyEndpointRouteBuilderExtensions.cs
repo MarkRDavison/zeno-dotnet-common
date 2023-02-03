@@ -52,7 +52,7 @@ public static class ProxyEndpointRouteBuilderExtensions
 
         var request = new TRequest();
 
-        var queryDictionary = context.Request.Query.ToDictionary(_ => _.Key, _ => _.Value.ToString());
+        var queryDictionary = context.Request.Query.ToDictionary(_ => _.Key.ToLowerInvariant(), _ => _.Value.ToString());
         foreach (var property in requestProperties.Where(_ => queryDictionary.ContainsKey(_.Name.ToLowerInvariant())))
         {
             var queryProperty = queryDictionary[property.Name.ToLowerInvariant()];

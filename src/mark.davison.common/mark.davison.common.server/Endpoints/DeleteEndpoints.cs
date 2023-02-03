@@ -10,25 +10,30 @@ public static class DeleteEndpoints
             async ([FromRoute] Guid id, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken) =>
             {
                 using (logger.ProfileOperation(LogLevel.Trace, $"DELETE /api/{entityName}/{id}"))
-                {
-                    var repository = context.RequestServices.GetRequiredService<IRepository>();
-
-                    var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
-                    if (entity == null)
-                    {
-                        return Results.NotFound();
-                    }
-
-                    var deletedEntity = await repository.DeleteEntityAsync(entity, cancellationToken);
-
-                    if (deletedEntity == null)
-                    {
-                        return Results.UnprocessableEntity();
-                    }
-
-                    return Results.NoContent();
+                {                    
+                    return await DeleteEntity<T>(id, context, logger, cancellationToken);
                 }
             });
 
+    }
+    public static async Task<IResult> DeleteEntity<T>(Guid id, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
+        where T : BaseEntity
+    {
+        var repository = context.RequestServices.GetRequiredService<IRepository>();
+
+        var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
+        if (entity == null)
+        {
+            return Results.NotFound();
+        }
+
+        var deletedEntity = await repository.DeleteEntityAsync(entity, cancellationToken);
+
+        if (deletedEntity == null)
+        {
+            return Results.UnprocessableEntity();
+        }
+
+        return Results.NoContent();
     }
 }

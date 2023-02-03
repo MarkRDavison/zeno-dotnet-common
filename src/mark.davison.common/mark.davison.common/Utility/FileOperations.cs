@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.Utility;
 
+[ExcludeFromCodeCoverage]
 public class FileOperations : IFileOperations
 {
 

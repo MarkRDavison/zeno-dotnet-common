@@ -62,6 +62,11 @@ public class Startup
             endpoints.UseGetById<Comment>();
             endpoints.UsePost<Comment>();
             endpoints.UseDelete<Comment>();
+
+            endpoints.UseGet<Author>();
+            endpoints.UseGetById<Author>();
+            endpoints.UsePost<Author>();
+            endpoints.UseDelete<Author>();
         });
     }
 

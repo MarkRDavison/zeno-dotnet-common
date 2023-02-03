@@ -18,3 +18,5 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using System.Linq.Expressions;
+global using mark.davison.common.persistence.EntityDefaulter;
+global using mark.davison.common.server.abstractions.Identification;

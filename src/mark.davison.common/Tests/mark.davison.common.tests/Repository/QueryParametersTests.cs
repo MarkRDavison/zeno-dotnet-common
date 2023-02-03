@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq;
+using System.Linq.Expressions;
 
 namespace mark.davison.common.tests.Repository;
 
@@ -71,5 +72,33 @@ public class QueryParametersTests
 
         Assert.IsTrue(queryParams.ContainsKey("where"));
         Assert.IsFalse(string.IsNullOrEmpty(queryParams["where"]));
+    }
+
+    [TestMethod]
+    public void CreateBody_WhereNoBodyParameters_ReturnsEmpty()
+    {
+        var queryParams = new QueryParameters();
+
+        Assert.IsTrue(string.IsNullOrEmpty(queryParams.CreateBody()));
+    }
+
+    [TestMethod]
+    public void CreateBody_WhereBodyParameters_IncludesWhere_ReturnsNonEmpty()
+    {
+        var queryParams = new QueryParameters();
+
+        queryParams.Where<TestClass>(_ => _.Id == "a");
+
+        Assert.IsFalse(string.IsNullOrEmpty(queryParams.CreateBody()));
+    }
+
+    [TestMethod]
+    public void CreateBody_WhereBodyParameters_IncludesProject_ReturnsNonEmpty()
+    {
+        var queryParams = new QueryParameters();
+
+        queryParams["project"] = "to";
+
+        Assert.IsFalse(string.IsNullOrEmpty(queryParams.CreateBody()));
     }
 }

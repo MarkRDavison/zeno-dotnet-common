@@ -5,7 +5,7 @@ public class ExampleCommandRequest : ICommand<ExampleCommandRequest, ExampleComm
 
 }
 
-public class ExampleCommandResponse
+public class ExampleCommandResponse : Response
 {
 
 }
@@ -23,7 +23,7 @@ public class ExampleQueryRequest : IQuery<ExampleQueryRequest, ExampleQueryRespo
 
 }
 
-public class ExampleQueryResponse
+public class ExampleQueryResponse : Response
 {
 
 }

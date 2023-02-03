@@ -28,3 +28,5 @@ global using System.Net;
 global using System.Security.Claims;
 global using System.Text.Json;
 global using System.Web;
+global using mark.davison.common.server.CQRS.Processors;
+global using mark.davison.common.server.CQRS.Validators;

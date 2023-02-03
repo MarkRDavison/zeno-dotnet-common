@@ -2,6 +2,7 @@
 
 namespace mark.davison.common.server.Authentication;
 
+[ExcludeFromCodeCoverage]
 [AllowAnonymous]
 [ApiController]
 public class AuthController : ControllerBase

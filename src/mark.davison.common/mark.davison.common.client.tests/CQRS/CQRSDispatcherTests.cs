@@ -134,4 +134,44 @@ public class CQRSDispatcherTests
             Times.Once);
     }
 
+    [TestMethod]
+    public async Task DispatchResponseAction_InvokesCorrectDispatcher()
+    {
+        _actionDispatcher
+            .Setup(_ => _
+                .Dispatch<ExampleResponseActionRequest, ExampleResponseActionResponse>(
+                    It.IsAny<ExampleResponseActionRequest>(),
+                    It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(new ExampleResponseActionResponse()))
+            .Verifiable();
+
+        await _dispatcher.Dispatch<ExampleResponseActionRequest, ExampleResponseActionResponse>(new ExampleResponseActionRequest(), CancellationToken.None);
+
+        _actionDispatcher
+            .Verify(_ => _
+                .Dispatch<ExampleResponseActionRequest, ExampleResponseActionResponse>(
+                    It.IsAny<ExampleResponseActionRequest>(),
+                    It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public async Task DispatchResponseAction_InvokesCorrectDispatcher_ForConstructedAction()
+    {
+        _actionDispatcher
+            .Setup(_ => _
+                .Dispatch<ExampleResponseActionRequest, ExampleResponseActionResponse>(
+                    It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(new ExampleResponseActionResponse()))
+            .Verifiable();
+
+        await _dispatcher.Dispatch<ExampleResponseActionRequest, ExampleResponseActionResponse>(CancellationToken.None);
+
+        _actionDispatcher
+            .Verify(_ => _
+                .Dispatch<ExampleResponseActionRequest, ExampleResponseActionResponse>(
+                    It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
 }

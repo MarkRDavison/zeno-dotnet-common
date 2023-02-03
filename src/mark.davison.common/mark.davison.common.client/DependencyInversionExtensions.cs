@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.client;
 
+[ExcludeFromCodeCoverage] // Being source generated
 public static class DependencyInversionExtensions
 {
     private static void AddSingleton<TAbstraction, TImplementation>(IServiceCollection services)
