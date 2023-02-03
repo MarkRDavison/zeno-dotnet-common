@@ -40,6 +40,17 @@ public class GetEndpointsTests : IntegrationTestBase<SampleApplicationFactory, A
     }
 
     [TestMethod]
+    public async Task GetAll_ReturnsCorrectly_WithNullRemoteLinqFilter()
+    {
+        var query = new QueryParameters {
+            { "where", "null" }
+        };
+        var comments = await GetMultipleAsync<Comment>("/api/comment", query);
+        Assert.IsNotNull(comments);
+        Assert.IsTrue(comments.Count > 0);
+    }
+
+    [TestMethod]
     public async Task GetAll_ReturnsCorrectly_WithQueryParamFilter()
     {
         var query = new QueryParameters

@@ -25,7 +25,7 @@ public abstract class HttpRepository : IHttpRepository
         return await GetEntitiesAsync<T>(typeof(T).Name.ToLower(), query, header, cancellationToken);
     }
 
-    private Uri CreateUriFromRelative(string relativeUri)
+    public Uri CreateUriFromRelative(string relativeUri)
     {
         return string.IsNullOrEmpty(_remoteEndpoint)
                 ? new Uri(relativeUri, UriKind.Relative)
