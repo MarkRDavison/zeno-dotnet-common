@@ -36,7 +36,7 @@ public static class DependencyInversionExtensions
     }
 
     // TODO: SourceGenerator
-    public static IServiceCollection UseCQRS(this IServiceCollection services, params Type[] types)
+    public static IServiceCollection UseLegacyCQRS(this IServiceCollection services, params Type[] types)
     {
         services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
         services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
@@ -161,7 +161,7 @@ public static class DependencyInversionExtensions
         return services;
     }
 
-    public static void UseCQRSValidatorsAndProcessors(this IServiceCollection services, params Type[] types)
+    public static void UseLegacyCQRSValidatorsAndProcessors(this IServiceCollection services, params Type[] types)
     {
         var assemblyTypes = types
             .SelectMany(_ => _.Assembly.ExportedTypes)

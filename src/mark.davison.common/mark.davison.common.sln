@@ -46,6 +46,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.compone
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.persistence.tests", "Tests\mark.davison.common.persistence.tests\mark.davison.common.persistence.tests.csproj", "{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.source.generators", "mark.davison.common.source.generators\mark.davison.common.source.generators.csproj", "{C46C1155-6346-4046-9AAC-865F2DE0EEFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.server.sample.cqrs", "mark.davison.common.server.sample.cqrs\mark.davison.common.server.sample.cqrs.csproj", "{AF9AAC30-9907-4142-845F-E2DDB07D3FC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +120,14 @@ Global
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C46C1155-6346-4046-9AAC-865F2DE0EEFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C46C1155-6346-4046-9AAC-865F2DE0EEFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C46C1155-6346-4046-9AAC-865F2DE0EEFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C46C1155-6346-4046-9AAC-865F2DE0EEFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF9AAC30-9907-4142-845F-E2DDB07D3FC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF9AAC30-9907-4142-845F-E2DDB07D3FC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF9AAC30-9907-4142-845F-E2DDB07D3FC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF9AAC30-9907-4142-845F-E2DDB07D3FC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +140,7 @@ Global
 		{5E14099A-8831-4179-8BB4-DCFD653B1DF8} = {AB6060AB-1134-458E-86B8-65609A815A91}
 		{A0928912-EB94-4084-B820-8E1EC89D80DA} = {AB6060AB-1134-458E-86B8-65609A815A91}
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9} = {AB6060AB-1134-458E-86B8-65609A815A91}
+		{AF9AAC30-9907-4142-845F-E2DDB07D3FC0} = {AB6060AB-1134-458E-86B8-65609A815A91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3DD14FA-86D9-4C81-B641-8C5CB3A57E71}

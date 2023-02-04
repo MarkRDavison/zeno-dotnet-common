@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace mark.davison.common.server.integrationtests.Tests.Repository;
+﻿namespace mark.davison.common.server.integrationtests.Tests.Repository;
 
 [TestClass]
 public class HttpRepositoryTests : IntegrationTestBase<SampleApplicationFactory, AppSettings>

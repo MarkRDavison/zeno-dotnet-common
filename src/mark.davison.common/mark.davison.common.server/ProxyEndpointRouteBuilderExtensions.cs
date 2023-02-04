@@ -127,7 +127,7 @@ public static class ProxyEndpointRouteBuilderExtensions
     }
 
     // TODO: SourceGenerator
-    public static IEndpointRouteBuilder ConfigureCQRSEndpoints(this IEndpointRouteBuilder endpoints, params Type[] types)
+    public static IEndpointRouteBuilder ConfigureLegacyCQRSEndpoints(this IEndpointRouteBuilder endpoints, params Type[] types)
     {
         const string cqrsPath = "api";
         var commandInterfaceType = typeof(ICommand<,>);

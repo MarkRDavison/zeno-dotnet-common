@@ -8,7 +8,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
+    <ProjectReference Include="..\mark.davison.common.server.sample.cqrs\mark.davison.common.server.sample.cqrs.csproj" />
     <ProjectReference Include="..\mark.davison.common.server\mark.davison.common.server.csproj" />
+    <ProjectReference Include="..\mark.davison.common.source.generators\mark.davison.common.source.generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

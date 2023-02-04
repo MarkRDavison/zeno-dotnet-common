@@ -19,3 +19,6 @@ global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.Extensions.Options;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
+global using mark.davison.common.source.generators.CQRS;
+global using mark.davison.common.server.sample.cqrs;
+global using mark.davison.common.server.Configuration;

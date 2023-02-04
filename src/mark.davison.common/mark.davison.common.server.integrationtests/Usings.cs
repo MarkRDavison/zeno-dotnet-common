@@ -20,3 +20,4 @@ global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using System.Linq.Expressions;
 global using mark.davison.common.persistence.EntityDefaulter;
 global using mark.davison.common.server.abstractions.Identification;
+global using System.Text.Json;

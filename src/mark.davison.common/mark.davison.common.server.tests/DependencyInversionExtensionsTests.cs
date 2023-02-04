@@ -13,8 +13,8 @@ public class DependencyInversionExtensionsTests
     [TestMethod]
     public void UseCQRS_RegistersExpectedHandlers()
     {
-        _serviceCollection.UseCQRS(typeof(DependencyInversionExtensionsTests));
-        _serviceCollection.UseCQRSValidatorsAndProcessors(typeof(DependencyInversionExtensionsTests));
+        _serviceCollection.UseLegacyCQRS(typeof(DependencyInversionExtensionsTests));
+        _serviceCollection.UseLegacyCQRSValidatorsAndProcessors(typeof(DependencyInversionExtensionsTests));
 
         var provider = _serviceCollection.BuildServiceProvider();
         using var scope = provider.CreateScope();
