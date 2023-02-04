@@ -13,7 +13,7 @@ public class DependencyInversionExtensionsTests
     [TestMethod]
     public void UseCQRS_RegistersExpectedHandlers()
     {
-        _serviceCollection.UseCQRS(typeof(DependencyInversionExtensionsTests));
+        _serviceCollection.UseCQRSClient();
 
         var provider = _serviceCollection.BuildServiceProvider();
         using var scope = provider.CreateScope();
@@ -22,9 +22,5 @@ public class DependencyInversionExtensionsTests
         Assert.IsNotNull(scope.ServiceProvider.GetService<IQueryHandler<ExampleQueryRequest, ExampleQueryResponse>>());
         Assert.IsNotNull(scope.ServiceProvider.GetService<IActionHandler<ExampleAction>>());
         Assert.IsNotNull(scope.ServiceProvider.GetService<IResponseActionHandler<ExampleResponseActionRequest, ExampleResponseActionResponse>>());
-        Assert.IsNotNull(scope.ServiceProvider.GetService<ICommandHandler<ListStateCommandRequest<ListStateItem>, ListStateCommandResponse<ListStateItem>>>());
-        Assert.IsNotNull(scope.ServiceProvider.GetService<IQueryHandler<ListStateQueryRequest<ListStateItem>, ListStateQueryResponse<ListStateItem>>>());
-        Assert.IsNotNull(scope.ServiceProvider.GetService<IActionHandler<FetchListStateAction<ListStateItem>>>());
-        Assert.IsNotNull(scope.ServiceProvider.GetService<IResponseActionHandler<ListStateResponseActionRequest<ListStateItem>, ListStateResponseActionResponse<ListStateItem>>>());
     }
 }

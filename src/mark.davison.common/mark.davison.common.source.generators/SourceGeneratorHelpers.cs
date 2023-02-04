@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.source.generators;
 
+[ExcludeFromCodeCoverage]
 public static class SourceGeneratorHelpers
 {
     public static string GetNamespace(ITypeSymbol syntax)

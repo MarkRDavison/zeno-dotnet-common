@@ -2,7 +2,8 @@
 
 public class ExampleCommandRequest : ICommand<ExampleCommandRequest, ExampleCommandResponse>
 {
-
+    public string Name { get; set; } = string.Empty;
+    public int Value { get; set; }
 }
 
 public class ExampleCommandResponse : Response
@@ -20,7 +21,13 @@ public class ExampleCommandHandler : ICommandHandler<ExampleCommandRequest, Exam
 
 public class ExampleQueryRequest : IQuery<ExampleQueryRequest, ExampleQueryResponse>
 {
-
+    public string String { get; set; } = string.Empty;
+    public Guid Guid { get; set; }
+    public long Long { get; set; }
+    public int Int { get; set; }
+    public bool Bool { get; set; }
+    public DateOnly DateOnly { get; set; }
+    public object? Invalid { get; set; }
 }
 
 public class ExampleQueryResponse : Response

@@ -1,15 +1,14 @@
-﻿using mark.davison.common.server.Configuration;
-using mark.davison.common.server.Endpoints;
-
-namespace mark.davison.common.server.sample.api;
+﻿namespace mark.davison.common.server.sample.api;
 
 public class Startup
 {
+    public IConfiguration Configuration { get; }
+    public AppSettings AppSettings { get; set; } = null!;
+
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
     }
-
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -27,6 +26,13 @@ public class Startup
                     .AllowAnyHeader());
         });
 
+        services.AddTransient<ICoreDataSeeder, CoreDataSeeder>(_ =>
+            new CoreDataSeeder(
+                _.GetRequiredService<IServiceProvider>(),
+                _.GetRequiredService<IApplicationHealthState>(),
+                _.GetRequiredService<IOptions<AppSettings>>()
+            ));
+
         services
             .AddControllers();
 
@@ -37,9 +43,7 @@ public class Startup
             .AddHttpClient()
             .AddHttpContextAccessor();
 
-        services.UseCQRS();
-        services.UseLegacyCQRS(typeof(Startup));
-        services.UseLegacyCQRSValidatorsAndProcessors(typeof(Startup));
+        services.UseCQRSServer();
     }
 
     public void Configure(IApplicationBuilder app)
@@ -54,8 +58,6 @@ public class Startup
             endpoints
                 .MapControllers();
             endpoints
-                .ConfigureLegacyCQRSEndpoints(typeof(Startup));
-            endpoints
                 .ConfigureCQRSEndpoints();
 
             endpoints.UseGet<Comment>();
@@ -69,7 +71,4 @@ public class Startup
             endpoints.UseDelete<Author>();
         });
     }
-
-    public IConfiguration Configuration { get; }
-    public AppSettings AppSettings { get; set; } = null!;
 }

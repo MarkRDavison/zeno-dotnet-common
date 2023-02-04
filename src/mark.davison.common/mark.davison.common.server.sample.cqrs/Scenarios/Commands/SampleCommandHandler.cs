@@ -1,9 +1,14 @@
 ﻿namespace mark.davison.common.server.sample.cqrs.Scenarios.Commands;
 
-public class SampleCommandHandler : ICommandHandler<SampleCommandRequest, SampleCommandResponse>
+public class SampleCommandHandler : ValidateAndProcessCommandHandler<SampleCommandRequest, SampleCommandResponse>
 {
-    public Task<SampleCommandResponse> Handle(SampleCommandRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public SampleCommandHandler(
+        ICommandProcessor<SampleCommandRequest, SampleCommandResponse> processor, 
+        ICommandValidator<SampleCommandRequest, SampleCommandResponse> validator
+    ) : base(
+        processor, 
+        validator
+    )
     {
-        throw new NotImplementedException();
     }
 }

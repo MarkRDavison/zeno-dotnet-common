@@ -33,7 +33,7 @@ public static class WebUtilities
                 return string.Empty;
             }
 
-            var bodyStream = new StreamReader(request.Body);
+            using var bodyStream = new StreamReader(request.Body);
 
             return await bodyStream.ReadToEndAsync();
         }
@@ -48,11 +48,14 @@ public static class WebUtilities
         where TResponse : class, new()
     {
         var bodyText = await GetRequestBody(httpRequest);
+
         if (string.IsNullOrEmpty(bodyText))
         {
             return new TRequest();
         }
+
         var request = JsonSerializer.Deserialize<TRequest>(bodyText, SerializationHelpers.CreateStandardSerializationOptions());
+        
         if (request == null)
         {
             return new TRequest();
@@ -62,8 +65,8 @@ public static class WebUtilities
     }
 
     public static TRequest GetRequestFromQuery<TRequest, TResponse>(HttpRequest httpRequest)
-                where TRequest : class, IQuery<TRequest, TResponse>, new()
-                where TResponse : class, new()
+        where TRequest : class, IQuery<TRequest, TResponse>, new()
+        where TResponse : class, new()
     {
 
         var requestProperties = typeof(TRequest)

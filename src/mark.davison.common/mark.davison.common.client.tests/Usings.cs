@@ -15,3 +15,5 @@ global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;
 global using System.Net;
 global using System.Text.Json;
+global using mark.davison.common.source.generators.CQRS;
+global using mark.davison.common.client.tests.cqrs;

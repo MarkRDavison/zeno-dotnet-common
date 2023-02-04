@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
     <ProjectReference Include="..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
     <ProjectReference Include="..\mark.davison.common.server.sample.cqrs\mark.davison.common.server.sample.cqrs.csproj" />
     <ProjectReference Include="..\mark.davison.common.server\mark.davison.common.server.csproj" />

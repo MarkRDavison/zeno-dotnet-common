@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\mark.davison.common.client.tests.cqrs\mark.davison.common.client.tests.cqrs.csproj" />
     <ProjectReference Include="..\mark.davison.common.client\mark.davison.common.client.csproj" />
+    <ProjectReference Include="..\mark.davison.common.source.generators\mark.davison.common.source.generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\mark.davison.common.test\mark.davison.common.test.csproj" />
   </ItemGroup>
 

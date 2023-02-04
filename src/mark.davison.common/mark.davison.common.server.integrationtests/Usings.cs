@@ -7,7 +7,6 @@ global using mark.davison.common.server.abstractions.Health;
 global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.common.server.sample.api;
 global using mark.davison.common.server.sample.api.Entities;
-global using mark.davison.common.server.sample.api.Scenarios.ExampleGet;
 global using mark.davison.common.server.sample.api.Setup;
 global using mark.davison.common.server.test.Framework;
 global using Microsoft.AspNetCore.Hosting;

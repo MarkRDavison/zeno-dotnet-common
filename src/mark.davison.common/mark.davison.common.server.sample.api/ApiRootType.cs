@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.common.server.sample.api;
 
-[UseCQRS(typeof(SampleRootType))]
+[UseCQRSServer(typeof(SampleRootType))]
 public class ApiRootType
 {
 }

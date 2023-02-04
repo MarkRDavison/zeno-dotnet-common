@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.server.sample.api.Scenarios.ExampleGet;
+﻿namespace mark.davison.common.server.sample.cqrs.Scenarios.Queries;
 
 public class ExampleGetCommandHandler : IQueryHandler<ExampleGetRequest, ExampleGetResponse>
 {

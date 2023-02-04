@@ -1,4 +1,5 @@
-﻿using mark.davison.common.server.sample.api.Scenarios.ExamplePost;
+﻿using mark.davison.common.server.sample.cqrs.Models.Commands;
+using mark.davison.common.server.sample.cqrs.Models.Queries;
 
 namespace mark.davison.common.server.integrationtests.Tests.CQRS;
 

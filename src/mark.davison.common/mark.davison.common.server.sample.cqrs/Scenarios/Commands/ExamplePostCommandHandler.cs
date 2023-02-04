@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.server.sample.api.Scenarios.ExamplePost;
+﻿namespace mark.davison.common.server.sample.cqrs.Scenarios.Commands;
 
 public class ExamplePostCommandHandler : ICommandHandler<ExamplePostRequest, ExamplePostResponse>
 {
