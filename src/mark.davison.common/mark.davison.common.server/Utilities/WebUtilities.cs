@@ -17,9 +17,9 @@ public static class WebUtilities
         return url.Uri;
     }
 
-    public static RedirectResult RedirectPreserveMethod(string uri)
+    public static RedirectHttpResult RedirectPreserveMethod(string uri)
     {
-        return new RedirectResult(uri, false, true);
+        return (RedirectHttpResult)Results.Redirect(uri, false, true);
     }
 
     public static string CreateBearerHeaderValue(string token) => "Bearer " + token;

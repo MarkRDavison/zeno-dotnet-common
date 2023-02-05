@@ -41,7 +41,7 @@ public class StandardZenoAuthenticationActions : ICustomZenoAuthenticationAction
             cancellationToken);
     }
 
-    public async Task OnUserAuthenticated(UserProfile userProfile, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
+    public async Task<User?> OnUserAuthenticated(UserProfile userProfile, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
     {
         var token = zenoAuthenticationSession.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken);
         var user = await GetUser(userProfile.sub, cancellationToken);
@@ -49,15 +49,13 @@ public class StandardZenoAuthenticationActions : ICustomZenoAuthenticationAction
         if (user == null && !string.IsNullOrEmpty(token))
         {
             user = await UpsertUser(userProfile, token, cancellationToken);
+
             if (user == null)
             {
                 throw new InvalidOperationException("UpsertUser did not succeed");
             }
         }
 
-        if (user != null)
-        {
-            zenoAuthenticationSession.SetString(ZenoAuthenticationConstants.SessionNames.User, JsonSerializer.Serialize(user));
-        }
+        return user;
     }
 }

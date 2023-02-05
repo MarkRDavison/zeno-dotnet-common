@@ -32,30 +32,6 @@ public class StandardZenoAuthenticationActionsTests
     }
 
     [TestMethod]
-    public async Task OnUserAuthenticated_WhereUserExists_SetsUserInSesssion()
-    {
-        _authSession
-            .Setup(_ => _.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken))
-            .Returns("TOKEN");
-        _user = new();
-
-        _authSession
-            .Setup(_ => _.SetString(
-                ZenoAuthenticationConstants.SessionNames.User,
-                It.IsAny<string>()))
-            .Verifiable();
-
-        await _actions.OnUserAuthenticated(new(), _authSession.Object, CancellationToken.None);
-
-        _authSession
-            .Verify(_ =>
-                _.SetString(
-                    ZenoAuthenticationConstants.SessionNames.User,
-                    It.IsAny<string>()),
-                Times.Once);
-    }
-
-    [TestMethod]
     public async Task OnUserAuthenticated_WhereUserAndTokenDoNotExists_DoesNotSetUserInSession()
     {
         _authSession

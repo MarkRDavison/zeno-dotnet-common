@@ -1,11 +1,12 @@
-﻿using static mark.davison.common.server.abstractions.Authentication.ZenoAuthenticationConstants;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using static mark.davison.common.server.abstractions.Authentication.ZenoAuthenticationConstants;
 
 namespace mark.davison.common.server.tests.Authentication;
 
 [TestClass]
-public class AuthControllerTests
+public class AuthenticationEndpointsTests
 {
-    private readonly Mock<ILogger<AuthController>> _logger;
+    private readonly Mock<ILogger<ZenoAuthOptions>> _logger;
     private readonly Mock<IHttpClientFactory> _httpClientFactory;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     private readonly Mock<IServiceProvider> _serviceProvider;
@@ -17,9 +18,7 @@ public class AuthControllerTests
     private readonly HttpContext _httpContext;
     private readonly MockHttpMessageHandler _httpMessageHandler;
 
-    private readonly AuthController _authController;
-
-    public AuthControllerTests()
+    public AuthenticationEndpointsTests()
     {
         _logger = new();
         _httpClientFactory = new(MockBehavior.Strict);
@@ -46,8 +45,6 @@ public class AuthControllerTests
         };
         _httpMessageHandler = new();
         _httpContextAccessor.Setup(_ => _.HttpContext).Returns(_httpContext);
-
-        _authController = new(_logger.Object, _httpClientFactory.Object, _httpContextAccessor.Object, _serviceProvider.Object, _zenoAuthOptions);
     }
 
     [TestMethod]
@@ -90,7 +87,7 @@ public class AuthControllerTests
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        await _authController.Login(CancellationToken.None);
+        await AuthenticationEndpoints.Login(_httpContext, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
         _zenoAuthenticationSession.VerifyAll();
     }
@@ -98,6 +95,11 @@ public class AuthControllerTests
     [TestMethod]
     public async Task Login_RedirectsToAuthorizationEndpoint()
     {
+        var context = new DefaultHttpContext
+        {
+            RequestServices = _requestServicesServiceProvider.Object
+        };
+
         _requestServicesServiceProvider
             .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
             .Returns(() => _zenoAuthenticationSession.Object);
@@ -126,7 +128,7 @@ public class AuthControllerTests
             .Setup(_ => _.CommitSessionAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var result = await _authController.Login(CancellationToken.None) as RedirectResult;
+        var result = await AuthenticationEndpoints.Login(_httpContext, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
         Assert.IsNotNull(result);
 
@@ -154,7 +156,7 @@ public class AuthControllerTests
             { OauthQueryNames.ErrorDescription, errorDescription }
         });
 
-        var result = await _authController.LoginCallback(CancellationToken.None) as RedirectResult;
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None) as RedirectHttpResult;
 
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Url.Contains(_zenoAuthOptions.WebOrigin));
@@ -181,7 +183,7 @@ public class AuthControllerTests
             .Returns("some-different-random-string")
             .Verifiable();
 
-        var result = await _authController.LoginCallback(CancellationToken.None) as RedirectResult;
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None) as RedirectHttpResult;
 
         _zenoAuthenticationSession
             .Verify(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()),
@@ -234,9 +236,100 @@ public class AuthControllerTests
             };
         };
 
-        var response = await _authController.LoginCallback(CancellationToken.None) as BadRequestObjectResult;
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
-        Assert.IsNotNull(response);
+        Assert.IsNotNull(result);
+    }
+
+    [TestMethod]
+    public async Task LoginCallback_WhereAuthTokensRequestFails_ReturnsBadRequest()
+    {
+        var state = "state-string";
+        var redirect = "/";
+        _httpContext.Request.Query = new QueryCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues> {
+            { OauthQueryNames.State, state }
+        });
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.State))
+            .Returns(state);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RedirectUri))
+            .Returns(redirect);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.Verifier))
+            .Returns("verifier");
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
+        };
+
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequest));
+    }
+
+    [TestMethod]
+    public async Task LoginCallback_WhereUserInfoRequestFails_ReturnsBadRequest()
+    {
+        var state = "state-string";
+        var redirect = "/";
+        _httpContext.Request.Query = new QueryCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues> {
+            { OauthQueryNames.State, state }
+        });
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.State))
+            .Returns(state);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RedirectUri))
+            .Returns(redirect);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.Verifier))
+            .Returns("verifier");
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            if (_.RequestUri!.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonSerializer.Serialize(new AuthTokens
+                    {
+                        access_token = "access_token",
+                        refresh_token = "refresh_token"
+                    }))
+                };
+            }
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
+        };
+
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequest));
     }
 
     [TestMethod]
@@ -290,9 +383,10 @@ public class AuthControllerTests
             }
         };
 
-        var response = await _authController.LoginCallback(CancellationToken.None) as BadRequestObjectResult;
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
-        Assert.IsNotNull(response);
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequest));
     }
 
     [TestMethod]
@@ -307,9 +401,12 @@ public class AuthControllerTests
         _requestServicesServiceProvider
             .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
             .Returns(() => _zenoAuthenticationSession.Object);
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(ICustomZenoAuthenticationActions)))
+            .Returns(() => _customZenoAuthenticationActions.Object);
         _serviceProvider
             .Setup(_ => _.GetService(typeof(ICustomZenoAuthenticationActions)))
-            .Returns(() => null);
+            .Returns(() => _customZenoAuthenticationActions.Object);
 
         _zenoAuthenticationSession
             .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
@@ -349,6 +446,8 @@ public class AuthControllerTests
         _zenoAuthenticationSession
             .Setup(_ => _.SetString(SessionNames.UserProfile, It.IsAny<string>()))
             .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.User, It.IsAny<string>()));
 
         _httpClientFactory
             .Setup(_ => _.CreateClient(AuthClientName))
@@ -379,12 +478,121 @@ public class AuthControllerTests
             }
         };
 
-        var response = await _authController.LoginCallback(CancellationToken.None) as RedirectResult;
+        _customZenoAuthenticationActions
+            .Setup(_ => _.OnUserAuthenticated(
+                It.IsAny<UserProfile>(),
+                It.IsAny<IZenoAuthenticationSession>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new User());
 
-        Assert.IsNotNull(response);
-        Assert.AreEqual(_zenoAuthOptions.WebOrigin + redirect, response.Url);
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None) as RedirectHttpResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(_zenoAuthOptions.WebOrigin + redirect, result.Url);
 
         _zenoAuthenticationSession.VerifyAll();
+    }
+
+    [TestMethod]
+    public async Task LoginCallback_WhereCustomActionsReturnsNullUser_ReturnsBadRequest()
+    {
+        var state = "state-string";
+        var redirect = "/";
+        _httpContext.Request.Query = new QueryCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues> {
+            { OauthQueryNames.State, state }
+        });
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(ICustomZenoAuthenticationActions)))
+            .Returns(() => _customZenoAuthenticationActions.Object);
+        _serviceProvider
+            .Setup(_ => _.GetService(typeof(ICustomZenoAuthenticationActions)))
+            .Returns(() => _customZenoAuthenticationActions.Object);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.CommitSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.State))
+            .Returns(state);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RedirectUri))
+            .Returns(redirect);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.Verifier))
+            .Returns("verifier");
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.Remove(SessionNames.Verifier))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.Remove(SessionNames.Challenge))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.Remove(SessionNames.State))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.Remove(SessionNames.RedirectUri))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.AccessToken, It.IsAny<string>()))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.RefreshToken, It.IsAny<string>()))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.UserProfile, It.IsAny<string>()))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.User, It.IsAny<string>()));
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            if (_.RequestUri!.ToString().StartsWith(_zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonSerializer.Serialize(new AuthTokens
+                    {
+                        access_token = "access_token",
+                        refresh_token = "refresh_token"
+                    }))
+                };
+            }
+            else
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonSerializer.Serialize(new UserProfile
+                    {
+                        sub = Guid.NewGuid()
+                    }))
+                };
+            }
+        };
+
+        _customZenoAuthenticationActions
+            .Setup(_ => _.OnUserAuthenticated(
+                It.IsAny<UserProfile>(),
+                It.IsAny<IZenoAuthenticationSession>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User?)null);
+
+        var result = await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequest));
     }
 
     [TestMethod]
@@ -399,6 +607,9 @@ public class AuthControllerTests
         _requestServicesServiceProvider
             .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
             .Returns(() => _zenoAuthenticationSession.Object);
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(ICustomZenoAuthenticationActions)))
+            .Returns(() => _customZenoAuthenticationActions.Object);
         _serviceProvider
             .Setup(_ => _.GetService(typeof(ICustomZenoAuthenticationActions)))
             .Returns(() => _customZenoAuthenticationActions.Object);
@@ -433,10 +644,12 @@ public class AuthControllerTests
             .Setup(_ => _.SetString(SessionNames.RefreshToken, It.IsAny<string>()));
         _zenoAuthenticationSession
             .Setup(_ => _.SetString(SessionNames.UserProfile, It.IsAny<string>()));
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.User, It.IsAny<string>()));
 
         _customZenoAuthenticationActions
             .Setup(_ => _.OnUserAuthenticated(It.IsAny<UserProfile>(), _zenoAuthenticationSession.Object, It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask)
+            .Returns(Task.FromResult<User?>(new User()))
             .Verifiable();
 
         _httpClientFactory
@@ -468,7 +681,7 @@ public class AuthControllerTests
             }
         };
 
-        await _authController.LoginCallback(CancellationToken.None);
+        await AuthenticationEndpoints.LoginCallback(_httpContext, _logger.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
         _customZenoAuthenticationActions
             .Verify(_ => _.OnUserAuthenticated(It.IsAny<UserProfile>(), _zenoAuthenticationSession.Object, It.IsAny<CancellationToken>()),
@@ -492,7 +705,7 @@ public class AuthControllerTests
             .Setup(_ => _.GetString(SessionNames.RefreshToken))
             .Returns(refreshToken);
 
-        var result = await _authController.Logout(CancellationToken.None) as RedirectResult;
+        var result = await AuthenticationEndpoints.Logout(_httpContext, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None) as RedirectHttpResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(_zenoAuthOptions.WebOrigin, result.Url);
@@ -520,7 +733,7 @@ public class AuthControllerTests
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        await _authController.Logout(CancellationToken.None);
+        var result = await AuthenticationEndpoints.Logout(_httpContext, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None) as RedirectHttpResult;
 
         _zenoAuthenticationSession
             .Verify(_ => _.Clear(),
@@ -550,7 +763,7 @@ public class AuthControllerTests
             .Setup(_ => _.CommitSessionAsync(CancellationToken.None))
             .Returns(Task.CompletedTask);
 
-        var result = await _authController.Logout(CancellationToken.None) as RedirectResult;
+        var result = await AuthenticationEndpoints.Logout(_httpContext, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None) as RedirectHttpResult;
 
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Url.Contains(_zenoAuthOptions.OpenIdConnectConfiguration.EndSessionEndpoint));
@@ -562,9 +775,9 @@ public class AuthControllerTests
     }
 
     [TestMethod]
-    public void LogoutCallback_CreatesRedirectToWebOrigin()
+    public async Task LogoutCallback_CreatesRedirectToWebOrigin()
     {
-        var result = _authController.LogoutCallback(CancellationToken.None) as RedirectResult;
+        var result = await AuthenticationEndpoints.LogoutCallback(_httpContext, _zenoAuthOptions, CancellationToken.None) as RedirectHttpResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(_zenoAuthOptions.WebOrigin, result.Url);
@@ -599,7 +812,7 @@ public class AuthControllerTests
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var result = await _authController.GetUser(CancellationToken.None);
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _zenoAuthenticationSession.Object, CancellationToken.None);
 
         _zenoAuthenticationSession
             .Verify(_ => _.Clear(),
@@ -608,10 +821,7 @@ public class AuthControllerTests
             .Verify(_ => _.CommitSessionAsync(It.IsAny<CancellationToken>()),
                 Times.Once);
 
-        Assert.IsInstanceOfType(result, typeof(StatusCodeResult));
-        var statusCode = (StatusCodeResult)result;
-
-        Assert.AreEqual(401, statusCode.StatusCode);
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedHttpResult));
     }
 
     [TestMethod]
@@ -633,10 +843,10 @@ public class AuthControllerTests
             .Setup(_ => _.GetString(SessionNames.RefreshToken))
             .Returns("token");
 
-        var result = await _authController.GetUser(CancellationToken.None);
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _zenoAuthenticationSession.Object, CancellationToken.None);
 
-        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-        var okObjectResult = (OkObjectResult)result;
+        Assert.IsInstanceOfType(result, typeof(Ok<UserProfile>));
+        var okObjectResult = (Ok<UserProfile>)result;
 
         Assert.AreEqual(200, okObjectResult.StatusCode);
         Assert.IsInstanceOfType(userProfile, typeof(UserProfile));
