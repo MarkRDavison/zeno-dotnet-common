@@ -34,7 +34,7 @@ public static class EndpointHelpers
             { typeof(long), _ => long.Parse(_.ToString()) },
             { typeof(int), _ => int.Parse(_.ToString()) },
             { typeof(string), _ => _.ToString() },
-            { typeof(DateOnly), _ => DateOnly.Parse(_) },
+            { typeof(DateOnly), _ => DateOnly.Parse(_.ToString()) },
         };
 
         if (body != null && body.ContainsKey("where"))
@@ -83,11 +83,12 @@ public static class EndpointHelpers
         return null;
     }
 
+    [ExcludeFromCodeCoverage]
     public static string GenerateIncludesClause(IQueryCollection query)
     {
         if (query.ContainsKey("include"))
         {
-            return query["include"];
+            return query["include"]!;
         }
 
         return string.Empty;

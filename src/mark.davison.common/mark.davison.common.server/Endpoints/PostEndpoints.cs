@@ -2,7 +2,6 @@
 
 public static class PostEndpoints
 {
-
     public static void UsePost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
@@ -12,23 +11,29 @@ public static class PostEndpoints
             {
                 using (logger.ProfileOperation(context: $"POST api/{entityName}"))
                 {
-                    var repository = context.RequestServices.GetRequiredService<IRepository>();
-                    var currentUserContext = context.RequestServices.GetRequiredService<ICurrentUserContext>();
-                    var entityDefaulter = context.RequestServices.GetService<IEntityDefaulter<T>>();
-
-                    if (entityDefaulter != null)
-                    {
-                        await entityDefaulter.DefaultAsync(entity, currentUserContext.CurrentUser);
-                    }
-
-                    var posted = await repository.UpsertEntityAsync(entity, cancellationToken);
-                    if (posted == null)
-                    {
-                        return Results.UnprocessableEntity();
-                    }
-
-                    return Results.Ok(posted);
+                    return await PostEntity<T>(entity, context, logger, cancellationToken);
                 }
             });
+    }
+
+    public static async Task<IResult> PostEntity<T>(T entity, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
+        where T : BaseEntity
+    {
+        var repository = context.RequestServices.GetRequiredService<IRepository>();
+        var currentUserContext = context.RequestServices.GetRequiredService<ICurrentUserContext>();
+        var entityDefaulter = context.RequestServices.GetService<IEntityDefaulter<T>>();
+
+        if (entityDefaulter != null)
+        {
+            await entityDefaulter.DefaultAsync(entity, currentUserContext.CurrentUser);
+        }
+
+        var posted = await repository.UpsertEntityAsync(entity, cancellationToken);
+        if (posted == null)
+        {
+            return Results.UnprocessableEntity();
+        }
+
+        return Results.Ok(posted);
     }
 }

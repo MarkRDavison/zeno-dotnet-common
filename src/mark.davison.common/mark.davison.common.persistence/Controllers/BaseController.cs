@@ -1,5 +1,8 @@
-﻿namespace mark.davison.common.persistence.Controllers;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace mark.davison.common.persistence.Controllers;
+
+[ExcludeFromCodeCoverage] // TODO: Remove, use minimal apis instead
 public abstract class BaseController<T> : ControllerBase where T : BaseEntity, new()
 {
     protected readonly ILogger _logger;

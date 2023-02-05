@@ -4,5 +4,6 @@ global using mark.davison.common.Repository;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.Identification;
 global using Microsoft.Extensions.Hosting;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Linq.Expressions;
 global using System.Text.Json;
