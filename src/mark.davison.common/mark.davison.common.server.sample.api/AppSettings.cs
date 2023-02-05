@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.sample.api;
+﻿using mark.davison.common.server.abstractions.Configuration;
+
+namespace mark.davison.common.server.sample.api;
 
 public class AppSettings : IAppSettings
 {

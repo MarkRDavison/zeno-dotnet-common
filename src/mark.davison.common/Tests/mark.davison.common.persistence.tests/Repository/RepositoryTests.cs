@@ -302,8 +302,8 @@ public class RepositoryTests
 
         Assert.IsNotNull(fetchedPost);
         Assert.IsNotNull(fetchedPost.Blog);
-        Assert.IsNotNull(fetchedPost.Blog.Author); 
-        
+        Assert.IsNotNull(fetchedPost.Blog.Author);
+
         fetchedPost = (await _repository.GetEntitiesAsync<Post>((string)null!, CancellationToken.None)).First();
 
         Assert.IsNotNull(fetchedPost);

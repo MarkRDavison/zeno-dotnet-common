@@ -128,7 +128,7 @@ public class WebUtilitiesTests
     {
         Guid property = Guid.NewGuid();
         Mock<HttpRequest> request = new();
-        request.Setup(_ => _.Query).Returns(new QueryCollection(new Dictionary<string, StringValues> 
+        request.Setup(_ => _.Query).Returns(new QueryCollection(new Dictionary<string, StringValues>
         {
             { nameof(ExampleQueryRequest.Guid), property.ToString() }
         }));

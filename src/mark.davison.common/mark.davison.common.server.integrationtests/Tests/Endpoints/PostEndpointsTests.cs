@@ -1,11 +1,7 @@
-﻿using mark.davison.common.persistence.EntityDefaulter;
-using mark.davison.common.server.abstractions.Authentication;
-using mark.davison.common.server.abstractions.Identification;
+﻿using mark.davison.common.server.abstractions.Authentication;
 using mark.davison.common.server.Endpoints;
 using mark.davison.common.server.integrationtests.Tests.Defaulters;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.IdentityModel.Logging;
 using Moq;
 using System.Net;
 

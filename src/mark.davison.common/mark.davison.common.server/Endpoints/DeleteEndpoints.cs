@@ -10,7 +10,7 @@ public static class DeleteEndpoints
             async ([FromRoute] Guid id, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken) =>
             {
                 using (logger.ProfileOperation(LogLevel.Trace, $"DELETE /api/{entityName}/{id}"))
-                {                    
+                {
                     return await DeleteEntity<T>(id, context, logger, cancellationToken);
                 }
             });

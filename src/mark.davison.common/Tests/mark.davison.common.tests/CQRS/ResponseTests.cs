@@ -19,7 +19,7 @@ public class ResponseTests
     {
         var response = new Response
         {
-            Errors= new List<string> {  "Error" }
+            Errors = new List<string> { "Error" }
         };
 
         Assert.IsFalse(response.Success);

@@ -7,6 +7,6 @@ public class AuthorDefaulter : IEntityDefaulter<Author>
     {
         entity.LastName = LAST_NAME;
 
-        return Task.CompletedTask;  
+        return Task.CompletedTask;
     }
 }

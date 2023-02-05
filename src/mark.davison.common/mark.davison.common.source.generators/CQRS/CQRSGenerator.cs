@@ -25,7 +25,7 @@ public class CQRSGenerator : ISourceGenerator
         var symbols = SourceGeneratorHelpers.GetPotentialTypeSymbols(context, namespaces);
 
         List<CQRSActivity> activities = new();
- 
+
         foreach (var symbol in symbols)
         {
             var commandActivity = AttemptCreateCommand(symbol, symbols);
@@ -91,7 +91,7 @@ public class CQRSGenerator : ISourceGenerator
                 _.TypeArguments.Length == 2 &&
                 _.TypeArguments[0].Name == commandInterface?.TypeArguments[0]?.Name &&
                 _.TypeArguments[1].Name == commandInterface?.TypeArguments[1]?.Name);
-        }); 
+        });
         var validator = symbols.FirstOrDefault(_ =>
         {
             return null != _.AllInterfaces.FirstOrDefault(_ =>

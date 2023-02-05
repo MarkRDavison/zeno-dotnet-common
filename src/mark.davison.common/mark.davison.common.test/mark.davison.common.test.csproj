@@ -13,8 +13,8 @@
 		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="JunitXml.TestLogger" Version="3.0.114" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
+		<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />

@@ -24,7 +24,7 @@ public class RetryTests
     {
         int maxTimes = 5;
         int timesCalled = 0;
-        await Retry.Do(_ => 
+        await Retry.Do(_ =>
         {
             timesCalled++;
             if (timesCalled == maxTimes)
@@ -53,7 +53,7 @@ public class RetryTests
             }
             throw new InvalidOperationException();
         }, TimeSpan.FromMicroseconds(1), CancellationToken.None, maxTimes);
-        
+
         Assert.AreEqual(val, result);
         Assert.AreEqual(maxTimes, timesCalled);
     }
@@ -66,7 +66,7 @@ public class RetryTests
         int timesCalled = 0;
         await Retry.Do(_ =>
         {
-            timesCalled++; 
+            timesCalled++;
             return Task.CompletedTask;
 
         }, TimeSpan.FromMicroseconds(1), cts.Token);

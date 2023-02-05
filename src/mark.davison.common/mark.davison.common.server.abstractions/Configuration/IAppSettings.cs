@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.server.Configuration;
+﻿namespace mark.davison.common.server.abstractions.Configuration;
 
 public interface IAppSettings
 {

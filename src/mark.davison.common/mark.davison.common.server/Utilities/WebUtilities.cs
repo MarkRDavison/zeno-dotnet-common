@@ -55,7 +55,7 @@ public static class WebUtilities
         }
 
         var request = JsonSerializer.Deserialize<TRequest>(bodyText, SerializationHelpers.CreateStandardSerializationOptions());
-        
+
         if (request == null)
         {
             return new TRequest();

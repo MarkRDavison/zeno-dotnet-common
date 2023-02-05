@@ -14,10 +14,10 @@ public class ValidateAndProcessCommandHandlerTests
         }
 
         public TestHandler(
-            ICommandProcessor<ExampleCommandRequest, ExampleCommandResponse> processor, 
+            ICommandProcessor<ExampleCommandRequest, ExampleCommandResponse> processor,
             ICommandValidator<ExampleCommandRequest, ExampleCommandResponse> validator
         ) : base(
-            processor, 
+            processor,
             validator
         )
         {
@@ -69,7 +69,7 @@ public class ValidateAndProcessCommandHandlerTests
         await handler.Handle(new(), _userContext.Object, CancellationToken.None);
 
         _validator
-            .Verify(_ => 
+            .Verify(_ =>
                 _.ValidateAsync(
                     It.IsAny<ExampleCommandRequest>(),
                     It.IsAny<ICurrentUserContext>(),

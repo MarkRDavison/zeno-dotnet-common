@@ -1,4 +1,5 @@
-﻿using mark.davison.common.server.Configuration;
+﻿using mark.davison.common.server.abstractions.Configuration;
+using mark.davison.common.server.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 

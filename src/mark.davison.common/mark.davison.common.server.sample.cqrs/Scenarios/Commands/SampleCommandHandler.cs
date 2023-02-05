@@ -3,10 +3,10 @@
 public class SampleCommandHandler : ValidateAndProcessCommandHandler<SampleCommandRequest, SampleCommandResponse>
 {
     public SampleCommandHandler(
-        ICommandProcessor<SampleCommandRequest, SampleCommandResponse> processor, 
+        ICommandProcessor<SampleCommandRequest, SampleCommandResponse> processor,
         ICommandValidator<SampleCommandRequest, SampleCommandResponse> validator
     ) : base(
-        processor, 
+        processor,
         validator
     )
     {
