@@ -1,10 +1,4 @@
-﻿using Remote.Linq;
-using Remote.Linq.Text.Json;
-using System.Linq.Expressions;
-using System.Text.Json.Nodes;
-using System.Web;
-
-namespace mark.davison.common.Repository;
+﻿namespace mark.davison.common.Repository;
 
 public class QueryParameters : Dictionary<string, string>
 {

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.persistence.Repository;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace mark.davison.common.persistence.Repository;
 
 public abstract class RepositoryBase<TContext> : IRepository
     where TContext : DbContext
@@ -141,6 +143,7 @@ public abstract class RepositoryBase<TContext> : IRepository
             .Where(_ => !_.Id.Equals(Guid.Empty))
             .GroupBy(_ => _.Id)
             .Any(_ => _.Count() > 1);
+
         if (containsInvalidDuplicates)
         {
             throw new InvalidOperationException("Duplicate entities detected.");
@@ -181,6 +184,14 @@ public abstract class RepositoryBase<TContext> : IRepository
             }
         }
 
+        await ContextSaveChanges<T>(context, cancellationToken);
+
+        return entities;
+    }
+
+    [ExcludeFromCodeCoverage]
+    private async Task ContextSaveChanges<T>(TContext context, CancellationToken cancellationToken) where T : BaseEntity
+    {
         try
         {
             await context.SaveChangesAsync(cancellationToken);
@@ -190,9 +201,6 @@ public abstract class RepositoryBase<TContext> : IRepository
             _logger.LogError("UpsertEntitiesAsync<{0}> - {1}", nameof(T), e);
             throw;
         }
-
-
-        return entities;
     }
 
     public async Task<T?> UpsertEntityAsync<T>(
@@ -252,15 +260,18 @@ public abstract class RepositoryBase<TContext> : IRepository
             .Select(_ => _.Id)
             .ToArray();
 
-        var entitiesToDelete = await GetEntitiesAsync<T>(_ => itemsToDeleteIds.Contains(_.Id), cancellationToken)
-            .ConfigureAwait(false);
+        var entitiesToDelete = await GetEntitiesAsync<T>(_ => itemsToDeleteIds.Contains(_.Id), cancellationToken);
 
+        return await ContextRemoveRangeSaveChanges(context, itemsToDelete, entitiesToDelete, cancellationToken);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private async Task<List<T>> ContextRemoveRangeSaveChanges<T>(TContext context, List<T> itemsToDelete, List<T> entitiesToDelete, CancellationToken cancellationToken) where T : BaseEntity
+    {
         try
         {
             context.RemoveRange(entitiesToDelete);
-            await context
-                .SaveChangesAsync(cancellationToken)
-                .ConfigureAwait(false);
+            await context.SaveChangesAsync(cancellationToken);
 
             return itemsToDelete;
         }
@@ -290,6 +301,12 @@ public abstract class RepositoryBase<TContext> : IRepository
             query = query.Where(predicate);
         }
 
+        return QueryApplyProjection(projection, query);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private IQueryable<TProjection> QueryApplyProjection<TEntity, TProjection>(Expression<Func<TEntity, TProjection>>? projection, IQueryable<TEntity> query) where TEntity : BaseEntity
+    {
         try
         {
             IQueryable<TProjection> result;
@@ -326,35 +343,14 @@ public abstract class RepositoryBase<TContext> : IRepository
 
         var query = set.Where(_ => true).AsNoTracking();
 
-        query = AttachIncludes<TEntity>(query, includes.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        query = AttachIncludes<TEntity>(query, includes?.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 
         if (predicate != null)
         {
             query = query.Where(predicate);
         }
 
-        try
-        {
-            IQueryable<TProjection> result;
-
-            if (projection != null)
-            {
-                result = query
-                    .Select(projection);
-            }
-            else
-            {
-                result = query
-                    .OfType<TProjection>();
-            }
-
-            return result;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError("QueryUnitOfWorkAsync<{0}> - {1}", nameof(TEntity), e);
-            throw;
-        }
+        return QueryApplyProjection(projection, query);
     }
 
     private async Task<TEntity?> DeleteUnitOfWorkAsync<TEntity>(
@@ -365,8 +361,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         context.Set<TEntity>();
 
-        var existingItem = await GetEntityAsync<TEntity>(item.Id, (Expression<Func<TEntity, object>>[]?)null, cancellationToken)
-            .ConfigureAwait(false);
+        var existingItem = await GetEntityAsync<TEntity>(item.Id, (Expression<Func<TEntity, object>>[]?)null, cancellationToken);
 
         if (existingItem != null)
         {
@@ -377,11 +372,15 @@ public abstract class RepositoryBase<TContext> : IRepository
             return null;
         }
 
+        return await SaveEntityChanges(item, context, cancellationToken);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private async Task<TEntity> SaveEntityChanges<TEntity>(TEntity item, TContext context, CancellationToken cancellationToken) where TEntity : BaseEntity
+    {
         try
         {
-            await context
-                .SaveChangesAsync(cancellationToken)
-                .ConfigureAwait(false);
+            await context.SaveChangesAsync(cancellationToken);
 
             return item;
         }
@@ -392,6 +391,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         }
     }
 
+    [ExcludeFromCodeCoverage]
     private static IQueryable<TEntity> AttachIncludes<TEntity>(
         IQueryable<TEntity> query,
         Expression<Func<TEntity, object>>[]? includes)
@@ -418,11 +418,7 @@ public abstract class RepositoryBase<TContext> : IRepository
                 continue;
             }
 
-            var parts = arguments.Select(_ =>
-            {
-                var startIndex = _.ToString().IndexOf('.') + 1;
-                return _.ToString()[startIndex..];
-            });
+            var parts = arguments.Select(ExtractExpressionParts);
 
             var navigationPath = string.Join(".", parts);
             query = query.Include(navigationPath);
@@ -430,6 +426,14 @@ public abstract class RepositoryBase<TContext> : IRepository
 
         return query;
     }
+
+    [ExcludeFromCodeCoverage]
+    private static string ExtractExpressionParts(Expression expression)
+    {
+        var startIndex = expression.ToString().IndexOf('.') + 1;
+        return expression.ToString()[startIndex..];
+    }
+
     private static IQueryable<TEntity> AttachIncludes<TEntity>(
         IQueryable<TEntity> query,
         string[]? includes)

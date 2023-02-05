@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Profile 1": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\mark.davison.common.server.sample.api\\mark.davison.common.server.sample.api.csproj"
+    },
+    "Profile 2": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\mark.davison.common.client.tests\\mark.davison.common.client.tests.csproj"
+    }
+  }
+}

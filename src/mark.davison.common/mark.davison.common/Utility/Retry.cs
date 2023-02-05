@@ -18,11 +18,14 @@ public static class Retry
                 {
                     return;
                 }
+
                 if (attempted > 0)
                 {
                     await Task.Delay(retryInterval);
                 }
+
                 await action(cancellationToken);
+
                 return;
             }
             catch (Exception ex)
@@ -30,6 +33,7 @@ public static class Retry
                 exceptions.Add(ex);
             }
         }
+
         throw new AggregateException(exceptions);
     }
 
@@ -49,10 +53,12 @@ public static class Retry
                 {
                     return default(T);
                 }
+
                 if (attempted > 0)
                 {
                     await Task.Delay(retryInterval);
                 }
+
                 return await action(cancellationToken);
             }
             catch (Exception ex)
@@ -60,6 +66,7 @@ public static class Retry
                 exceptions.Add(ex);
             }
         }
+
         throw new AggregateException(exceptions);
     }
 }

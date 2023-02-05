@@ -9,5 +9,6 @@ public class Response
 
 public class Response<T> : Response
 {
+    public bool SuccessWithValue => Success && Value != null;
     public T? Value { get; set; }
 }

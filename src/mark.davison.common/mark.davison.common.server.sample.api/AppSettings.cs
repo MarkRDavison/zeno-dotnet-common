@@ -1,7 +1,9 @@
-﻿namespace mark.davison.common.server.sample.api;
+﻿using mark.davison.common.server.abstractions.Configuration;
 
-public class AppSettings
+namespace mark.davison.common.server.sample.api;
+
+public class AppSettings : IAppSettings
 {
-    public static string SECTION = "SAMPLE";
     public string API_ORIGIN { get; set; } = string.Empty;
+    public string SECTION => "SAMPLE";
 }

@@ -30,4 +30,31 @@ public class HttpRepositoryTests : IntegrationTestBase<SampleApplicationFactory,
 
         Assert.AreEqual(_authors.Where(expression.Compile()).Count(), authors.Count());
     }
+
+    [TestMethod]
+    public void CreateUriFromRelative_ForRelativeEndpoint_CreatesUriCorrectly()
+    {
+        string remoteEndpoint = "";
+        string relativeUri = "/api/comment";
+
+        var repo = new SampleHttpRepository(remoteEndpoint, new JsonSerializerOptions());
+
+        var uri = repo.CreateUriFromRelative(relativeUri);
+
+        Assert.AreEqual(relativeUri, uri.ToString());
+    }
+
+    [TestMethod]
+    public void CreateUriFromRelative_ForAbsoluteEndpoint_CreatesUriCorrectly()
+    {
+        string remoteEndpoint = "https://localhost";
+        string relativeUri = "/api/comment";
+
+        var repo = new SampleHttpRepository(remoteEndpoint, new JsonSerializerOptions());
+
+        var uri = repo.CreateUriFromRelative(relativeUri);
+
+        Assert.AreEqual($"{remoteEndpoint}{relativeUri}", uri.ToString());
+    }
 }
+

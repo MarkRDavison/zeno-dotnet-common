@@ -2,6 +2,7 @@
 
 namespace mark.davison.common.server.Cron;
 
+[ExcludeFromCodeCoverage]
 public abstract class CronJobService : IHostedService, IDisposable
 {
     private System.Timers.Timer? _timer;

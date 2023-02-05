@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.integrationtests;
+﻿using mark.davison.common.server.integrationtests.Tests.Defaulters;
+
+namespace mark.davison.common.server.integrationtests;
 
 public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {
@@ -21,6 +23,7 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
         config.SetBffBase("http://localhost/");
         services.AddLogging();
         services.AddHttpClient("API");
+        services.AddSingleton<IEntityDefaulter<Author>, AuthorDefaulter>();
         services.AddSingleton<IAuthenticationConfig>(config);
         services.AddSingleton<IClientHttpRepository>(_ => new SampleClientHttpRepository(
             _.GetRequiredService<IAuthenticationConfig>().BffBase,
@@ -31,11 +34,5 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
             API_ORIGIN = "http://localhost/"
         }, CreateClient);
 
-        services.AddTransient<ICoreDataSeeder, CoreDataSeeder>(_ =>
-            new CoreDataSeeder(
-                _.GetRequiredService<IServiceProvider>(),
-                _.GetRequiredService<IApplicationHealthState>(),
-                _.GetRequiredService<IOptions<AppSettings>>()
-            ));
     }
 }

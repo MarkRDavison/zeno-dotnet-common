@@ -9,6 +9,8 @@ global using mark.davison.common.server.abstractions.Identification;
 global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.common.server.Authentication;
 global using mark.davison.common.server.CQRS;
+global using mark.davison.common.server.CQRS.Processors;
+global using mark.davison.common.server.CQRS.Validators;
 global using mark.davison.common.server.Health;
 global using mark.davison.common.server.Health.Checks;
 global using mark.davison.common.server.Repository;

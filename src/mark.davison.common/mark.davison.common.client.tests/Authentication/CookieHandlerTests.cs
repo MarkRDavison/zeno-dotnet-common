@@ -1,6 +1,4 @@
-﻿using mark.davison.common.client.Authentication;
-
-namespace mark.davison.common.client.tests.Authentication;
+﻿namespace mark.davison.common.client.tests.Authentication;
 
 [TestClass]
 public class CookieHandlerTests

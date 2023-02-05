@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
     <ProjectReference Include="..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
+    <ProjectReference Include="..\mark.davison.common.server.sample.cqrs\mark.davison.common.server.sample.cqrs.csproj" />
     <ProjectReference Include="..\mark.davison.common.server\mark.davison.common.server.csproj" />
+    <ProjectReference Include="..\mark.davison.common.source.generators\mark.davison.common.source.generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
   </ItemGroup>
 </Project>
