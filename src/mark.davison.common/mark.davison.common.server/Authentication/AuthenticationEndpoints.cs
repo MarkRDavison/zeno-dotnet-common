@@ -1,4 +1,5 @@
-﻿using static mark.davison.common.server.abstractions.Authentication.ZenoAuthenticationConstants;
+﻿using System.IdentityModel.Tokens.Jwt;
+using static mark.davison.common.server.abstractions.Authentication.ZenoAuthenticationConstants;
 
 namespace mark.davison.common.server.Authentication;
 
@@ -42,11 +43,13 @@ public static class AuthenticationEndpoints
             return LogoutCallback(context, zenoAuthOptions.Value, cancellationToken);
         });
 
-        endpointRouteBuilder.MapGet(ZenoRouteNames.UserRoute, async (HttpContext context, CancellationToken cancellationToken) =>
+        endpointRouteBuilder.MapGet(ZenoRouteNames.UserRoute, async (HttpContext context, ILogger<ZenoAuthOptions> logger, IHttpClientFactory httpClientFactory, CancellationToken cancellationToken) =>
         {
             var zenoAuthenticationSession = context.RequestServices.GetRequiredService<IZenoAuthenticationSession>();
+            IDateService dateService = context.RequestServices.GetRequiredService<IDateService>();
+            IOptions<ZenoAuthOptions> authOptions = context.RequestServices.GetRequiredService<IOptions<ZenoAuthOptions>>();
 
-            return await GetUser(context, zenoAuthenticationSession, cancellationToken);
+            return await GetUser(context, logger, dateService, httpClientFactory, authOptions.Value, zenoAuthenticationSession, cancellationToken);
         });
     }
 
@@ -224,14 +227,15 @@ public static class AuthenticationEndpoints
         return Task.FromResult(WebUtilities.RedirectPreserveMethod(zenoAuthOptions.WebOrigin));
     }
 
-    public static async Task<IResult> GetUser(HttpContext context, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
+    public static async Task<IResult> GetUser(HttpContext context, ILogger logger, IDateService dateService, IHttpClientFactory httpClientFactory, ZenoAuthOptions zenoAuthOptions, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
     {
         await zenoAuthenticationSession.LoadSessionAsync(cancellationToken);
 
         var userString = zenoAuthenticationSession.GetString(SessionNames.UserProfile);
-        var refreshToken = zenoAuthenticationSession.GetString(SessionNames.RefreshToken);
+        var accessTokenString = zenoAuthenticationSession.GetString(SessionNames.AccessToken);
+        var refreshTokenString = zenoAuthenticationSession.GetString(SessionNames.RefreshToken);
 
-        if (string.IsNullOrEmpty(userString) || string.IsNullOrEmpty(refreshToken))
+        if (string.IsNullOrEmpty(userString) || string.IsNullOrEmpty(accessTokenString) || string.IsNullOrEmpty(refreshTokenString))
         {
             zenoAuthenticationSession.Clear();
             await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
@@ -244,6 +248,55 @@ public static class AuthenticationEndpoints
             zenoAuthenticationSession.Clear();
             await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
             return Results.Unauthorized();
+        }
+
+        var handler = new JwtSecurityTokenHandler();
+        var accessToken = handler.ReadJwtToken(accessTokenString);
+        if (dateService.Now >= accessToken.ValidTo)
+        {
+            Dictionary<string, string> nameValueCollection = new Dictionary<string, string>
+            {
+                { OauthParamNames.GrantType, OauthParams.RefreshTokenGrantType },
+                { OauthParamNames.ClientId, zenoAuthOptions.ClientId },
+                { OauthParamNames.ClientSecret, zenoAuthOptions.ClientSecret },
+                { OauthParamNames.RefreshToken, refreshTokenString }
+            };
+
+            HttpClient client = httpClientFactory.CreateClient(AuthClientName);
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(zenoAuthOptions.OpenIdConnectConfiguration.TokenEndpoint),
+                Headers = {
+                    {
+                        HttpRequestHeader.ContentType.ToString(),
+                        WebUtilities.ContentType.FormUrlEncoded
+                    }
+                },
+                Content = new FormUrlEncodedContent(nameValueCollection)
+            };
+
+            AuthTokens? tokens = null;
+            using (HttpResponseMessage httpResponseMessage = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted))
+            {
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    tokens = JsonSerializer.Deserialize<AuthTokens>(await httpResponseMessage.Content.ReadAsStringAsync());
+                }
+            }
+
+            if (tokens == null || string.IsNullOrEmpty(tokens.access_token) || string.IsNullOrEmpty(tokens.refresh_token))
+            {
+                zenoAuthenticationSession.Clear();
+                await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
+                return Results.Unauthorized();
+            }
+            else
+            {
+                zenoAuthenticationSession.SetString(SessionNames.AccessToken, tokens.access_token);
+                zenoAuthenticationSession.SetString(SessionNames.RefreshToken, tokens.refresh_token);
+                await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
+            }
         }
 
         return Results.Ok(profile);

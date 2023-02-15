@@ -69,6 +69,7 @@ public static class ZenoAuthenticationConstants
         public const string S256ChallengeMethod = "S256";
         public const string AuthorizationCodeGrantType = "authorization_code";
         public const string ClientCredentialsGrantType = "client_credentials";
+        public const string RefreshTokenGrantType = "refresh_token";
     }
 
     public static class SessionNames

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using mark.davison.common.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using static mark.davison.common.server.abstractions.Authentication.ZenoAuthenticationConstants;
 
 namespace mark.davison.common.server.tests.Authentication;
@@ -7,6 +8,7 @@ namespace mark.davison.common.server.tests.Authentication;
 public class AuthenticationEndpointsTests
 {
     private readonly Mock<ILogger<ZenoAuthOptions>> _logger;
+    private readonly Mock<IDateService> _dateService;
     private readonly Mock<IHttpClientFactory> _httpClientFactory;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     private readonly Mock<IServiceProvider> _serviceProvider;
@@ -21,6 +23,7 @@ public class AuthenticationEndpointsTests
     public AuthenticationEndpointsTests()
     {
         _logger = new();
+        _dateService = new(MockBehavior.Strict);
         _httpClientFactory = new(MockBehavior.Strict);
         _httpContextAccessor = new(MockBehavior.Strict);
         _serviceProvider = new(MockBehavior.Strict);
@@ -45,6 +48,7 @@ public class AuthenticationEndpointsTests
         };
         _httpMessageHandler = new();
         _httpContextAccessor.Setup(_ => _.HttpContext).Returns(_httpContext);
+        _dateService.Setup(_ => _.Now).Returns(DateTime.UtcNow);
     }
 
     [TestMethod]
@@ -784,11 +788,15 @@ public class AuthenticationEndpointsTests
     }
 
     [DataTestMethod]
-    [DataRow("", "token")]
-    [DataRow("{}", "")]
-    [DataRow("", "")]
-    [DataRow("null", "token")]
-    public async Task GetUser_WhereSessionNotValid_ClearsSession_ReturnsUnauthorized(string userProfile, string token)
+    [DataRow("", "token", "")]
+    [DataRow("", "token", "token")]
+    [DataRow("{}", "", "")]
+    [DataRow("{}", "", "token")]
+    [DataRow("", "", "")]
+    [DataRow("", "", "token")]
+    [DataRow("null", "token", "")]
+    [DataRow("null", "token", "token")]
+    public async Task GetUser_WhereSessionNotValid_ClearsSession_ReturnsUnauthorized(string userProfile, string refreshToken, string accessToken)
     {
         _requestServicesServiceProvider
             .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
@@ -802,7 +810,10 @@ public class AuthenticationEndpointsTests
             .Returns(userProfile);
         _zenoAuthenticationSession
             .Setup(_ => _.GetString(SessionNames.RefreshToken))
-            .Returns(token);
+            .Returns(refreshToken);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(accessToken);
 
         _zenoAuthenticationSession
             .Setup(_ => _.Clear())
@@ -812,7 +823,7 @@ public class AuthenticationEndpointsTests
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var result = await AuthenticationEndpoints.GetUser(_httpContext, _zenoAuthenticationSession.Object, CancellationToken.None);
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
         _zenoAuthenticationSession
             .Verify(_ => _.Clear(),
@@ -825,7 +836,280 @@ public class AuthenticationEndpointsTests
     }
 
     [TestMethod]
-    public async Task GetUser_WhereSessionValid_ClearsSession_ReturnsProfile()
+    public async Task GetUser_WhereTokenExpiredAndRefreshFails_ReturnsUnauthorized()
+    {
+        var userProfile = new UserProfile();
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+        };
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.UserProfile))
+            .Returns(JsonSerializer.Serialize(userProfile));
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RefreshToken))
+            .Returns("token");
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(MockJwtTokens.GenerateJwtToken(Enumerable.Empty<Claim>(), DateTime.UtcNow.AddMinutes(-1)));
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.Clear());
+        _zenoAuthenticationSession
+            .Setup(_ => _.CommitSessionAsync(CancellationToken.None))
+            .Returns(Task.CompletedTask);
+
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedHttpResult));
+
+        _zenoAuthenticationSession
+            .Verify(_ => _.Clear(),
+                Times.Once);
+        _zenoAuthenticationSession
+            .Verify(_ => _.CommitSessionAsync(CancellationToken.None),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetUser_WhereTokenExpiredAndRefreshReturnsNullTokens_ReturnsUnauthorized()
+    {
+        var userProfile = new UserProfile();
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("null")
+            };
+        };
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.UserProfile))
+            .Returns(JsonSerializer.Serialize(userProfile));
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RefreshToken))
+            .Returns("token");
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(MockJwtTokens.GenerateJwtToken(Enumerable.Empty<Claim>(), DateTime.UtcNow.AddMinutes(-1)));
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.Clear());
+        _zenoAuthenticationSession
+            .Setup(_ => _.CommitSessionAsync(CancellationToken.None))
+            .Returns(Task.CompletedTask);
+
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedHttpResult));
+
+        _zenoAuthenticationSession
+            .Verify(_ => _.Clear(),
+                Times.Once);
+        _zenoAuthenticationSession
+            .Verify(_ => _.CommitSessionAsync(CancellationToken.None),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetUser_WhereTokenExpiredAndRefreshReturnsEmptyAccessToken_ReturnsUnauthorized()
+    {
+        var userProfile = new UserProfile();
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(new AuthTokens
+                {
+                    access_token = "",
+                    refresh_token = "refresh_token"
+                }))
+            };
+        };
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.UserProfile))
+            .Returns(JsonSerializer.Serialize(userProfile));
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RefreshToken))
+            .Returns("token");
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(MockJwtTokens.GenerateJwtToken(Enumerable.Empty<Claim>(), DateTime.UtcNow.AddMinutes(-1)));
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.Clear());
+        _zenoAuthenticationSession
+            .Setup(_ => _.CommitSessionAsync(CancellationToken.None))
+            .Returns(Task.CompletedTask);
+
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedHttpResult));
+
+        _zenoAuthenticationSession
+            .Verify(_ => _.Clear(),
+                Times.Once);
+        _zenoAuthenticationSession
+            .Verify(_ => _.CommitSessionAsync(CancellationToken.None),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetUser_WhereTokenExpiredAndRefreshReturnsEmptyRefreshToken_ReturnsUnauthorized()
+    {
+        var userProfile = new UserProfile();
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(new AuthTokens
+                {
+                    access_token = "access_token",
+                    refresh_token = ""
+                }))
+            };
+        };
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.UserProfile))
+            .Returns(JsonSerializer.Serialize(userProfile));
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RefreshToken))
+            .Returns("token");
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(MockJwtTokens.GenerateJwtToken(Enumerable.Empty<Claim>(), DateTime.UtcNow.AddMinutes(-1)));
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.Clear());
+        _zenoAuthenticationSession
+            .Setup(_ => _.CommitSessionAsync(CancellationToken.None))
+            .Returns(Task.CompletedTask);
+
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedHttpResult));
+
+        _zenoAuthenticationSession
+            .Verify(_ => _.Clear(),
+                Times.Once);
+        _zenoAuthenticationSession
+            .Verify(_ => _.CommitSessionAsync(CancellationToken.None),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetUser_WhereTokenExpiredAndRefreshReturnsTokens_ReturnsUserProfile()
+    {
+        var userProfile = new UserProfile();
+
+        _httpClientFactory
+            .Setup(_ => _.CreateClient(AuthClientName))
+            .Returns(new HttpClient(_httpMessageHandler));
+
+        _httpMessageHandler.SendAsyncFunc = _ =>
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(new AuthTokens
+                {
+                    access_token = "access_token",
+                    refresh_token = "refresh_token"
+                }))
+            };
+        };
+
+        _requestServicesServiceProvider
+            .Setup(_ => _.GetService(typeof(IZenoAuthenticationSession)))
+            .Returns(() => _zenoAuthenticationSession.Object);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.UserProfile))
+            .Returns(JsonSerializer.Serialize(userProfile));
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.RefreshToken))
+            .Returns("token");
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(MockJwtTokens.GenerateJwtToken(Enumerable.Empty<Claim>(), DateTime.UtcNow.AddMinutes(-1)));
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.AccessToken, It.IsAny<string>()))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.SetString(SessionNames.RefreshToken, It.IsAny<string>()))
+            .Verifiable();
+        _zenoAuthenticationSession
+            .Setup(_ => _.CommitSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
+
+        Assert.IsInstanceOfType(result, typeof(Ok<UserProfile>));
+        var okObjectResult = (Ok<UserProfile>)result;
+
+        Assert.AreEqual(200, okObjectResult.StatusCode);
+        Assert.IsInstanceOfType(userProfile, typeof(UserProfile));
+
+        _zenoAuthenticationSession.VerifyAll();
+    }
+
+    [TestMethod]
+    public async Task GetUser_WhereSessionAndTokenValid_ReturnsProfile()
     {
         var userProfile = new UserProfile();
 
@@ -842,8 +1126,11 @@ public class AuthenticationEndpointsTests
         _zenoAuthenticationSession
             .Setup(_ => _.GetString(SessionNames.RefreshToken))
             .Returns("token");
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(SessionNames.AccessToken))
+            .Returns(MockJwtTokens.GenerateJwtToken(Enumerable.Empty<Claim>(), DateTime.UtcNow.AddMinutes(1)));
 
-        var result = await AuthenticationEndpoints.GetUser(_httpContext, _zenoAuthenticationSession.Object, CancellationToken.None);
+        var result = await AuthenticationEndpoints.GetUser(_httpContext, _logger.Object, _dateService.Object, _httpClientFactory.Object, _zenoAuthOptions, _zenoAuthenticationSession.Object, CancellationToken.None);
 
         Assert.IsInstanceOfType(result, typeof(Ok<UserProfile>));
         var okObjectResult = (Ok<UserProfile>)result;
