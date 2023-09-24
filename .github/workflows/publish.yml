@@ -22,17 +22,17 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: 3.x
+    - name: Update project versions
+      run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version ${{ github.ref_name }}
     - name: Restore dependencies
       working-directory: ./src/mark.davison.common
       run: dotnet restore
     - name: Build
       working-directory: ./src/mark.davison.common
       run: dotnet build --no-restore
-    - name: Debug1
-      run: echo ${{ github.ref_name }}
-    - name: Debug2
-      run: python3 --version
-    - name: Update project versions
-      run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version ${{ github.ref_name }}
     - name: Create nuget packages
+      working-directory: ./src/mark.davison.common
       run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
+    - name: Create nuget packages
+      working-directory: ./src/mark.davison.common
+      run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --source github --api-key ${{ secrets.NUGET_API_KEY }}
