@@ -32,3 +32,7 @@ jobs:
       run: echo ${{ github.ref_name }}
     - name: Debug2
       run: python3 --version
+    - name: Update project versions
+      run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version ${{ github.ref_name }}
+    - name: Create nuget packages
+      run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
