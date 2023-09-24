@@ -20,13 +20,12 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
-    - name: Change directory
-      run: cd src/mark.davison.common
-    - name: Test dir
-      run: ls -al
     - name: Restore dependencies
+      working-directory: ./src/mark.davison.common
       run: dotnet restore
     - name: Build
+      working-directory: ./src/mark.davison.common
       run: dotnet build --no-restore
     - name: Test
+      working-directory: ./src/mark.davison.common
       run: dotnet test --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
