@@ -35,4 +35,4 @@ jobs:
       run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
     - name: Create nuget packages
       working-directory: ./src/mark.davison.common
-      run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --source github --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
