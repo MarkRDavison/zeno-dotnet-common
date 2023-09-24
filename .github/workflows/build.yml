@@ -22,6 +22,8 @@ jobs:
         dotnet-version: 7.0.x
     - name: Change directory
       run: cd src/mark.davison.common
+    - name: Test dir
+      run: ls -al
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
