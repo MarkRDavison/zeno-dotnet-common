@@ -27,12 +27,9 @@ jobs:
     - name: Restore dependencies
       working-directory: ./src/mark.davison.common
       run: dotnet restore
-    - name: Build
-      working-directory: ./src/mark.davison.common
-      run: dotnet build --no-restore
     - name: Create nuget packages
       working-directory: ./src/mark.davison.common
       run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
     - name: Create nuget packages
       working-directory: ./src/mark.davison.common
-      run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicates
