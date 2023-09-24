@@ -44,6 +44,9 @@ public class Startup
             .AddHttpContextAccessor();
 
         services.UseCQRSServer();
+        services
+            .AddSingleton<IChangesetQueue, RepositoryBackedChangesetQueue>()
+            .AddTransient<IChangesetGroup, ChangesetGroup>();
     }
 
     public void Configure(IApplicationBuilder app)

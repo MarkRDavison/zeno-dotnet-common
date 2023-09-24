@@ -2,7 +2,7 @@
 
 public static class GetEndpoints
 {
-    public static void UseGet<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity
+    public static void UseGet<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapGet(
@@ -16,13 +16,16 @@ public static class GetEndpoints
                     var include = EndpointHelpers.GenerateIncludesClause(context.Request.Query);
 
                     var repository = context.RequestServices.GetRequiredService<IRepository>();
-                    var entities = await repository.GetEntitiesAsync<T>(where, include, cancellationToken);
-                    return Results.Ok(entities);
+                    await using (repository.BeginTransaction())
+                    {
+                        var entities = await repository.GetEntitiesAsync<T>(where, include, cancellationToken);
+                        return Results.Ok(entities);
+                    }
                 }
             });
     }
 
-    public static void UseGetById<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity
+    public static void UseGetById<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapGet(
@@ -32,12 +35,15 @@ public static class GetEndpoints
                 using (logger.ProfileOperation(context: $"GET api/{entityName}/{id}"))
                 {
                     var repository = context.RequestServices.GetRequiredService<IRepository>();
-                    var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
-                    if (entity == null)
+                    await using (repository.BeginTransaction())
                     {
-                        return Results.NotFound();
+                        var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
+                        if (entity == null)
+                        {
+                            return Results.NotFound();
+                        }
+                        return Results.Ok(entity);
                     }
-                    return Results.Ok(entity);
                 }
             });
     }

@@ -2,7 +2,7 @@
 
 public static class PostEndpoints
 {
-    public static void UsePost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity
+    public static void UsePost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapPost(
@@ -17,7 +17,7 @@ public static class PostEndpoints
     }
 
     public static async Task<IResult> PostEntity<T>(T entity, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         var repository = context.RequestServices.GetRequiredService<IRepository>();
         var currentUserContext = context.RequestServices.GetRequiredService<ICurrentUserContext>();
@@ -28,12 +28,15 @@ public static class PostEndpoints
             await entityDefaulter.DefaultAsync(entity, currentUserContext.CurrentUser);
         }
 
-        var posted = await repository.UpsertEntityAsync(entity, cancellationToken);
-        if (posted == null)
+        await using (repository.BeginTransaction())
         {
-            return Results.UnprocessableEntity();
-        }
+            var posted = await repository.UpsertEntityAsync(entity, cancellationToken);
+            if (posted == null)
+            {
+                return Results.UnprocessableEntity();
+            }
 
-        return Results.Ok(posted);
+            return Results.Ok(posted);
+        }
     }
 }

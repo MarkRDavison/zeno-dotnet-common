@@ -8,7 +8,7 @@ public enum TestEnum
     ValueFour
 }
 
-[PostRequest(Path = "example-post-request")]
+[PostRequest(Path = "example-post-request", AllowAnonymous = true)]
 public class ExamplePostRequest : ICommand<ExamplePostRequest, ExamplePostResponse>
 {
     public TestEnum TestEnumValue { get; set; }

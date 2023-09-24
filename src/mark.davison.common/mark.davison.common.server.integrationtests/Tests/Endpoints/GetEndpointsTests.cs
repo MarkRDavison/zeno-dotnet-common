@@ -7,7 +7,9 @@ public class GetEndpointsTests : IntegrationTestBase<SampleApplicationFactory, A
     protected override async Task SeedData(IServiceProvider serviceProvider)
     {
         var repository = serviceProvider.GetRequiredService<IRepository>();
-        var persisted = await repository.UpsertEntitiesAsync(new List<Comment> {
+        await using (repository.BeginTransaction())
+        {
+            var persisted = await repository.UpsertEntitiesAsync(new List<Comment> {
             new Comment { Id = Guid.NewGuid(), Content = "Comment #1" },
             new Comment { Id = Guid.NewGuid(), Content = "Comment #2" },
             new Comment { Id = Guid.NewGuid(), Content = "Comment #3" },
@@ -18,7 +20,8 @@ public class GetEndpointsTests : IntegrationTestBase<SampleApplicationFactory, A
             new Comment { Id = Guid.NewGuid(), Content = "Comment #8", Long = 5, Integer = 6 },
         });
 
-        _existing.AddRange(persisted);
+            _existing.AddRange(persisted);
+        }
     }
 
     [TestMethod]

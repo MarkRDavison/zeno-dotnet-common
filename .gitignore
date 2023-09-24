@@ -366,3 +366,4 @@ appsettings.Development.json
 *.db*
 *.g.cs
 /src/mark.davison.finance.web/wwwroot
+/src/mark.davison.common/mark.davison.common.migrations

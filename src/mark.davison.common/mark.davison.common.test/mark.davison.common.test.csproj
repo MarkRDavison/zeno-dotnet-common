@@ -7,14 +7,14 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common test utilities</Description>
-		<PackageVersion>3.0.1</PackageVersion>
+		<PackageVersion>7.0.0</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.29.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />

@@ -5,4 +5,5 @@
 public class GetRequestAttribute : Attribute
 {
     public string Path { get; set; } = null!;
+    public bool AllowAnonymous { get; set; }
 }

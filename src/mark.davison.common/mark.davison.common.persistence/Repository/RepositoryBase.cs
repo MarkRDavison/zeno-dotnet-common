@@ -1,12 +1,80 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 
 namespace mark.davison.common.persistence.Repository;
 
 public abstract class RepositoryBase<TContext> : IRepository
     where TContext : DbContext
 {
+    class RepositoryTransaction : IAsyncDisposable
+    {
+        private bool disposedValue;
+        private bool _completed;
+        private readonly RepositoryBase<TContext> _repository;
+        private readonly TContext _context;
+        private readonly IDbContextTransaction _transaction;
+
+        public int Depth { get; set; }
+
+        public RepositoryTransaction(RepositoryBase<TContext> repository, TContext context)
+        {
+            _repository = repository;
+            _context = context;
+
+            _transaction = _context.Database.BeginTransaction();
+
+            Depth = 1;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            Depth--;
+            if (Depth > 0)
+            {
+                return;
+            }
+            if (!disposedValue)
+            {
+                disposedValue = true;
+                if (_completed)
+                {
+                    _repository.CleanupTransaction();
+                }
+                else
+                {
+                    try
+                    {
+                        await _repository.ContextSaveChanges(_context, CancellationToken.None);
+                        await _transaction.CommitAsync();
+                        _repository.CleanupTransaction();
+                    }
+                    catch (Exception)
+                    {
+                        await _transaction.RollbackAsync();
+                        _repository.CleanupTransaction();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public async Task RollbackAsync()
+        {
+            await _transaction.RollbackAsync();
+            _completed = true;
+        }
+
+        public async Task CommitAsync()
+        {
+            await _repository.ContextSaveChanges(_context, CancellationToken.None);
+            await _transaction.CommitAsync();
+            _completed = true;
+        }
+    }
+
     private readonly ILogger<RepositoryBase<TContext>> _logger;
     private readonly IDbContextFactory<TContext> _dbContextFactory;
+    private TContext? _context = null;
+    private RepositoryTransaction? _activeTransaction = null;
 
     protected RepositoryBase(
         IDbContextFactory<TContext> dbContextFactory,
@@ -19,7 +87,7 @@ public abstract class RepositoryBase<TContext> : IRepository
 
     public Task<List<T>> GetEntitiesAsync<T>(
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntitiesAsync<T>(null, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
@@ -27,7 +95,7 @@ public abstract class RepositoryBase<TContext> : IRepository
     public Task<List<T>> GetEntitiesAsync<T>(
         Expression<Func<T, bool>>? predicate,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntitiesAsync<T>(predicate, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
@@ -35,7 +103,7 @@ public abstract class RepositoryBase<TContext> : IRepository
     public Task<List<T>> GetEntitiesAsync<T>(
         Expression<Func<T, object>>[]? includes,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntitiesAsync<T>(null, includes, cancellationToken);
     }
@@ -43,7 +111,7 @@ public abstract class RepositoryBase<TContext> : IRepository
     public Task<List<T>> GetEntitiesAsync<T>(
         string includes,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntitiesAsync<T>(null, includes, cancellationToken);
     }
@@ -52,7 +120,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         Expression<Func<T, bool>>? predicate,
         Expression<Func<T, object>>[]? includes,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntitiesAsync<T, T>(predicate, includes, null, cancellationToken);
     }
@@ -61,7 +129,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         Expression<Func<T, bool>>? predicate,
         string includes,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntitiesAsync<T, T>(predicate, includes, null, cancellationToken);
     }
@@ -71,9 +139,9 @@ public abstract class RepositoryBase<TContext> : IRepository
         Expression<Func<TEntity, object>>[]? includes,
         Expression<Func<TEntity, TProjection>>? projection,
         CancellationToken cancellationToken = default)
-        where TEntity : BaseEntity
+        where TEntity : BaseEntity, new()
     {
-        return await (await QueryUnitOfWorkAsync(predicate, includes, projection, cancellationToken)).ToListAsync(cancellationToken);
+        return await QueryUnitOfWork(predicate, includes, projection, cancellationToken).ToListAsync(cancellationToken);
     }
 
     public async Task<List<TProjection>> GetEntitiesAsync<TEntity, TProjection>(
@@ -81,15 +149,15 @@ public abstract class RepositoryBase<TContext> : IRepository
         string includes,
         Expression<Func<TEntity, TProjection>>? projection,
         CancellationToken cancellationToken = default)
-        where TEntity : BaseEntity
+        where TEntity : BaseEntity, new()
     {
-        return await (await QueryUnitOfWorkAsync(predicate, includes, projection, cancellationToken)).ToListAsync(cancellationToken);
+        return await QueryUnitOfWork(predicate, includes, projection, cancellationToken).ToListAsync(cancellationToken);
     }
 
     public Task<T?> GetEntityAsync<T>(
         Guid id,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntityAsync<T>(id, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
@@ -98,7 +166,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         Guid id,
         Expression<Func<T, object>>[]? include,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntityAsync<T>(_ => _.Id == id, include, cancellationToken);
     }
@@ -106,7 +174,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         Guid id,
         string include,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntityAsync<T>(_ => _.Id == id, include, cancellationToken);
     }
@@ -114,7 +182,7 @@ public abstract class RepositoryBase<TContext> : IRepository
     public Task<T?> GetEntityAsync<T>(
         Expression<Func<T, bool>>? predicate,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return GetEntityAsync<T>(predicate, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
@@ -123,21 +191,23 @@ public abstract class RepositoryBase<TContext> : IRepository
         Expression<Func<T, bool>>? predicate,
         Expression<Func<T, object>>[]? include,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
-        return await (await QueryUnitOfWorkAsync(predicate, include, _ => _, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+        return await QueryUnitOfWork(predicate, include, _ => _, cancellationToken).FirstOrDefaultAsync(cancellationToken);
     }
     public async Task<T?> GetEntityAsync<T>(Expression<Func<T, bool>>? predicate, string include, CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
-        return await (await QueryUnitOfWorkAsync(predicate, include, _ => _, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+        return await QueryUnitOfWork(predicate, include, _ => _, cancellationToken).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<List<T>> UpsertEntitiesAsync<T>(
         List<T> entities,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
+
         //Check that there are no entities in the list with duplicate Id's that are not Guid.Empty
         var containsInvalidDuplicates = entities
             .Where(_ => !_.Id.Equals(Guid.Empty))
@@ -149,8 +219,7 @@ public abstract class RepositoryBase<TContext> : IRepository
             throw new InvalidOperationException("Duplicate entities detected.");
         }
 
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-        var set = context.Set<T>();
+        var set = _context.Set<T>();
 
         var addBatchItems = entities
             .Where(_ => _.Id.Equals(Guid.Empty))
@@ -180,17 +249,15 @@ public abstract class RepositoryBase<TContext> : IRepository
             }
             else
             {
-                context.Entry(existingBatchItem).CurrentValues.SetValues(upsertBatchItem);
+                _context.Entry(existingBatchItem).CurrentValues.SetValues(upsertBatchItem);
             }
         }
-
-        await ContextSaveChanges<T>(context, cancellationToken);
 
         return entities;
     }
 
     [ExcludeFromCodeCoverage]
-    private async Task ContextSaveChanges<T>(TContext context, CancellationToken cancellationToken) where T : BaseEntity
+    private async Task ContextSaveChanges(TContext context, CancellationToken cancellationToken)
     {
         try
         {
@@ -198,7 +265,7 @@ public abstract class RepositoryBase<TContext> : IRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("UpsertEntitiesAsync<{0}> - {1}", nameof(T), e);
+            _logger.LogError("ContextSaveChanges - {0}", e);
             throw;
         }
     }
@@ -206,10 +273,11 @@ public abstract class RepositoryBase<TContext> : IRepository
     public async Task<T?> UpsertEntityAsync<T>(
         T entity,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-        var set = context.Set<T>();
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
+
+        var set = _context.Set<T>();
         var existingEntity = await set.FindAsync(new object[] { entity.Id }, cancellationToken: cancellationToken);
         if (existingEntity == null)
         {
@@ -224,23 +292,16 @@ public abstract class RepositoryBase<TContext> : IRepository
             //is sent, only those columns that have actually changed will be updated.
             //(And if nothing has changed, then no update will be sent at all.)
             entity.LastModified = DateTime.UtcNow;
-            context.Entry(existingEntity).CurrentValues.SetValues(entity);
+            _context.Entry(existingEntity).CurrentValues.SetValues(entity);
         }
 
-        var saveChangesResult = await context.SaveChangesAsync();
-        if (saveChangesResult != 1)
-        {
-            return null;
-        }
-
-        await context.DisposeAsync();
         return entity;
     }
 
     public Task<T?> DeleteEntityAsync<T>(
         T entity,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         return DeleteUnitOfWorkAsync<T>(entity, cancellationToken);
     }
@@ -248,10 +309,9 @@ public abstract class RepositoryBase<TContext> : IRepository
     public async Task<List<T>> DeleteEntitiesAsync<T>(
         List<T> entities,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-        context.Set<T>();
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
 
         var itemsToDelete = entities
             .Where(_ => !_.Id.Equals(Guid.Empty))
@@ -262,16 +322,15 @@ public abstract class RepositoryBase<TContext> : IRepository
 
         var entitiesToDelete = await GetEntitiesAsync<T>(_ => itemsToDeleteIds.Contains(_.Id), cancellationToken);
 
-        return await ContextRemoveRangeSaveChanges(context, itemsToDelete, entitiesToDelete, cancellationToken);
+        return ContextRemoveRangeSaveChanges(_context, itemsToDelete, entitiesToDelete, cancellationToken);
     }
 
     [ExcludeFromCodeCoverage]
-    private async Task<List<T>> ContextRemoveRangeSaveChanges<T>(TContext context, List<T> itemsToDelete, List<T> entitiesToDelete, CancellationToken cancellationToken) where T : BaseEntity
+    private List<T> ContextRemoveRangeSaveChanges<T>(TContext context, List<T> itemsToDelete, List<T> entitiesToDelete, CancellationToken cancellationToken) where T : BaseEntity, new()
     {
         try
         {
             context.RemoveRange(entitiesToDelete);
-            await context.SaveChangesAsync(cancellationToken);
 
             return itemsToDelete;
         }
@@ -282,15 +341,16 @@ public abstract class RepositoryBase<TContext> : IRepository
         }
     }
 
-    private async Task<IQueryable<TProjection>> QueryUnitOfWorkAsync<TEntity, TProjection>(
+    private IQueryable<TProjection> QueryUnitOfWork<TEntity, TProjection>(
         Expression<Func<TEntity, bool>>? predicate = null,
         Expression<Func<TEntity, object>>[]? includes = null,
         Expression<Func<TEntity, TProjection>>? projection = null,
         CancellationToken cancellationToken = default)
         where TEntity : BaseEntity
     {
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-        var set = context.Set<TEntity>();
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
+
+        var set = _context.Set<TEntity>();
 
         var query = set.Where(_ => true).AsNoTracking();
 
@@ -326,20 +386,21 @@ public abstract class RepositoryBase<TContext> : IRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("QueryUnitOfWorkAsync<{0}> - {1}", nameof(TEntity), e);
+            _logger.LogError("QueryApplyProjection<{0}> - {1}", nameof(TEntity), e);
             throw;
         }
     }
 
-    private async Task<IQueryable<TProjection>> QueryUnitOfWorkAsync<TEntity, TProjection>(
+    private IQueryable<TProjection> QueryUnitOfWork<TEntity, TProjection>(
         Expression<Func<TEntity, bool>>? predicate = null,
         string includes = "",
         Expression<Func<TEntity, TProjection>>? projection = null,
         CancellationToken cancellationToken = default)
         where TEntity : BaseEntity
     {
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-        var set = context.Set<TEntity>();
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
+
+        var set = _context.Set<TEntity>();
 
         var query = set.Where(_ => true).AsNoTracking();
 
@@ -356,39 +417,27 @@ public abstract class RepositoryBase<TContext> : IRepository
     private async Task<TEntity?> DeleteUnitOfWorkAsync<TEntity>(
         TEntity item,
         CancellationToken cancellationToken = default)
-        where TEntity : BaseEntity
+        where TEntity : BaseEntity, new()
     {
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-        context.Set<TEntity>();
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
 
         var existingItem = await GetEntityAsync<TEntity>(item.Id, (Expression<Func<TEntity, object>>[]?)null, cancellationToken);
 
         if (existingItem != null)
         {
-            context.Entry(item).State = EntityState.Deleted;
+            var entry = _context.Entry(item);
+            if (entry.State == EntityState.Deleted)
+            {
+                return null;
+            }
+            entry.State = EntityState.Deleted;
         }
         else
         {
             return null;
         }
 
-        return await SaveEntityChanges(item, context, cancellationToken);
-    }
-
-    [ExcludeFromCodeCoverage]
-    private async Task<TEntity> SaveEntityChanges<TEntity>(TEntity item, TContext context, CancellationToken cancellationToken) where TEntity : BaseEntity
-    {
-        try
-        {
-            await context.SaveChangesAsync(cancellationToken);
-
-            return item;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError("DeleteUnitOfWorkAsync<{0}> - {1}", nameof(TEntity), e);
-            throw;
-        }
+        return existingItem;
     }
 
     [ExcludeFromCodeCoverage]
@@ -450,5 +499,46 @@ public abstract class RepositoryBase<TContext> : IRepository
         }
 
         return query;
+    }
+
+    public IAsyncDisposable BeginTransaction()
+    {
+        if (_activeTransaction != null && _context != null)
+        {
+            _activeTransaction.Depth++;
+            return _activeTransaction;
+        }
+
+        if (_activeTransaction != null || _context != null)
+        {
+            throw new InvalidOperationException("Cannot start a transaction while one is underway");
+        }
+
+        _context = _dbContextFactory.CreateDbContext();
+        _activeTransaction = new RepositoryTransaction(this, _context);
+
+        return _activeTransaction;
+    }
+    public async Task RollbackTransactionAsync()
+    {
+        if (_context == null || _activeTransaction == null) throw new InvalidOperationException("Cannot rollback a transaction that hasn't been started");
+
+        await _activeTransaction.RollbackAsync();
+
+        CleanupTransaction();
+    }
+    public async Task CommitTransactionAsync()
+    {
+        if (_context == null || _activeTransaction == null) throw new InvalidOperationException("Cannot rollback a transaction that hasn't been started");
+
+        await _activeTransaction.CommitAsync();
+
+        CleanupTransaction();
+    }
+
+    protected void CleanupTransaction()
+    {
+        _context = null;
+        _activeTransaction = null;
     }
 }

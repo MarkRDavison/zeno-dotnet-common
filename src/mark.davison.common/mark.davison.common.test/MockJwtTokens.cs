@@ -2,7 +2,7 @@
 
 public static class MockJwtTokens
 {
-    public static string Issuer { get; } = Guid.NewGuid().ToString();
+    public static string Issuer { get; set; } = Guid.NewGuid().ToString();
     public static SecurityKey SecurityKey { get; }
     public static SigningCredentials SigningCredentials { get; }
 

@@ -18,4 +18,5 @@ public class CQRSActivity
     public string Processor { get; set; } = string.Empty;
     public string Validator { get; set; } = string.Empty;
     public string Path { get; set; } = string.Empty;
+    public bool Anonymous { get; set; }
 }

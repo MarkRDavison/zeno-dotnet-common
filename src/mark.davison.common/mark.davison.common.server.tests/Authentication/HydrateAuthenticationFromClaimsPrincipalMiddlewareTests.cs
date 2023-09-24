@@ -9,6 +9,11 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddlewareTests
     private readonly HttpContext _context;
     private bool _nextInvoked;
 
+    public class AsyncDisposable : IAsyncDisposable
+    {
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+    }
+
     public HydrateAuthenticationFromClaimsPrincipalMiddlewareTests()
     {
         _currentUserContext.SetupAllProperties();
@@ -16,8 +21,13 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddlewareTests
         {
             _nextInvoked = true;
             return Task.CompletedTask;
-        }, _repository.Object);
+        });
         _context = new DefaultHttpContext();
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddScoped<IRepository>(_ => _repository.Object);
+
+        _context.RequestServices = serviceCollection.BuildServiceProvider();
     }
 
     [TestMethod]
@@ -50,6 +60,8 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddlewareTests
             new Claim(ClaimTypes.NameIdentifier, persistedUser.Sub.ToString()),
         }, "mock"));
         _context.User = user;
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(new AsyncDisposable());
 
         _repository
             .Setup(_ => _

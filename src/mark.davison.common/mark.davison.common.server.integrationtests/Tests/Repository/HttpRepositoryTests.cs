@@ -14,7 +14,10 @@ public class HttpRepositoryTests : IntegrationTestBase<SampleApplicationFactory,
     protected override async Task SeedData(IServiceProvider serviceProvider)
     {
         var repository = serviceProvider.GetRequiredService<IRepository>();
-        await repository.UpsertEntitiesAsync(_authors);
+        await using (repository.BeginTransaction())
+        {
+            await repository.UpsertEntitiesAsync(_authors);
+        }
     }
 
     [TestMethod]

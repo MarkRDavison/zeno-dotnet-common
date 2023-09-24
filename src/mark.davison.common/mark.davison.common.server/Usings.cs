@@ -1,4 +1,5 @@
-﻿global using mark.davison.common.CQRS;
+﻿global using mark.davison.common.Changeset;
+global using mark.davison.common.CQRS;
 global using mark.davison.common.Identification;
 global using mark.davison.common.Instrumentation;
 global using mark.davison.common.persistence.EntityDefaulter;
@@ -7,6 +8,7 @@ global using mark.davison.common.server.abstractions;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.Configuration;
 global using mark.davison.common.server.abstractions.CQRS;
+global using mark.davison.common.server.abstractions.EventDriven;
 global using mark.davison.common.server.abstractions.Health;
 global using mark.davison.common.server.abstractions.Identification;
 global using mark.davison.common.server.abstractions.Repository;

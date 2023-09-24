@@ -3,7 +3,7 @@
 namespace mark.davison.common.server.test.Framework;
 
 [TestClass]
-public class IntegrationTestBase<TFactory, TSettings>
+public abstract class IntegrationTestBase<TFactory, TSettings>
     where TFactory : ICommonWebApplicationFactory<TSettings>, IDisposable, new()
 {
     protected TFactory _factory;
@@ -29,6 +29,10 @@ public class IntegrationTestBase<TFactory, TSettings>
     }
     protected virtual Task OnTestInitialize(IServiceProvider serviceProvider) => Task.CompletedTask;
 
+    protected virtual void CustomiseHttpRequestMessage(HttpRequestMessage message) { }
+
+    protected virtual string BaseAddress => string.Empty;
+
     private async Task SeedDataInternal(IServiceProvider serviceProvider)
     {
         var healthState = serviceProvider.GetRequiredService<IApplicationHealthState>();
@@ -49,7 +53,7 @@ public class IntegrationTestBase<TFactory, TSettings>
         var message = new HttpRequestMessage
         {
             Method = httpMethod,
-            RequestUri = new Uri(uri, UriKind.Relative),
+            RequestUri = string.IsNullOrEmpty(BaseAddress) ? new Uri(uri, UriKind.Relative) : new Uri(BaseAddress + uri),
             Content = data == null ? null : new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json")
         };
 
@@ -57,6 +61,8 @@ public class IntegrationTestBase<TFactory, TSettings>
         {
             message.Content = new StringContent(qp.CreateBody(), Encoding.UTF8, "application/json");
         }
+
+        CustomiseHttpRequestMessage(message);
 
         return await Client.SendAsync(message);
     }

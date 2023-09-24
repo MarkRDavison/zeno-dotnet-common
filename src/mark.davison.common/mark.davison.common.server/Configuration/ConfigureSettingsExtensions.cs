@@ -1,6 +1,4 @@
-﻿using mark.davison.common.server.abstractions.Configuration;
-
-namespace mark.davison.common.server.Configuration;
+﻿namespace mark.davison.common.server.Configuration;
 
 public static class ConfigureSettingsExtensions
 {

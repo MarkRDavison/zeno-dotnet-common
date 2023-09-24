@@ -7,13 +7,13 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common components</Description>
-		<PackageVersion>3.0.1</PackageVersion>
+		<PackageVersion>7.0.0</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="wwwroot\" />

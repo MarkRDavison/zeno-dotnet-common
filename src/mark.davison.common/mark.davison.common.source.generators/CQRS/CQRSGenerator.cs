@@ -62,6 +62,7 @@ public class CQRSGenerator : ISourceGenerator
         if (type == CQRSType.Server)
         {
             diNamespaces.Add("mark.davison.common.server.Utilities");
+            diNamespaces.Add("mark.davison.common.server.abstractions.CQRS");
         }
 
 
@@ -115,7 +116,8 @@ public class CQRSGenerator : ISourceGenerator
                 Handler = commandHandler.ToDisplayString(),
                 Processor = processor?.ToDisplayString() ?? string.Empty,
                 Validator = validator?.ToDisplayString() ?? string.Empty,
-                Path = requestAttribute?.NamedArguments.First(_ => _.Key == "Path").Value.Value as string ?? string.Empty
+                Path = requestAttribute?.NamedArguments.FirstOrDefault(_ => _.Key == "Path").Value.Value as string ?? string.Empty,
+                Anonymous = requestAttribute?.NamedArguments.FirstOrDefault(_ => _.Key == "AllowAnonymous").Value.Value as bool? ?? false
             };
         }
 
@@ -164,7 +166,8 @@ public class CQRSGenerator : ISourceGenerator
                 Handler = queryHandler.ToDisplayString(),
                 Processor = processor?.ToDisplayString() ?? string.Empty,
                 Validator = validator?.ToDisplayString() ?? string.Empty,
-                Path = requestAttribute?.NamedArguments.First(_ => _.Key == "Path").Value.Value as string ?? string.Empty
+                Path = requestAttribute?.NamedArguments.FirstOrDefault(_ => _.Key == "Path").Value.Value as string ?? string.Empty,
+                Anonymous = requestAttribute?.NamedArguments.FirstOrDefault(_ => _.Key == "AllowAnonymous").Value.Value as bool? ?? false
             };
         }
         return null;
@@ -316,7 +319,7 @@ public class CQRSGenerator : ISourceGenerator
         stringBuilder.AppendLine("                    var dispatcher = context.RequestServices.GetRequiredService<IQueryDispatcher>();");
         stringBuilder.AppendLine($"                    var request = WebUtilities.GetRequestFromQuery<{activity.Request},{activity.Response}>(context.Request);");
         stringBuilder.AppendLine($"                    return await dispatcher.Dispatch<{activity.Request},{activity.Response}>(request, cancellationToken);");
-        stringBuilder.AppendLine("                });");
+        stringBuilder.AppendLine($"                }}){(activity.Anonymous ? string.Empty : ".RequireAuthorization()")};");
         stringBuilder.AppendLine(string.Empty);
     }
 
@@ -329,7 +332,7 @@ public class CQRSGenerator : ISourceGenerator
         stringBuilder.AppendLine("                    var dispatcher = context.RequestServices.GetRequiredService<ICommandDispatcher>();");
         stringBuilder.AppendLine($"                    var request = await WebUtilities.GetRequestFromBody<{activity.Request},{activity.Response}>(context.Request);");
         stringBuilder.AppendLine($"                    return await dispatcher.Dispatch<{activity.Request},{activity.Response}>(request, cancellationToken);");
-        stringBuilder.AppendLine("                });");
+        stringBuilder.AppendLine($"                }}){(activity.Anonymous ? string.Empty : ".RequireAuthorization()")};");
         stringBuilder.AppendLine(string.Empty);
     }
 

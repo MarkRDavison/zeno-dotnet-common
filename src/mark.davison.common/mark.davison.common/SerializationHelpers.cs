@@ -7,6 +7,7 @@ public static class SerializationHelpers
         new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
             Converters =
             {
                 new JsonStringEnumConverter()

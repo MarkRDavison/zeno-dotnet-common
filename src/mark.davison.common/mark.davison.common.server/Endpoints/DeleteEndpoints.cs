@@ -2,7 +2,7 @@
 
 public static class DeleteEndpoints
 {
-    public static void UseDelete<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity
+    public static void UseDelete<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapDelete(
@@ -17,21 +17,24 @@ public static class DeleteEndpoints
 
     }
     public static async Task<IResult> DeleteEntity<T>(Guid id, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
-        where T : BaseEntity
+        where T : BaseEntity, new()
     {
         var repository = context.RequestServices.GetRequiredService<IRepository>();
 
-        var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
-        if (entity == null)
+        await using (repository.BeginTransaction())
         {
-            return Results.NotFound();
-        }
+            var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
+            if (entity == null)
+            {
+                return Results.NotFound();
+            }
 
-        var deletedEntity = await repository.DeleteEntityAsync(entity, cancellationToken);
+            var deletedEntity = await repository.DeleteEntityAsync(entity, cancellationToken);
 
-        if (deletedEntity == null)
-        {
-            return Results.UnprocessableEntity();
+            if (deletedEntity == null)
+            {
+                return Results.UnprocessableEntity();
+            }
         }
 
         return Results.NoContent();

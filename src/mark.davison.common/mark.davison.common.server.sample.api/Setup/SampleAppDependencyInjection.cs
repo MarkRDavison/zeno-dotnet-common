@@ -13,6 +13,11 @@ public static class SampleAppDependencyInjection
                 _.GetRequiredService<IDbContextFactory<TestDbContext>>(),
                 _.GetRequiredService<ILogger<TestRepository>>())
             );
+        services.AddTransient<IReadonlyRepository>(_ =>
+            new TestRepository(
+                _.GetRequiredService<IDbContextFactory<TestDbContext>>(),
+                _.GetRequiredService<ILogger<TestRepository>>())
+            );
 
         services.AddSingleton<IHttpRepository>(_ =>
         {

@@ -3,14 +3,12 @@
 public class HydrateAuthenticationFromClaimsPrincipalMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IRepository _repository;
 
     public HydrateAuthenticationFromClaimsPrincipalMiddleware(
-        RequestDelegate next,
-        IRepository repository)
+        RequestDelegate next
+    )
     {
         _next = next;
-        _repository = repository;
     }
 
     public async Task Invoke(HttpContext context, ICurrentUserContext currentUserContext)
@@ -28,7 +26,11 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddleware
                 var subClaim = context.User.Claims.FirstOrDefault(_ => _.Type == ClaimTypes.NameIdentifier);
                 if (Guid.TryParse(subClaim?.Value, out var sub))
                 {
-                    user = await _repository.GetEntityAsync<User>(_ => _.Sub == sub, CancellationToken.None);
+                    var repository = context.RequestServices.GetRequiredService<IRepository>();
+                    await using (repository.BeginTransaction())
+                    {
+                        user = await repository.GetEntityAsync<User>(_ => _.Sub == sub, CancellationToken.None);
+                    }
                 }
             }
 

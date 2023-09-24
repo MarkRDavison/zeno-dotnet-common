@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace mark.davison.common.persistence.Controllers;
+﻿namespace mark.davison.common.persistence.Controllers;
 
 [ExcludeFromCodeCoverage] // TODO: Remove, use minimal apis instead
 public abstract class BaseController<T> : ControllerBase where T : BaseEntity, new()
