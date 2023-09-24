@@ -12,7 +12,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: true
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
+    - name: Setup Python3
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.x
+    - name: Restore dependencies
+      working-directory: ./src/mark.davison.common
+      run: dotnet restore
+    - name: Build
+      working-directory: ./src/mark.davison.common
+      run: dotnet build --no-restore
+    - name: Debug1
+      run: echo ${{ github.ref_name }}
+    - name: Debug2
+      run: python3 --version
