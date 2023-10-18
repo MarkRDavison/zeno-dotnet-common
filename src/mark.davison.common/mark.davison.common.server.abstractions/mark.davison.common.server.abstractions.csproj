@@ -3,7 +3,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageId>mark.davison.common.server.abstractions</PackageId>
+		<PackageId>markdavison.common.server.abstractions</PackageId>
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common server abstractions</Description>

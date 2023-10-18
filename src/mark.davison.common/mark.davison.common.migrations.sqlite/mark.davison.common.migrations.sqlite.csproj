@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<PackageId>mark.davison.common.migrations.sqlite</PackageId>
+	<PackageId>markdavison.common.migrations.sqlite</PackageId>
 	<IsPackable>true</IsPackable>
 	<Author>Mark Davison</Author>
 	<Description>Sqlite migrations</Description>

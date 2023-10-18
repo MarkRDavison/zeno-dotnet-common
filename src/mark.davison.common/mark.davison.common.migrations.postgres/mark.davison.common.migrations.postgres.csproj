@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PackageId>mark.davison.common.migrations.postgres</PackageId>
+    <PackageId>markdavison.common.migrations.postgres</PackageId>
     <IsPackable>true</IsPackable>
     <Author>Mark Davison</Author>
     <Description>Postgres migrations</Description>

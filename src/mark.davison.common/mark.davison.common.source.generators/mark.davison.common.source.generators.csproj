@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>true</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
-		<PackageId>mark.davison.common.source.generators</PackageId>
+		<PackageId>markdavison.common.source.generators</PackageId>
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common Source Generators</Description>

@@ -3,7 +3,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageId>mark.davison.common.persistence</PackageId>
+		<PackageId>markdavison.common.persistence</PackageId>
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common persistence utilities</Description>

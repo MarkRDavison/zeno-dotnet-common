@@ -3,7 +3,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageId>mark.davison.common.test</PackageId>
+		<PackageId>markdavison.common.test</PackageId>
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common test utilities</Description>
