@@ -309,4 +309,14 @@ public abstract class ChangesetQueue : IChangesetQueue
     {
         return GetEntitiesAsyncInternal<TEntity, TProjection>(predicate, null, includes, projection, cancellationToken);
     }
+
+    public async Task<bool> EntityExistsAsync<T>(Guid id, CancellationToken cancellationToken = default) where T : BaseEntity, new()
+    {
+        return null != await GetEntityAsync<T>(id, cancellationToken);
+    }
+
+    public async Task<bool> EntityExistsAsync<T>(Expression<Func<T, bool>>? predicate, CancellationToken cancellationToken = default) where T : BaseEntity, new()
+    {
+        return null != await GetEntityAsync<T>(predicate, cancellationToken);
+    }
 }

@@ -22,6 +22,8 @@ public interface IReadRepository
 
     Task<T?> GetEntityAsync<T>(Guid id, CancellationToken cancellationToken = default)
         where T : BaseEntity, new();
+    Task<bool> EntityExistsAsync<T>(Guid id, CancellationToken cancellationToken = default)
+        where T : BaseEntity, new();
 
     Task<T?> GetEntityAsync<T>(Guid id, Expression<Func<T, object>>[]? include, CancellationToken cancellationToken = default)
         where T : BaseEntity, new();
@@ -29,6 +31,8 @@ public interface IReadRepository
         where T : BaseEntity, new();
 
     Task<T?> GetEntityAsync<T>(Expression<Func<T, bool>>? predicate, CancellationToken cancellationToken = default)
+        where T : BaseEntity, new();
+    Task<bool> EntityExistsAsync<T>(Expression<Func<T, bool>>? predicate, CancellationToken cancellationToken = default)
         where T : BaseEntity, new();
 
     Task<T?> GetEntityAsync<T>(Expression<Func<T, bool>>? predicate, Expression<Func<T, object>>[]? include, CancellationToken cancellationToken = default)

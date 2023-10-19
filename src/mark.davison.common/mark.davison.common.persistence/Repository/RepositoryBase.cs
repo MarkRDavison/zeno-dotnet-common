@@ -161,6 +161,11 @@ public abstract class RepositoryBase<TContext> : IRepository
     {
         return GetEntityAsync<T>(id, (Expression<Func<T, object>>[]?)null, cancellationToken);
     }
+    public async Task<bool> EntityExistsAsync<T>(Guid id, CancellationToken cancellationToken = default)
+        where T : BaseEntity, new()
+    {
+        return null != await GetEntityAsync<T>(id, cancellationToken);
+    }
 
     public Task<T?> GetEntityAsync<T>(
         Guid id,
@@ -185,6 +190,11 @@ public abstract class RepositoryBase<TContext> : IRepository
         where T : BaseEntity, new()
     {
         return GetEntityAsync<T>(predicate, (Expression<Func<T, object>>[]?)null, cancellationToken);
+    }
+    public async Task<bool> EntityExistsAsync<T>(Expression<Func<T, bool>>? predicate, CancellationToken cancellationToken = default)
+        where T : BaseEntity, new()
+    {
+        return null != await GetEntityAsync<T>(predicate, cancellationToken);
     }
 
     public async Task<T?> GetEntityAsync<T>(
