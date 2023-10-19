@@ -316,6 +316,19 @@ public abstract class RepositoryBase<TContext> : IRepository
         return DeleteUnitOfWorkAsync<T>(entity, cancellationToken);
     }
 
+    public async Task<T?> DeleteEntityAsync<T>(
+        Guid id,
+        CancellationToken cancellationToken = default)
+        where T : BaseEntity, new()
+    {
+        var entity = await GetEntityAsync<T>(id, cancellationToken);
+        if (entity == null)
+        {
+            return null;
+        }
+        return await DeleteUnitOfWorkAsync<T>(entity, cancellationToken);
+    }
+
     public async Task<List<T>> DeleteEntitiesAsync<T>(
         List<T> entities,
         CancellationToken cancellationToken = default)
@@ -333,6 +346,18 @@ public abstract class RepositoryBase<TContext> : IRepository
         var entitiesToDelete = await GetEntitiesAsync<T>(_ => itemsToDeleteIds.Contains(_.Id), cancellationToken);
 
         return ContextRemoveRangeSaveChanges(_context, itemsToDelete, entitiesToDelete, cancellationToken);
+    }
+
+    public async Task<List<T>> DeleteEntitiesAsync<T>(
+        List<Guid> ids,
+        CancellationToken cancellationToken = default)
+        where T : BaseEntity, new()
+    {
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
+
+        var entitiesToDelete = await GetEntitiesAsync<T>(_ => ids.Contains(_.Id), cancellationToken);
+
+        return await DeleteEntitiesAsync<T>(entitiesToDelete, cancellationToken);
     }
 
     [ExcludeFromCodeCoverage]

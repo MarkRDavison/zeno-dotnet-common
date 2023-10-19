@@ -11,6 +11,12 @@ public interface IRepository : IReadonlyRepository
     Task<T?> DeleteEntityAsync<T>(T entity, CancellationToken cancellationToken = default)
         where T : BaseEntity, new();
 
+    Task<T?> DeleteEntityAsync<T>(Guid id, CancellationToken cancellationToken = default)
+        where T : BaseEntity, new();
+
     Task<List<T>> DeleteEntitiesAsync<T>(List<T> entities, CancellationToken cancellationToken = default)
+        where T : BaseEntity, new();
+
+    Task<List<T>> DeleteEntitiesAsync<T>(List<Guid> ids, CancellationToken cancellationToken = default)
         where T : BaseEntity, new();
 }
