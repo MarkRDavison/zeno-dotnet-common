@@ -2,7 +2,7 @@
 
 public static class PostEndpoints
 {
-    public static void UsePost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
+    public static IEndpointRouteBuilder UsePost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapPost(
@@ -14,6 +14,8 @@ public static class PostEndpoints
                     return await PostEntity<T>(entity, context, logger, cancellationToken);
                 }
             });
+
+        return endpoints;
     }
 
     public static async Task<IResult> PostEntity<T>(T entity, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)

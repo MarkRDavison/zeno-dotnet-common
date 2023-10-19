@@ -2,7 +2,7 @@
 
 public static class GetEndpoints
 {
-    public static void UseGet<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
+    public static IEndpointRouteBuilder UseGet<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapGet(
@@ -23,9 +23,11 @@ public static class GetEndpoints
                     }
                 }
             });
+
+        return endpoints;
     }
 
-    public static void UseGetById<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
+    public static IEndpointRouteBuilder UseGetById<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapGet(
@@ -46,5 +48,7 @@ public static class GetEndpoints
                     }
                 }
             });
+
+        return endpoints;
     }
 }

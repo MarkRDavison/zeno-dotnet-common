@@ -2,7 +2,7 @@
 
 public static class DeleteEndpoints
 {
-    public static void UseDelete<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
+    public static IEndpointRouteBuilder UseDelete<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapDelete(
@@ -14,6 +14,8 @@ public static class DeleteEndpoints
                     return await DeleteEntity<T>(id, context, logger, cancellationToken);
                 }
             });
+
+        return endpoints;
 
     }
     public static async Task<IResult> DeleteEntity<T>(Guid id, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
