@@ -3,6 +3,45 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
 {
+    public static void UseRedisSession(this IServiceCollection services,
+        AuthAppSettings authSettings,
+        RedisAppSettings redisSettings,
+        string appName,
+        bool productionMode)
+    {
+        services
+            .AddSession(o =>
+            {
+                o.Cookie.SameSite = SameSiteMode.None;
+                o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                o.Cookie.Name = authSettings.SESSION_NAME;
+                o.Cookie.HttpOnly = true;
+            });
+
+        if (string.IsNullOrEmpty(redisSettings.PASSWORD) ||
+            string.IsNullOrEmpty(redisSettings.HOST))
+        {
+            services
+                .AddDistributedMemoryCache();
+        }
+        else
+        {
+            var config = new ConfigurationOptions
+            {
+                EndPoints = { redisSettings.HOST + ":" + redisSettings.PORT },
+                Password = redisSettings.PASSWORD
+            };
+            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(config);
+            services.AddStackExchangeRedisCache(_ =>
+            {
+                _.InstanceName = appName.Replace('-', '_') + "_" + (productionMode ? "prod_" : "dev_");
+                _.Configuration = redis.Configuration;
+            });
+            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtectionKeys");
+            services.AddSingleton(redis);
+        }
+    }
+
     public static IServiceCollection AddZenoAuthentication(this IServiceCollection services, Action<ZenoAuthOptions> setupAction)
     {
         if (services == null)
