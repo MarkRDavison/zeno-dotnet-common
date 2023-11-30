@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>markdavison.common.client.abstractions</PackageId>
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common client abstractions</Description>
-		<PackageVersion>7.0.0</PackageVersion>
+		<PackageVersion>8.0.0</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />

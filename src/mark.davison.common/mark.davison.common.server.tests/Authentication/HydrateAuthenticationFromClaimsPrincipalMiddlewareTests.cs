@@ -99,7 +99,7 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddlewareTests
             new Claim(ClaimTypes.NameIdentifier, persistedUser.Sub.ToString()),
         }, "mock"));
         _context.User = user;
-        _context.Request.Headers.Add(ZenoAuthenticationConstants.HeaderNames.User, JsonSerializer.Serialize(persistedUser));
+        _context.Request.Headers.Append(ZenoAuthenticationConstants.HeaderNames.User, JsonSerializer.Serialize(persistedUser));
 
         _repository
             .Setup(_ => _

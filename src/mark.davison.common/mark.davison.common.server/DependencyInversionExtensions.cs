@@ -3,20 +3,11 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
 {
-    public static void UseRedisSession(this IServiceCollection services,
-        AuthAppSettings authSettings,
+    public static void UseRedis(this IServiceCollection services,
         RedisAppSettings redisSettings,
         string appName,
         bool productionMode)
     {
-        services
-            .AddSession(o =>
-            {
-                o.Cookie.SameSite = SameSiteMode.None;
-                o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                o.Cookie.Name = authSettings.SESSION_NAME;
-                o.Cookie.HttpOnly = true;
-            });
 
         if (string.IsNullOrEmpty(redisSettings.PASSWORD) ||
             string.IsNullOrEmpty(redisSettings.HOST))
@@ -40,6 +31,25 @@ public static class DependencyInversionExtensions
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtectionKeys");
             services.AddSingleton(redis);
         }
+    }
+
+    public static void UseRedisSession(this IServiceCollection services,
+        AuthAppSettings authSettings,
+        RedisAppSettings redisSettings,
+        string appName,
+        bool productionMode)
+    {
+        services
+            .AddSession(o =>
+            {
+                o.Cookie.SameSite = SameSiteMode.None;
+                o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                o.Cookie.Name = authSettings.SESSION_NAME;
+                o.Cookie.HttpOnly = true;
+            });
+
+        services
+            .UseRedis(redisSettings, appName, productionMode);
     }
 
     public static IServiceCollection AddZenoAuthentication(this IServiceCollection services, Action<ZenoAuthOptions> setupAction)
