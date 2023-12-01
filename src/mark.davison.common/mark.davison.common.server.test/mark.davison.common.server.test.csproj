@@ -11,6 +11,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common.server.abstractions\mark.davison.common.server.abstractions.csproj" />
+		<ProjectReference Include="..\mark.davison.common.test\mark.davison.common.test.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
