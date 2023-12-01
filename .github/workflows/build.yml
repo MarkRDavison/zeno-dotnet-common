@@ -26,3 +26,6 @@ jobs:
     - name: Build
       working-directory: ./src/mark.davison.common
       run: dotnet build --no-restore
+    - name: Build
+      working-directory: ./src/mark.davison.common
+      run: dotnet test --no-restore
