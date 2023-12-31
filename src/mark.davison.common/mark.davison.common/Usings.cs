@@ -1,4 +1,5 @@
-﻿global using mark.davison.common.Instrumentation;
+﻿global using mark.davison.common.Changeset;
+global using mark.davison.common.Instrumentation;
 global using Microsoft.Extensions.Logging;
 global using Remote.Linq;
 global using Remote.Linq.Text.Json;

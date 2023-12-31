@@ -10,7 +10,8 @@ public static class SerializationHelpers
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             Converters =
             {
-                new JsonStringEnumConverter()
+                new JsonStringEnumConverter(),
+                new DiscriminatedPropertyChangesetJsonConverter()
             }
         };
 }
