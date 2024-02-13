@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.tests.Utility;
+﻿namespace mark.davison.common.test;
 
 public class TestHttpMessageHandler : HttpMessageHandler
 {
