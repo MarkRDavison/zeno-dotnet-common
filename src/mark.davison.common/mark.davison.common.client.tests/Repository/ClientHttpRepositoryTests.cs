@@ -4,20 +4,22 @@ internal class TestClientHttpRepository : ClientHttpRepository
 {
     public TestClientHttpRepository(
         string remoteEndpoint,
-        HttpClient httpClient
+        HttpClient httpClient,
+        ILogger<TestClientHttpRepository> logger
     ) : base(
         remoteEndpoint,
-        httpClient)
+        httpClient,
+        logger)
     {
     }
 }
 
-internal class TestGetResponse
+internal class TestGetResponse : Response
 {
     public string TestValue { get; set; } = string.Empty;
 }
 
-internal class TestPostResponse
+internal class TestPostResponse : Response
 {
     public string TestValue { get; set; } = string.Empty;
 }
@@ -40,13 +42,15 @@ public class ClientHttpRepositoryTests
 {
     private ClientHttpRepository _clientHttpRepository = default!;
     private MockHttpMessageHandler _httpMessageHandler = default!;
+    private ILogger<TestClientHttpRepository> _logger = default!;
     private string _remoteEndpoint = "https://localhost:8080/";
 
     [TestInitialize]
     public void TestInitialize()
     {
+        _logger = LoggerFactory.Create(_ => { }).CreateLogger<TestClientHttpRepository>();
         _httpMessageHandler = new MockHttpMessageHandler();
-        _clientHttpRepository = new TestClientHttpRepository(_remoteEndpoint, new HttpClient(_httpMessageHandler));
+        _clientHttpRepository = new TestClientHttpRepository(_remoteEndpoint, new HttpClient(_httpMessageHandler), _logger);
     }
 
     [TestMethod]

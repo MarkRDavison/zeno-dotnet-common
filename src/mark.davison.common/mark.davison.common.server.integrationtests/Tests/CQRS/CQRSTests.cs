@@ -1,7 +1,4 @@
-﻿using mark.davison.common.server.sample.cqrs.Models.Commands;
-using mark.davison.common.server.sample.cqrs.Models.Queries;
-
-namespace mark.davison.common.server.integrationtests.Tests.CQRS;
+﻿namespace mark.davison.common.server.integrationtests.Tests.CQRS;
 
 [TestClass]
 public class CQRSTests : IntegrationTestBase<SampleApplicationFactory, AppSettings>

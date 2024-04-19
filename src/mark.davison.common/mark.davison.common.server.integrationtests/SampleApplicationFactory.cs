@@ -1,6 +1,4 @@
-﻿using mark.davison.common.server.integrationtests.Tests.Defaulters;
-
-namespace mark.davison.common.server.integrationtests;
+﻿namespace mark.davison.common.server.integrationtests;
 
 public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {
@@ -27,7 +25,8 @@ public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonW
         services.AddSingleton<IAuthenticationConfig>(config);
         services.AddSingleton<IClientHttpRepository>(_ => new SampleClientHttpRepository(
             _.GetRequiredService<IAuthenticationConfig>().BffBase,
-            CreateClient()));
+            CreateClient(),
+            _.GetRequiredService<ILogger<SampleClientHttpRepository>>()));
 
         services.UseSampleApp(new()
         {

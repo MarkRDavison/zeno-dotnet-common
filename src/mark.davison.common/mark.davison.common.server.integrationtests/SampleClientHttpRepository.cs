@@ -4,10 +4,12 @@ public class SampleClientHttpRepository : ClientHttpRepository
 {
     public SampleClientHttpRepository(
         string remoteEndpoint,
-        HttpClient httpClient
+        HttpClient httpClient,
+        ILogger<SampleClientHttpRepository> logger
     ) : base(
         remoteEndpoint,
-        httpClient)
+        httpClient,
+        logger)
     {
     }
 }

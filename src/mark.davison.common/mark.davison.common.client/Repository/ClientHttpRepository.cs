@@ -5,21 +5,23 @@ public abstract class ClientHttpRepository : IClientHttpRepository
     private readonly string _remoteEndpoint;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
+    private readonly ILogger _logger;
 
-    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient) : this(remoteEndpoint, httpClient, SerializationHelpers.CreateStandardSerializationOptions())
+    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, ILogger logger) : this(remoteEndpoint, httpClient, logger, SerializationHelpers.CreateStandardSerializationOptions())
     {
     }
 
-    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
+    public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, ILogger logger, JsonSerializerOptions options)
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;
         _options = options;
+        _logger = logger;
     }
 
     public async Task<TResponse> Get<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken)
         where TRequest : class, IQuery<TRequest, TResponse>
-        where TResponse : class, new()
+        where TResponse : Response, new()
     {
         // TODO: Source Generator-ify this
         var attribute = typeof(TRequest).CustomAttributes.FirstOrDefault(_ => _.AttributeType == typeof(GetRequestAttribute));
@@ -35,20 +37,30 @@ public abstract class ClientHttpRepository : IClientHttpRepository
             $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}{queryParameters.CreateQueryString()}");
         using var response = await _httpClient.SendAsync(requestMessage);
         var body = await response.Content.ReadAsStringAsync();
-        var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
-        return obj ?? new TResponse();
+        try
+        {
+            var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
+            return obj ?? new TResponse();
+        }
+        catch (Exception e)
+        {
+            return new TResponse()
+            {
+                Errors = [e.Message]
+            };
+        }
     }
 
     public Task<TResponse> Get<TResponse, TRequest>(CancellationToken cancellationToken)
         where TRequest : class, IQuery<TRequest, TResponse>, new()
-        where TResponse : class, new()
+        where TResponse : Response, new()
     {
         return Get<TResponse, TRequest>(new TRequest(), cancellationToken);
     }
 
     public async Task<TResponse> Post<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken)
         where TRequest : class, ICommand<TRequest, TResponse>
-        where TResponse : class, new()
+        where TResponse : Response, new()
     {
         // TODO: Source Generator-ify this
         var attribute = typeof(TRequest).CustomAttributes.FirstOrDefault(_ => _.AttributeType == typeof(PostRequestAttribute));
@@ -67,13 +79,23 @@ public abstract class ClientHttpRepository : IClientHttpRepository
         };
         using var response = await _httpClient.SendAsync(requestMessage);
         var body = await response.Content.ReadAsStringAsync();
-        var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
-        return obj ?? new TResponse();
+        try
+        {
+            var obj = JsonSerializer.Deserialize<TResponse>(body, _options);
+            return obj ?? new TResponse();
+        }
+        catch (Exception e)
+        {
+            return new TResponse()
+            {
+                Errors = [e.Message]
+            };
+        }
     }
 
     public Task<TResponse> Post<TResponse, TRequest>(CancellationToken cancellationToken)
         where TRequest : class, ICommand<TRequest, TResponse>, new()
-        where TResponse : class, new()
+        where TResponse : Response, new()
     {
         return Post<TResponse, TRequest>(new TRequest(), cancellationToken);
     }

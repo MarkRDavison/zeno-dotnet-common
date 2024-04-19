@@ -12,6 +12,7 @@ global using mark.davison.common.source.generators.CQRS;
 global using mark.davison.common.test;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;
 global using System.Net;
