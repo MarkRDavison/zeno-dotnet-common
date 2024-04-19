@@ -12,7 +12,7 @@ public class RequestResponseLoggingMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
         if (!context.Request.Path.ToString().Contains("health"))
         {
             Console.WriteLine("========== REQ START ==========");

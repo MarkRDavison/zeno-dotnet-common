@@ -1,4 +1,5 @@
-﻿namespace mark.davison.common.server.EventDriven;
+﻿
+namespace mark.davison.common.server.EventDriven;
 
 public abstract class ChangesetQueue : IChangesetQueue
 {
@@ -246,7 +247,10 @@ public abstract class ChangesetQueue : IChangesetQueue
                     remoteApplied = ChangesetUtilities.Apply<TEntity>(remoteApplied, cs);
                 }
 
-                remoteAppliedEntities.Add(remoteApplied);
+                if (remoteApplied != null)
+                {
+                    remoteAppliedEntities.Add(remoteApplied);
+                }
             }
 
             var remoteIds = remoteAppliedEntities.Select(_ => _.Id).ToHashSet();
@@ -318,5 +322,10 @@ public abstract class ChangesetQueue : IChangesetQueue
     public async Task<bool> EntityExistsAsync<T>(Expression<Func<T, bool>>? predicate, CancellationToken cancellationToken = default) where T : BaseEntity, new()
     {
         return null != await GetEntityAsync<T>(predicate, cancellationToken);
+    }
+
+    public IQueryable<T> QueryEntities<T>() where T : BaseEntity, new()
+    {
+        throw new InvalidOperationException("This is unsupported.");
     }
 }

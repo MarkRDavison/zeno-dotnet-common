@@ -84,7 +84,6 @@ public abstract class RepositoryBase<TContext> : IRepository
         _logger = logger;
     }
 
-
     public IQueryable<T> QueryEntities<T>()
         where T : BaseEntity, new()
     {
