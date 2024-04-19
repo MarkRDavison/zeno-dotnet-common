@@ -17,6 +17,6 @@
 		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
 	</ItemGroup>
 </Project>
