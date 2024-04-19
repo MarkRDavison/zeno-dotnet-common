@@ -2,6 +2,9 @@
 
 public interface IReadRepository
 {
+    IQueryable<T> QueryEntities<T>()
+        where T : BaseEntity, new();
+
     Task<List<T>> GetEntitiesAsync<T>(CancellationToken cancellationToken = default)
         where T : BaseEntity, new();
 

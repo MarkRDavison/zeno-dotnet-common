@@ -85,6 +85,16 @@ public abstract class RepositoryBase<TContext> : IRepository
     }
 
 
+    public IQueryable<T> QueryEntities<T>()
+        where T : BaseEntity, new()
+    {
+        if (_context == null) throw new InvalidOperationException("Cannot interact with repository without starting a transaction");
+
+        var set = _context.Set<T>();
+
+        return set.AsNoTracking();
+    }
+
     public Task<List<T>> GetEntitiesAsync<T>(
         CancellationToken cancellationToken = default)
         where T : BaseEntity, new()
