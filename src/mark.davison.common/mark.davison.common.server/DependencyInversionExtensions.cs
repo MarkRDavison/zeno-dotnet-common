@@ -3,7 +3,38 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
 {
-    public static void UseRedis(this IServiceCollection services,
+    public static IServiceCollection UseRateLimiter(this IServiceCollection services)
+    {
+        services.AddTransient<IRateLimitServiceFactory, RateLimitServiceFactory>();
+        return services;
+    }
+
+    public static IServiceCollection UseNotificationHub(this IServiceCollection services)
+    {
+        services.AddSingleton<INotificationHub, NotificationHub>();
+        return services;
+    }
+
+    public static IServiceCollection UseConsoleNotifications(this IServiceCollection services)
+    {
+        services.AddSingleton<IConsoleNotificationService, ConsoleNotificationService>();
+        return services;
+    }
+
+    public static IServiceCollection UseMatrixNotifications(this IServiceCollection services)
+    {
+        services.AddSingleton<IMatrixNotificationService, MatrixNotificationService>();
+        services.UseMatrixClient();
+        return services;
+    }
+    public static IServiceCollection UseMatrixClient(this IServiceCollection services)
+    {
+        services.AddSingleton<IMatrixClient, MatrixClient>();
+        services.AddHttpClient(MatrixConstants.HttpClientName);
+        return services;
+    }
+
+    public static IServiceCollection UseRedis(this IServiceCollection services,
         RedisAppSettings redisSettings,
         string appName,
         bool productionMode)
@@ -31,9 +62,10 @@ public static class DependencyInversionExtensions
             services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtectionKeys");
             services.AddSingleton(redis);
         }
+        return services;
     }
 
-    public static void UseRedisSession(this IServiceCollection services,
+    public static IServiceCollection UseRedisSession(this IServiceCollection services,
         AuthAppSettings authSettings,
         RedisAppSettings redisSettings,
         string appName,
@@ -50,6 +82,7 @@ public static class DependencyInversionExtensions
 
         services
             .UseRedis(redisSettings, appName, productionMode);
+        return services;
     }
 
     public static IServiceCollection AddZenoAuthentication(this IServiceCollection services, Action<ZenoAuthOptions> setupAction)
@@ -74,12 +107,14 @@ public static class DependencyInversionExtensions
         return services;
     }
 
-    public static void ConfigureHealthCheckServices(this IServiceCollection services)
+    public static IServiceCollection ConfigureHealthCheckServices(this IServiceCollection services)
     {
         services.ConfigureHealthCheckServices<GenericApplicationHealthStateHostedService>();
+
+        return services;
     }
 
-    public static void ConfigureHealthCheckServices<THealthHosted>(this IServiceCollection services)
+    public static IServiceCollection ConfigureHealthCheckServices<THealthHosted>(this IServiceCollection services)
         where THealthHosted : class, IApplicationHealthStateHostedService
     {
         services.AddSingleton<IApplicationHealthState, ApplicationHealthState>();
@@ -90,6 +125,8 @@ public static class DependencyInversionExtensions
             .AddCheck<ReadyHealthCheck>(ReadyHealthCheck.Name);
 
         services.AddHostedService<THealthHosted>();
+
+        return services;
     }
 
     public static void MapHealthChecks(this IEndpointRouteBuilder endpoints)
