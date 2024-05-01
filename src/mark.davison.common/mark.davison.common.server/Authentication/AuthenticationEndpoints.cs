@@ -250,16 +250,44 @@ public static class AuthenticationEndpoints
             return Results.Unauthorized();
         }
 
-        var handler = new JwtSecurityTokenHandler();
-        var accessToken = handler.ReadJwtToken(accessTokenString);
-        if (dateService.Now >= accessToken.ValidTo)
+        var tokens = await EnsureValidAccessToken(
+            accessTokenString,
+            refreshTokenString,
+            dateService,
+            httpClientFactory,
+            zenoAuthOptions,
+            zenoAuthenticationSession,
+            logger,
+            cancellationToken);
+        if (!tokens.Valid)
         {
+            return Results.Unauthorized();
+        }
+
+        return Results.Ok(profile);
+    }
+
+    internal static async Task<AuthTokens> EnsureValidAccessToken(
+        string accessToken,
+        string refreshToken,
+        IDateService dateService,
+        IHttpClientFactory httpClientFactory,
+        ZenoAuthOptions zenoAuthOptions,
+        IZenoAuthenticationSession zenoAuthenticationSession,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var accessTokenJwt = handler.ReadJwtToken(accessToken);
+        if (dateService.Now > accessTokenJwt.ValidTo)
+        {
+            logger.LogInformation("Token is invalid due to date - refreshing");
             Dictionary<string, string> nameValueCollection = new Dictionary<string, string>
             {
                 { OauthParamNames.GrantType, OauthParams.RefreshTokenGrantType },
                 { OauthParamNames.ClientId, zenoAuthOptions.ClientId },
                 { OauthParamNames.ClientSecret, zenoAuthOptions.ClientSecret },
-                { OauthParamNames.RefreshToken, refreshTokenString }
+                { OauthParamNames.RefreshToken, refreshToken }
             };
 
             HttpClient client = httpClientFactory.CreateClient(AuthClientName);
@@ -277,10 +305,11 @@ public static class AuthenticationEndpoints
             };
 
             AuthTokens? tokens = null;
-            using (HttpResponseMessage httpResponseMessage = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted))
+            using (HttpResponseMessage httpResponseMessage = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
             {
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
+                    logger.LogInformation("Refreshed tokens successfully");
                     tokens = JsonSerializer.Deserialize<AuthTokens>(await httpResponseMessage.Content.ReadAsStringAsync());
                 }
             }
@@ -289,16 +318,22 @@ public static class AuthenticationEndpoints
             {
                 zenoAuthenticationSession.Clear();
                 await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
-                return Results.Unauthorized();
+                return new AuthTokens();
             }
             else
             {
                 zenoAuthenticationSession.SetString(SessionNames.AccessToken, tokens.access_token);
                 zenoAuthenticationSession.SetString(SessionNames.RefreshToken, tokens.refresh_token);
                 await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
+
+                return tokens;
             }
         }
 
-        return Results.Ok(profile);
+        return new AuthTokens
+        {
+            access_token = accessToken,
+            refresh_token = refreshToken
+        };
     }
 }

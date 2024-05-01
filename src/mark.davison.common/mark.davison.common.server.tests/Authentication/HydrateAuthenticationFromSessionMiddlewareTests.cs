@@ -5,10 +5,15 @@ public class HydrateAuthenticationFromSessionMiddlewareTests
 {
     private readonly Mock<ICurrentUserContext> _currentUserContext = new(MockBehavior.Strict);
     private readonly Mock<IZenoAuthenticationSession> _zenoAuthenticationSession = new(MockBehavior.Strict);
+    private readonly Mock<IDateService> _dateService = new(MockBehavior.Strict);
+    private readonly Mock<IHttpClientFactory> _httpClientFactory = new(MockBehavior.Strict);
+    private readonly ZenoAuthOptions _zenoAuthOptions = new();
+    private readonly Mock<ILogger<HydrateAuthenticationFromSessionMiddleware>> _logger = new(MockBehavior.Loose);
     private readonly HydrateAuthenticationFromSessionMiddleware _middleware;
     private readonly HttpContext _context;
     private bool _nextInvoked;
     private string _accessToken = string.Empty;
+    private string _refreshToken = string.Empty;
     private string _user = string.Empty;
     private string _userProfile = string.Empty;
 
@@ -16,15 +21,29 @@ public class HydrateAuthenticationFromSessionMiddlewareTests
     {
         _currentUserContext.SetupAllProperties();
         _middleware = new(_ =>
-        {
-            _nextInvoked = true;
-            return Task.CompletedTask;
-        }, _zenoAuthenticationSession.Object);
+            {
+                _nextInvoked = true;
+                return Task.CompletedTask;
+            },
+            _zenoAuthenticationSession.Object,
+            _dateService.Object,
+            _httpClientFactory.Object,
+            Options.Create(_zenoAuthOptions),
+            _logger.Object);
         _context = new DefaultHttpContext();
+        _dateService.Setup(_ => _.Now).Returns(DateTime.MinValue);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.LoadSessionAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         _zenoAuthenticationSession
             .Setup(_ => _.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken))
             .Returns(() => _accessToken);
+
+        _zenoAuthenticationSession
+            .Setup(_ => _.GetString(ZenoAuthenticationConstants.SessionNames.RefreshToken))
+            .Returns(() => _refreshToken);
 
         _zenoAuthenticationSession
             .Setup(_ => _.GetString(ZenoAuthenticationConstants.SessionNames.User))
@@ -89,7 +108,7 @@ public class HydrateAuthenticationFromSessionMiddlewareTests
         var user = new User { };
         var userProfile = new UserProfile { };
 
-        _accessToken = "TOKEN";
+        _accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
         _user = JsonSerializer.Serialize(user);
         _userProfile = JsonSerializer.Serialize(userProfile);
 
@@ -115,7 +134,8 @@ public class HydrateAuthenticationFromSessionMiddlewareTests
             family_name = "person"
         };
 
-        _accessToken = "TOKEN";
+        _accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        _refreshToken = "REFRESH";
         _user = JsonSerializer.Serialize(user);
         _userProfile = JsonSerializer.Serialize(userProfile);
 
