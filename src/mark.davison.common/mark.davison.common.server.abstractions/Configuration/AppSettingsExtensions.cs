@@ -46,13 +46,27 @@ public static class AppSettingsExtensions
                         {
                             value += ", ";
                         }
-                        value += en.ToString();
+
+                        var currentValue = en?.ToString();
+
+                        if (string.IsNullOrEmpty(currentValue))
+                        {
+                            continue;
+                        }
+
+                        value = currentValue;
+                        if (secret)
+                        {
+                            value += new string('*', Math.Min(currentValue.Length + Random.Shared.Next(-10, +10), 10));
+                        }
                     }
                 }
-
-                if (secret)
+                else
                 {
-                    value = new string('*', value.Length);
+                    if (secret)
+                    {
+                        value = new string('*', Math.Min(value.Length + Random.Shared.Next(-10, +10), 10));
+                    }
                 }
 
                 builder.AppendLine(new string(' ', (depth + 1) * 4) + property.Name + ": " + value);

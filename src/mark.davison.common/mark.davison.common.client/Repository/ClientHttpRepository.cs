@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.client.Repository;
+﻿using System.Net;
+
+namespace mark.davison.common.client.Repository;
 
 public abstract class ClientHttpRepository : IClientHttpRepository
 {
@@ -36,6 +38,12 @@ public abstract class ClientHttpRepository : IClientHttpRepository
             HttpMethod.Get,
             $"{_remoteEndpoint}/api/{pathValue!.TrimStart('/')}{queryParameters.CreateQueryString()}");
         using var response = await _httpClient.SendAsync(requestMessage);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            OnInvalidResponse?.Invoke(this, response.StatusCode);
+        }
+
         var body = await response.Content.ReadAsStringAsync();
         try
         {
@@ -78,6 +86,12 @@ public abstract class ClientHttpRepository : IClientHttpRepository
             Content = content
         };
         using var response = await _httpClient.SendAsync(requestMessage);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            OnInvalidResponse?.Invoke(this, response.StatusCode);
+        }
+
         var body = await response.Content.ReadAsStringAsync();
         try
         {
@@ -119,4 +133,6 @@ public abstract class ClientHttpRepository : IClientHttpRepository
 
         return queryParameters;
     }
+
+    public event EventHandler<HttpStatusCode> OnInvalidResponse = default!;
 }

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.client.abstractions.Repository;
+﻿using System.Net;
+
+namespace mark.davison.common.client.abstractions.Repository;
 
 public interface IClientHttpRepository
 {
@@ -18,5 +20,7 @@ public interface IClientHttpRepository
     Task<TResponse> Post<TResponse, TRequest>(CancellationToken cancellationToken)
         where TRequest : class, ICommand<TRequest, TResponse>, new()
         where TResponse : Response, new();
+
+    event EventHandler<HttpStatusCode> OnInvalidResponse;
 
 }
