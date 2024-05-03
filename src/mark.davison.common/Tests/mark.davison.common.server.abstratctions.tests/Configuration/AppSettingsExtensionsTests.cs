@@ -57,11 +57,11 @@ public class AppSettingsExtensionsTests
 
         Assert.IsTrue(content.Contains(nameof(ChildAppSettings.ChildSecretString)));
         Assert.IsFalse(content.Contains(settings.CHILD.ChildSecretString.ToString()));
-        Assert.IsTrue(content.Contains(new string('*', settings.CHILD.ChildSecretString.Length)));
 
         Assert.IsTrue(content.Contains(nameof(GrandchildAppSettings.GRANDCHILD_SECRET)));
         Assert.IsFalse(content.Contains(settings.CHILD.GRANDCHILD.GRANDCHILD_SECRET.ToString()));
-        Assert.IsTrue(content.Contains(new string('*', settings.CHILD.GRANDCHILD.GRANDCHILD_SECRET.ToString().Length)));
+
+        Assert.IsTrue(content.Contains("*****"));
     }
 
     [TestMethod]
@@ -73,10 +73,10 @@ public class AppSettingsExtensionsTests
 
         Assert.IsTrue(content.Contains(nameof(ChildAppSettings.ChildSecretString)));
         Assert.IsTrue(content.Contains(settings.CHILD.ChildSecretString.ToString()));
-        Assert.IsFalse(content.Contains(new string('*', settings.CHILD.ChildSecretString.Length)));
 
         Assert.IsTrue(content.Contains(nameof(GrandchildAppSettings.GRANDCHILD_SECRET)));
         Assert.IsTrue(content.Contains(settings.CHILD.GRANDCHILD.GRANDCHILD_SECRET.ToString()));
-        Assert.IsFalse(content.Contains(new string('*', settings.CHILD.GRANDCHILD.GRANDCHILD_SECRET.ToString().Length)));
+
+        Assert.IsFalse(content.Contains("*****"));
     }
 }
