@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.abstractions.Configuration;
+﻿using System.Collections;
+
+namespace mark.davison.common.server.abstractions.Configuration;
 
 public static class AppSettingsExtensions
 {
@@ -20,6 +22,7 @@ public static class AppSettingsExtensions
         foreach (var property in type.GetProperties())
         {
             if (property.Name == nameof(IAppSettings.SECTION)) { continue; }
+            if (!property.CanRead || !property.CanWrite) { continue; }
             if (property.PropertyType.IsAssignableTo(typeof(IAppSettings)))
             {
                 if (property.GetValue(settings) is IAppSettings appSettings)
@@ -30,13 +33,29 @@ public static class AppSettingsExtensions
             else
             {
                 var secret = safe && property.CustomAttributes.Any(_ => _.AttributeType == typeof(AppSettingSecretAttribute));
-                var value = property.GetValue(settings)?.ToString() ?? string.Empty;
+                var propertyValue = property.GetValue(settings);
+
+                var value = propertyValue?.ToString() ?? string.Empty;
+
+                if (!(value is string) && value is IEnumerable enumerable)
+                {
+                    value = string.Empty;
+                    foreach (var en in enumerable)
+                    {
+                        if (value != string.Empty)
+                        {
+                            value += ", ";
+                        }
+                        value += en.ToString();
+                    }
+                }
+
                 if (secret)
                 {
                     value = new string('*', value.Length);
                 }
 
-                builder.AppendLine(new string(' ', depth * 4) + property.Name + ": " + value);
+                builder.AppendLine(new string(' ', (depth + 1) * 4) + property.Name + ": " + value);
             }
         }
     }
