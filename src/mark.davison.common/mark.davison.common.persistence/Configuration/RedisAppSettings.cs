@@ -6,5 +6,6 @@ public class RedisAppSettings : IAppSettings
     public string SECTION => "REDIS";
     public string HOST { get; set; } = string.Empty;
     public int PORT { get; set; } = 6379;
+    [AppSettingSecret]
     public string? PASSWORD { get; set; }
 }

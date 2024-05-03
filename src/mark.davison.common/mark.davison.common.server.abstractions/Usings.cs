@@ -7,6 +7,6 @@ global using mark.davison.common.server.abstractions.Configuration;
 global using mark.davison.common.server.abstractions.Identification;
 global using mark.davison.common.server.abstractions.Repository;
 global using Microsoft.Extensions.Hosting;
-global using System.Diagnostics.CodeAnalysis;
 global using System.Linq.Expressions;
+global using System.Text;
 global using System.Text.Json;

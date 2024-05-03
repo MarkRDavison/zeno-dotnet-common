@@ -7,6 +7,7 @@ public class AuthAppSettings : IAppSettings
 
     public string AUTHORITY { get; set; } = string.Empty;
     public string CLIENT_ID { get; set; } = string.Empty;
+    [AppSettingSecret]
     public string CLIENT_SECRET { get; set; } = string.Empty;
     public string SESSION_NAME { get; set; } = string.Empty;
     public string SCOPE { get; set; } = string.Empty;
