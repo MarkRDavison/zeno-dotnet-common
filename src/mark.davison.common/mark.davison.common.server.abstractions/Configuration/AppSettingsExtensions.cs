@@ -57,7 +57,7 @@ public static class AppSettingsExtensions
                         value = currentValue;
                         if (secret)
                         {
-                            value += new string('*', Math.Min(currentValue.Length + Random.Shared.Next(-10, +10), 10));
+                            value += new string('*', Math.Max(currentValue.Length + Random.Shared.Next(0, 20) - 10, 5));
                         }
                     }
                 }
@@ -65,7 +65,7 @@ public static class AppSettingsExtensions
                 {
                     if (secret)
                     {
-                        value = new string('*', Math.Min(value.Length + Random.Shared.Next(-10, +10), 10));
+                        value = new string('*', Math.Max(value.Length + Random.Shared.Next(0, 20) - 10, 5));
                     }
                 }
 
