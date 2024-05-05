@@ -19,4 +19,12 @@
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="wwwroot\css\mark.davison.common.client.css">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\js\mark.davison.common.client.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 </Project>
