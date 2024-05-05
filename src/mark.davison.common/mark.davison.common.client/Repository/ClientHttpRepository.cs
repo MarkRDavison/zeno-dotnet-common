@@ -2,7 +2,7 @@
 
 namespace mark.davison.common.client.Repository;
 
-public abstract class ClientHttpRepository : IClientHttpRepository
+public class ClientHttpRepository : IClientHttpRepository
 {
     private readonly string _remoteEndpoint;
     private readonly HttpClient _httpClient;

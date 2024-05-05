@@ -1,0 +1,34 @@
+﻿@inject IJSRuntime _jsRuntime;
+
+@if (!AuthenticationContext.IsAuthenticated)
+{
+    <div class="entire-app-loading" />
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+
+    [Parameter, EditorRequired]
+    public required IAuthenticationConfig AuthenticationConfig { get; set; }
+
+    [Inject]
+    public required IAuthenticationContext AuthenticationContext { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var bffRoot = await _jsRuntime.InvokeAsync<string>("GetBffUri", null);
+
+        if (!string.IsNullOrEmpty(bffRoot))
+        {
+            AuthenticationConfig.SetBffBase(bffRoot);
+        }
+
+        await AuthenticationContext.ValidateAuthState();
+    }
+}

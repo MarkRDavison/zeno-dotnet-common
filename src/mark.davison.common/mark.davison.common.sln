@@ -42,8 +42,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.sample.api", "mark.davison.common.server.sample.api\mark.davison.common.server.sample.api.csproj", "{A0928912-EB94-4084-B820-8E1EC89D80DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.components", "mark.davison.common.components\mark.davison.common.components.csproj", "{3D9ACCA6-7C67-482E-B284-4EE098515206}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.persistence.tests", "Tests\mark.davison.common.persistence.tests\mark.davison.common.persistence.tests.csproj", "{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.source.generators", "mark.davison.common.source.generators\mark.davison.common.source.generators.csproj", "{C46C1155-6346-4046-9AAC-865F2DE0EEFE}"
@@ -52,9 +50,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.server.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.client.tests.cqrs", "mark.davison.common.client.tests.cqrs\mark.davison.common.client.tests.cqrs.csproj", "{A0BE4BB6-EE9C-4061-99E0-0451CC1C087F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.migrations.postgres", "mark.davison.common.migrations.postgres\mark.davison.common.migrations.postgres.csproj", "{82D44E97-0A90-4C04-94AB-5C7F83DC4A06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.migrations.postgres", "mark.davison.common.migrations.postgres\mark.davison.common.migrations.postgres.csproj", "{82D44E97-0A90-4C04-94AB-5C7F83DC4A06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.migrations.sqlite", "mark.davison.common.migrations.sqlite\mark.davison.common.migrations.sqlite.csproj", "{95A00F12-9141-4CCB-8186-9BEB2817C5AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.migrations.sqlite", "mark.davison.common.migrations.sqlite\mark.davison.common.migrations.sqlite.csproj", "{95A00F12-9141-4CCB-8186-9BEB2817C5AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,10 +116,6 @@ Global
 		{A0928912-EB94-4084-B820-8E1EC89D80DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0928912-EB94-4084-B820-8E1EC89D80DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0928912-EB94-4084-B820-8E1EC89D80DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D9ACCA6-7C67-482E-B284-4EE098515206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D9ACCA6-7C67-482E-B284-4EE098515206}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D9ACCA6-7C67-482E-B284-4EE098515206}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D9ACCA6-7C67-482E-B284-4EE098515206}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCF37C56-E626-4388-A0C1-48A8D6DFBEA9}.Release|Any CPU.ActiveCfg = Release|Any CPU

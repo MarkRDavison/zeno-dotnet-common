@@ -2,12 +2,129 @@
 
 public static class DependencyInjectionExtensions
 {
-    private static void AddSingleton<TAbstraction, TImplementation>(IServiceCollection services) where TAbstraction : class where TImplementation : class, TAbstraction
+    public static IServiceCollection UseCommonClient(
+        this IServiceCollection services,
+        IAuthenticationConfig authConfig,
+        params Type[] types)
+    {
+
+        services
+            .AddTransient(typeof(ModalViewModel<,>))
+            .AddSingleton<IAuthenticationConfig>(authConfig)
+            .AddSingleton<IAuthenticationContext, AuthenticationContext>()
+            .AddSingleton<IDateService>(_ => new DateService(DateService.DateMode.Local))
+            .AddSingleton<IClientNavigationManager, ClientNavigationManager>();
+
+        // TODO: To source generator
+        {
+            var method = typeof(DependencyInjectionExtensions).GetMethod(nameof(AddTransient), BindingFlags.Static | BindingFlags.NonPublic)!;
+
+            Type formSubmissionType = typeof(IFormSubmission<>);
+            foreach (Type concreteType in (from _ in types.SelectMany((_) => _.Assembly.ExportedTypes)
+                                           where _.GetInterfaces().Any((__) => __.IsGenericType && __.GetGenericTypeDefinition() == formSubmissionType)
+                                           select _).ToList())
+            {
+
+                Type[] genericArguments = concreteType.GetInterfaces().First((__) => __.IsGenericType && __.GetGenericTypeDefinition() == formSubmissionType).GetGenericArguments();
+                if (genericArguments.Length == 1)
+                {
+                    Type type = genericArguments[0];
+                    Type interfaceType = formSubmissionType.MakeGenericType(type);
+                    MethodInfo methodInfo2 = method.MakeGenericMethod(interfaceType, concreteType);
+                    methodInfo2.Invoke(null, new[] { services });
+                }
+
+            }
+        }
+
+        return services;
+    }
+
+    public static IServiceCollection UseFluxorState(
+        this IServiceCollection services,
+        params Type[] types)
+    {
+        services
+            .AddScoped<IStoreHelper, StoreHelper>()
+            .AddFluxor(_ =>
+            {
+                foreach (var type in types)
+                {
+                    _.ScanAssemblies(type.Assembly);
+                }
+            });
+
+        return services;
+    }
+
+    public static IServiceCollection UseClientRepository(this IServiceCollection services, string httpClientName, string localBffRoot)
+    {
+        services
+            .AddSingleton<IClientHttpRepository>(_ =>
+            {
+                var context = _.GetRequiredService<IAuthenticationContext>();
+                var authConfig = _.GetRequiredService<IAuthenticationConfig>();
+                if (authConfig.BffBase == localBffRoot)
+                {
+                    authConfig.SetBffBase(string.Empty);
+                }
+                if (string.IsNullOrEmpty(authConfig.BffBase))
+                {
+                    var jsRuntime = _.GetRequiredService<IJSRuntime>();
+
+                    if (jsRuntime is IJSInProcessRuntime jsInProcessRuntime)
+                    {
+
+                        string bffRoot = jsInProcessRuntime.Invoke<string>("GetBffUri", null);
+
+                        if (string.IsNullOrEmpty(bffRoot))
+                        {
+                            bffRoot = localBffRoot;
+                        }
+
+                        authConfig.SetBffBase(bffRoot);
+                    }
+                }
+
+                var clientHttpRepository = new ClientHttpRepository(
+                        _.GetRequiredService<IAuthenticationConfig>().BffBase,
+                        _.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientName),
+                        _.GetRequiredService<ILogger<ClientHttpRepository>>());
+
+                clientHttpRepository.OnInvalidResponse += async (object? sender, HttpStatusCode status) =>
+                {
+                    if (status == HttpStatusCode.Unauthorized)
+                    {
+                        Console.Error.WriteLine("Received 401 - Validating auth state");
+                        await context.ValidateAuthState();
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine("Received HttpStatusCode.{0} - Not handling...", status);
+                    }
+                };
+
+                return clientHttpRepository;
+            })
+            .AddHttpClient(httpClientName)
+            .AddHttpMessageHandler(_ => new CookieHandler());
+        return services;
+    }
+
+    private static void AddSingleton<TAbstraction, TImplementation>(IServiceCollection services)
+        where TAbstraction : class
+        where TImplementation : class, TAbstraction
     {
         services.AddScoped<TAbstraction, TImplementation>();
     }
+    private static void AddTransient<TAbstraction, TImplementation>(IServiceCollection services)
+        where TAbstraction : class
+        where TImplementation : class, TAbstraction
+    {
+        services.AddTransient<TAbstraction, TImplementation>();
+    }
 
-    // TODO: To common
+    // TODO: To source generator
     private static void InvokeRequestResponse(IServiceCollection services, MethodInfo methodInfo, Type genericType, Type type)
     {
         Type genericType2 = genericType;

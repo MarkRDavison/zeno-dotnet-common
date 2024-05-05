@@ -18,12 +18,14 @@ public static class DependencyInversionExtensions
     public static IServiceCollection UseConsoleNotifications(this IServiceCollection services)
     {
         services.AddSingleton<IConsoleNotificationService, ConsoleNotificationService>();
+        services.AddSingleton<INotificationService>(_ => _.GetRequiredService<IConsoleNotificationService>());
         return services;
     }
 
     public static IServiceCollection UseMatrixNotifications(this IServiceCollection services)
     {
         services.AddSingleton<IMatrixNotificationService, MatrixNotificationService>();
+        services.AddSingleton<INotificationService>(_ => _.GetRequiredService<IMatrixNotificationService>());
         services.UseMatrixClient();
         return services;
     }
