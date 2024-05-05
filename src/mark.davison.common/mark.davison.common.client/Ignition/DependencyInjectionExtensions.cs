@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.client.Ignition;
+﻿using MudBlazor.Services;
+
+namespace mark.davison.common.client.Ignition;
 
 public static class DependencyInjectionExtensions
 {
@@ -7,8 +9,8 @@ public static class DependencyInjectionExtensions
         IAuthenticationConfig authConfig,
         params Type[] types)
     {
-
         services
+            .AddMudServices()
             .AddTransient(typeof(ModalViewModel<,>))
             .AddSingleton<IAuthenticationConfig>(authConfig)
             .AddSingleton<IAuthenticationContext, AuthenticationContext>()
