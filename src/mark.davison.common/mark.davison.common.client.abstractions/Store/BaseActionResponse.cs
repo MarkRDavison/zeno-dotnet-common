@@ -16,6 +16,15 @@ public class BaseActionResponse<T> : BaseActionResponse
         ActionId = action.ActionId;
     }
 
+    public static BaseActionResponse<T> From(Response response)
+    {
+        return new BaseActionResponse<T>
+        {
+            Errors = response.Errors,
+            Warnings = response.Warnings
+        };
+    }
+
     [MemberNotNullWhen(returnValue: true, nameof(Response<T>.Value))]
     public bool SuccessWithValue => Success && Value != null;
     public T? Value { get; set; }

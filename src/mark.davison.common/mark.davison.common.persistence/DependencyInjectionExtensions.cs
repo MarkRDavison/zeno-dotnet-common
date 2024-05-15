@@ -3,8 +3,8 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInjectionExtensions
 {
-    public static void UseDatabase<TDbContext>(this IServiceCollection services, bool productionMode, DatabaseAppSettings databaseAppSettings)
-        where TDbContext : DbContext
+    public static IServiceCollection UseDatabase<TDbContext>(this IServiceCollection services, bool productionMode, DatabaseAppSettings databaseAppSettings, params Type[] migrationTypes)
+        where TDbContext : DbContextBase<TDbContext>
     {
         if (databaseAppSettings.DATABASE_TYPE == DatabaseType.Sqlite)
         {
@@ -24,7 +24,7 @@ public static class DependencyInjectionExtensions
             {
                 _.UseSqlite(
                     databaseAppSettings.CONNECTION_STRING,
-                    _ => _.MigrationsAssembly(databaseAppSettings.MigrationAssemblyNames[databaseAppSettings.DATABASE_TYPE]));
+                    _ => _.MigrationsAssembly(GetMigrationAssembly(DatabaseType.Sqlite, migrationTypes)));
                 if (!productionMode)
                 {
                     _.EnableSensitiveDataLogging();
@@ -35,21 +35,42 @@ public static class DependencyInjectionExtensions
         else if (databaseAppSettings.DATABASE_TYPE == DatabaseType.Postgres)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            var conn = new NpgsqlConnectionStringBuilder();
-            conn.IncludeErrorDetail = !productionMode;
-            conn.Host = databaseAppSettings.DB_HOST;
-            conn.Database = databaseAppSettings.DB_DATABASE;
-            conn.Port = databaseAppSettings.DB_PORT;
-            conn.Username = databaseAppSettings.DB_USERNAME;
-            conn.Password = databaseAppSettings.DB_PASSWORD;
+            var conn = new NpgsqlConnectionStringBuilder
+            {
+                IncludeErrorDetail = !productionMode,
+                Host = databaseAppSettings.DB_HOST,
+                Database = databaseAppSettings.DB_DATABASE,
+                Port = databaseAppSettings.DB_PORT,
+                Username = databaseAppSettings.DB_USERNAME,
+                Password = databaseAppSettings.DB_PASSWORD
+            };
+
             services.AddDbContextFactory<TDbContext>(_ => _
                 .UseNpgsql(
                     conn.ConnectionString,
-                    _ => _.MigrationsAssembly(databaseAppSettings.MigrationAssemblyNames[databaseAppSettings.DATABASE_TYPE])));
+                    _ => _.MigrationsAssembly(GetMigrationAssembly(DatabaseType.Postgres, migrationTypes))));
         }
         else
         {
             throw new ArgumentException($"DATABASE_TYPE is invalid: {databaseAppSettings.DATABASE_TYPE}");
         }
+
+        services.AddScoped<IDbContext<TDbContext>>(_ => _.GetRequiredService<TDbContext>());
+
+        return services;
+    }
+
+    private static string GetMigrationAssembly(DatabaseType databaseType, params Type[] types)
+    {
+        var migrationAssemblyType = types.SelectMany(_ => _.Assembly.ExportedTypes).Where(_ =>
+        {
+            var attribute = _.GetCustomAttributes(typeof(DatabaseMigrationAssemblyAttribute), false).OfType<DatabaseMigrationAssemblyAttribute>().FirstOrDefault();
+
+            return attribute != null && attribute.DatabaseType == databaseType;
+        }).FirstOrDefault();
+
+        var name = migrationAssemblyType?.Assembly.GetName();
+
+        return name?.Name ?? throw new InvalidOperationException($"No migration assembly was defined for database type '{databaseType}'");
     }
 }

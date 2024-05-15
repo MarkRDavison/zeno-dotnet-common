@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.server.abstractions.Repository;
 
+[Obsolete]
 public interface IRepository : IReadonlyRepository
 {
     Task<List<T>> UpsertEntitiesAsync<T>(List<T> entities, CancellationToken cancellationToken = default)

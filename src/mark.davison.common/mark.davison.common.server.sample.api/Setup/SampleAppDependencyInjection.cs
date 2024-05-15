@@ -2,7 +2,7 @@
 
 public static class SampleAppDependencyInjection
 {
-    public static void UseSampleApp(this IServiceCollection services, AppSettings appSettings, Func<HttpClient>? client)
+    public static IServiceCollection UseSampleApp(this IServiceCollection services, AppSettings appSettings, Func<HttpClient>? client)
     {
         services.AddScoped<ICurrentUserContext>(_ => new CurrentUserContext());
 
@@ -28,5 +28,7 @@ public static class SampleAppDependencyInjection
             }
             return new SampleHttpRepository(appSettings.API_ORIGIN, client(), options);
         });
+
+        return services;
     }
 }

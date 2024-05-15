@@ -38,7 +38,7 @@
     cursor: pointer;
 }
 
-    .muted-link-text:hover {
-        color: var(--mud-palette-text-primary);
-        transition: color 0.15s ease 0s;
-    }
+.muted-link-text:hover {
+    color: var(--mud-palette-text-primary);
+    transition: color 0.15s ease 0s;
+}

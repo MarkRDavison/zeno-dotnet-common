@@ -1,3 +1,4 @@
+global using mark.davison.common.persistence.Configuration;
 global using mark.davison.common.persistence.Controllers;
 global using mark.davison.common.Repository;
 global using mark.davison.common.server.abstractions.Authentication;

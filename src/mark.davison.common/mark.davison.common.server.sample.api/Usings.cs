@@ -1,4 +1,6 @@
-﻿global using mark.davison.common.persistence.Repository;
+﻿global using mark.davison.common.persistence;
+global using mark.davison.common.persistence.Configuration;
+global using mark.davison.common.persistence.Repository;
 global using mark.davison.common.server.abstractions;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.CQRS;

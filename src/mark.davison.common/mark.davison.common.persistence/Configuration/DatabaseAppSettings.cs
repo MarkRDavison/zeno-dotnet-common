@@ -13,5 +13,4 @@ public class DatabaseAppSettings : IAppSettings
     public string DB_USERNAME { get; set; } = string.Empty;
     [AppSettingSecret]
     public string DB_PASSWORD { get; set; } = string.Empty;
-    public Dictionary<DatabaseType, string> MigrationAssemblyNames { get; } = new();
 }

@@ -1,6 +1,7 @@
 ﻿namespace mark.davison.common.server.sample.api.Context;
 
-public class TestDbContext : DbContext
+[DatabaseMigrationAssembly(DatabaseType.Sqlite)]
+public class TestDbContext : DbContextBase<TestDbContext>
 {
     public TestDbContext(DbContextOptions options) : base(options)
     {
