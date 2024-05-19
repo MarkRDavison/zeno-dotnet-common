@@ -15,12 +15,10 @@ public static class GetEndpoints
                     var where = EndpointHelpers.GenerateWhereClause<T>(context.Request.Query, body);
                     var include = EndpointHelpers.GenerateIncludesClause(context.Request.Query);
 
-                    var repository = context.RequestServices.GetRequiredService<IRepository>();
-                    await using (repository.BeginTransaction())
-                    {
-                        var entities = await repository.GetEntitiesAsync<T>(where, include, cancellationToken);
-                        return Results.Ok(entities);
-                    }
+                    var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
+
+                    var entities = await dbContext.Set<T>().Include(include).Where(where).ToListAsync(cancellationToken);
+                    return Results.Ok(entities);
                 }
             });
 
@@ -36,16 +34,14 @@ public static class GetEndpoints
             {
                 using (logger.ProfileOperation(context: $"GET api/{entityName}/{id}"))
                 {
-                    var repository = context.RequestServices.GetRequiredService<IRepository>();
-                    await using (repository.BeginTransaction())
+                    var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
+
+                    var entity = await dbContext.Set<T>().FindAsync(id, cancellationToken);
+                    if (entity == null)
                     {
-                        var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
-                        if (entity == null)
-                        {
-                            return Results.NotFound();
-                        }
-                        return Results.Ok(entity);
+                        return Results.NotFound();
                     }
+                    return Results.Ok(entity);
                 }
             });
 

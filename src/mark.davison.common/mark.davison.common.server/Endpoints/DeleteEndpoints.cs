@@ -21,23 +21,22 @@ public static class DeleteEndpoints
     public static async Task<IResult> DeleteEntity<T>(Guid id, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
         where T : BaseEntity, new()
     {
-        var repository = context.RequestServices.GetRequiredService<IRepository>();
+        var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
 
-        await using (repository.BeginTransaction())
+        var entity = await dbContext.Set<T>().FindAsync(id, cancellationToken);
+        if (entity == null)
         {
-            var entity = await repository.GetEntityAsync<T>(id, cancellationToken);
-            if (entity == null)
-            {
-                return Results.NotFound();
-            }
-
-            var deletedEntity = await repository.DeleteEntityAsync(entity, cancellationToken);
-
-            if (deletedEntity == null)
-            {
-                return Results.UnprocessableEntity();
-            }
+            return Results.NotFound();
         }
+
+        var deletedEntity = dbContext.Set<T>().Remove(entity);
+
+        if (deletedEntity == null)
+        {
+            return Results.UnprocessableEntity();
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Results.NoContent();
     }

@@ -21,7 +21,7 @@ public static class PostEndpoints
     public static async Task<IResult> PostEntity<T>(T entity, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
         where T : BaseEntity, new()
     {
-        var repository = context.RequestServices.GetRequiredService<IRepository>();
+        var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
         var currentUserContext = context.RequestServices.GetRequiredService<ICurrentUserContext>();
         var entityDefaulter = context.RequestServices.GetService<IEntityDefaulter<T>>();
 
@@ -30,15 +30,15 @@ public static class PostEndpoints
             await entityDefaulter.DefaultAsync(entity, currentUserContext.CurrentUser);
         }
 
-        await using (repository.BeginTransaction())
-        {
-            var posted = await repository.UpsertEntityAsync(entity, cancellationToken);
-            if (posted == null)
-            {
-                return Results.UnprocessableEntity();
-            }
+        var posted = await dbContext.Set<T>().AddAsync(entity, cancellationToken);
 
-            return Results.Ok(posted);
+        if (posted == null)
+        {
+            return Results.UnprocessableEntity();
         }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return Results.Ok(posted);
     }
 }

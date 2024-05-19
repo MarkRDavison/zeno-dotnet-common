@@ -2,6 +2,7 @@
 global using mark.davison.common.CQRS;
 global using mark.davison.common.Identification;
 global using mark.davison.common.Instrumentation;
+global using mark.davison.common.persistence;
 global using mark.davison.common.persistence.Configuration;
 global using mark.davison.common.persistence.EntityDefaulter;
 global using mark.davison.common.Repository;
@@ -37,6 +38,7 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Routing;
 global using Microsoft.AspNetCore.WebUtilities;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;

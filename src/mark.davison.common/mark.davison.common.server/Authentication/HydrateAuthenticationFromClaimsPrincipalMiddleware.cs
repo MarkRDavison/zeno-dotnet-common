@@ -26,11 +26,9 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddleware
                 var subClaim = context.User.Claims.FirstOrDefault(_ => _.Type == ClaimTypes.NameIdentifier);
                 if (Guid.TryParse(subClaim?.Value, out var sub))
                 {
-                    var repository = context.RequestServices.GetRequiredService<IRepository>();
-                    await using (repository.BeginTransaction())
-                    {
-                        user = await repository.GetEntityAsync<User>(_ => _.Sub == sub, CancellationToken.None);
-                    }
+                    var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
+
+                    user = await dbContext.Set<User>().Where(_ => _.Sub == sub).FirstOrDefaultAsync(CancellationToken.None);
                 }
             }
 
