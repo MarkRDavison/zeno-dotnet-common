@@ -30,7 +30,9 @@ public static class PostEndpoints
             await entityDefaulter.DefaultAsync(entity, currentUserContext.CurrentUser);
         }
 
-        var posted = await dbContext.Set<T>().AddAsync(entity, cancellationToken);
+        var e = await dbContext.Set<T>().AddAsync(entity, cancellationToken);
+
+        var posted = e?.Entity;
 
         if (posted == null)
         {

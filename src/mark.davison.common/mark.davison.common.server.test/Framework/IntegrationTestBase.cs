@@ -1,4 +1,5 @@
 ﻿using mark.davison.common.Repository;
+using System.Net;
 
 namespace mark.davison.common.server.test.Framework;
 
@@ -7,11 +8,13 @@ public abstract class IntegrationTestBase<TFactory, TSettings>
     where TFactory : ICommonWebApplicationFactory<TSettings>, IDisposable, new()
 {
     protected TFactory _factory;
+    private readonly JsonSerializerOptions _options;
 
     public IntegrationTestBase()
     {
         _factory = new TFactory();
         Client = _factory.CreateClient();
+        _options = SerializationHelpers.CreateStandardSerializationOptions();
     }
 
     public void Dispose()
@@ -36,12 +39,14 @@ public abstract class IntegrationTestBase<TFactory, TSettings>
     private async Task SeedDataInternal(IServiceProvider serviceProvider)
     {
         var healthState = serviceProvider.GetRequiredService<IApplicationHealthState>();
+
+        var scope = serviceProvider.CreateScope();
         await Task.WhenAny(healthState.ReadySource.Task, Task.Delay(SeedDataTimeout));
         if (!healthState.ReadySource.Task.IsCompletedSuccessfully)
         {
             throw new InvalidOperationException("Seed data timed out");
         }
-        await SeedData(serviceProvider);
+        await SeedData(scope.ServiceProvider);
     }
     protected virtual async Task SeedData(IServiceProvider serviceProvider)
     {
@@ -54,7 +59,7 @@ public abstract class IntegrationTestBase<TFactory, TSettings>
         {
             Method = httpMethod,
             RequestUri = string.IsNullOrEmpty(BaseAddress) ? new Uri(uri, UriKind.Relative) : new Uri(BaseAddress + uri),
-            Content = data == null ? null : new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json")
+            Content = data == null ? null : new StringContent(JsonSerializer.Serialize(data, _options), Encoding.UTF8, "application/json")
         };
 
         if (data is QueryParameters qp)
@@ -120,13 +125,14 @@ public abstract class IntegrationTestBase<TFactory, TSettings>
         return await ReadAsAsync<T?>(httpResponseMessage);
     }
 
-    protected async Task DeleteAsync(string uri, bool requireSuccess = false)
+    protected async Task<HttpStatusCode> DeleteAsync(string uri, bool requireSuccess = false)
     {
         HttpResponseMessage httpResponseMessage = await CallAsync(HttpMethod.Delete, uri, null);
         if (requireSuccess)
         {
             httpResponseMessage.EnsureSuccessStatusCode();
         }
+        return httpResponseMessage.StatusCode;
     }
 
     protected async Task<T?> UpsertAsync<T>(string uri, T content, bool requireSuccess = false)

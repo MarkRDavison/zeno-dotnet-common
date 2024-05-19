@@ -79,6 +79,6 @@ public static class DependencyInjectionExtensions
 
         var name = migrationAssemblyType?.Assembly.GetName();
 
-        return name?.Name ?? throw new InvalidOperationException($"No migration assembly was defined for database type '{databaseType}'");
+        return name?.Name;
     }
 }

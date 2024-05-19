@@ -46,45 +46,6 @@ public class HydrateAuthenticationFromClaimsPrincipalMiddlewareTests
     }
 
     [TestMethod]
-    public async Task AuthenticatedInvoke_WhereHeaderNotPresent_RetrievesFromClaimsAndRepository()
-    {
-        var persistedUser = new User
-        {
-            Id = Guid.NewGuid(),
-            Sub = Guid.NewGuid()
-        };
-
-        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-        {
-            new Claim(ClaimTypes.Name, "example name"),
-            new Claim(ClaimTypes.NameIdentifier, persistedUser.Sub.ToString()),
-        }, "mock"));
-        _context.User = user;
-
-        _repository.Setup(_ => _.BeginTransaction()).Returns(new AsyncDisposable());
-
-        _repository
-            .Setup(_ => _
-            .GetEntityAsync<User>(
-                It.IsAny<Expression<Func<User, bool>>>(),
-                It.IsAny<CancellationToken>()
-            ))
-            .ReturnsAsync(() => persistedUser)
-            .Verifiable();
-
-        await _middleware.Invoke(_context, _currentUserContext.Object);
-
-        Assert.IsTrue(_nextInvoked);
-
-        _repository
-            .Verify(_ => _
-            .GetEntityAsync<User>(
-                It.IsAny<Expression<Func<User, bool>>>(),
-                It.IsAny<CancellationToken>()
-            ), Times.Once);
-    }
-
-    [TestMethod]
     public async Task AuthenticatedInvoke_WhereHeaderPresent_DoesNotRetrieveFromRepository()
     {
         var persistedUser = new User

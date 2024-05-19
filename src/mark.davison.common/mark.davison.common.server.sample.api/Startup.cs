@@ -39,9 +39,17 @@ public class Startup
         services
             .ConfigureHealthCheckServices<InitializationHostedService>();
 
+        var dbSettings = new DatabaseAppSettings
+        {
+            DATABASE_TYPE = DatabaseType.Sqlite,
+            CONNECTION_STRING = "RANDOM"
+        };
+
         services
             .AddHttpClient()
-            .AddHttpContextAccessor();
+            .AddHttpContextAccessor()
+            .UseDatabase<TestDbContext>(false, dbSettings)
+            .UseCoreDbContext<TestDbContext>(false, dbSettings);
 
         services.UseCQRSServer();
         services

@@ -8,7 +8,8 @@ public static class SampleAppDependencyInjection
 
         services.AddDbContextFactory<TestDbContext>(_ => _
             .UseSqlite($"Data Source={Guid.NewGuid()}.db"));
-        services.AddTransient<IRepository>(_ =>
+        services.AddTransient<IDbContext>(_ => _.GetRequiredService<TestDbContext>());
+        services.AddScoped<IRepository>(_ =>
             new TestRepository(
                 _.GetRequiredService<IDbContextFactory<TestDbContext>>(),
                 _.GetRequiredService<ILogger<TestRepository>>())

@@ -13,11 +13,28 @@ public static class GetEndpoints
                 {
                     var body = await EndpointHelpers.ExtractBody(context.Request);
                     var where = EndpointHelpers.GenerateWhereClause<T>(context.Request.Query, body);
+
                     var include = EndpointHelpers.GenerateIncludesClause(context.Request.Query);
 
                     var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
 
-                    var entities = await dbContext.Set<T>().Include(include).Where(where).ToListAsync(cancellationToken);
+                    var query = dbContext
+                        .Set<T>()
+                        .AsQueryable();
+
+                    if (!string.IsNullOrEmpty(include))
+                    {
+                        query = query.Include(include);
+                    }
+
+                    if (where != null)
+                    {
+                        query = query.Where(where);
+                    }
+
+                    var entities = await query
+                        .ToListAsync(cancellationToken);
+
                     return Results.Ok(entities);
                 }
             });
