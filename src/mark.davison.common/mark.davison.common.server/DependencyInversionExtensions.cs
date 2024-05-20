@@ -242,7 +242,7 @@ public static class DependencyInversionExtensions
         return services;
     }
 
-    public static void MapHealthChecks(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapHealthChecks(this IEndpointRouteBuilder endpoints)
     {
         endpoints
             .MapHealthChecks("/health/startup", new HealthCheckOptions
@@ -262,6 +262,8 @@ public static class DependencyInversionExtensions
                 Predicate = r => r.Name == ReadyHealthCheck.Name
             })
             .AllowAnonymous();
+
+        return endpoints;
     }
 
     public static IServiceCollection AddCronJob<T>(this IServiceCollection services, Action<IScheduleConfig<T>> options) where T : CronJobService

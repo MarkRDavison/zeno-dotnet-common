@@ -9,7 +9,7 @@ public static class AuthConstants
     public const string LoginPath = "/auth/login";
     public const string LogoutPath = "/auth/logout";
     public const string LoginCompletePath = "/";
-    public const string LogoutCompletePath = "/logout-complete";
+    public const string LogoutCompletePath = "/";
     public const string HttpsProto = "https://";
     public const string HttpProto = "http://";
 }
