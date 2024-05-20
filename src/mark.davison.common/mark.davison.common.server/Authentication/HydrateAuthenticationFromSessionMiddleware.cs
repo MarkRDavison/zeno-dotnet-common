@@ -84,7 +84,6 @@ public class HydrateAuthenticationFromSessionMiddleware
                         new ClaimsIdentity(
                             [
                                 new Claim(nameof(UserProfile.sub), userProfile.sub.ToString()),
-                                new Claim(nameof(UserProfile.email_verified), userProfile.email_verified.ToString()),
                                 new Claim(nameof(UserProfile.name), userProfile.name!),
                                 new Claim(nameof(UserProfile.preferred_username), userProfile.preferred_username!),
                                 new Claim(nameof(UserProfile.given_name), userProfile.given_name!),

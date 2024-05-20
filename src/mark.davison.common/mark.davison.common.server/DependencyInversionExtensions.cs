@@ -76,7 +76,7 @@ public static class DependencyInversionExtensions
         services
             .AddSession(o =>
             {
-                o.Cookie.SameSite = SameSiteMode.None;
+                o.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
                 o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 o.Cookie.Name = authSettings.SESSION_NAME;
                 o.Cookie.HttpOnly = true;
@@ -84,6 +84,117 @@ public static class DependencyInversionExtensions
 
         services
             .UseRedis(redisSettings, appName, productionMode);
+        return services;
+    }
+
+
+    public static IServiceCollection AddJwtAuth(
+        this IServiceCollection services,
+        AuthAppSettings authAppSettings)
+    {
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = authAppSettings.AUTHORITY,
+                    ValidateAudience = !string.IsNullOrEmpty(authAppSettings.AUDIENCE),
+                    ValidAudience = string.IsNullOrEmpty(authAppSettings.AUDIENCE) ? null : authAppSettings.AUDIENCE,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = false,
+                    ClockSkew = TimeSpan.Zero,
+                    SignatureValidator = (token, _) => new JsonWebToken(token),
+                    RequireExpirationTime = true,
+                };
+            });
+
+        return services;
+    }
+
+    public static IServiceCollection UseCookieOidcAuth(
+        this IServiceCollection services,
+        AuthAppSettings authAppSettings,
+        ClaimsAppSettings claimsAppSettings,
+        string apiEndpoint)
+    {
+        services
+            .AddAuthentication(_ =>
+            {
+                _.DefaultScheme = AuthConstants.CookiesScheme;
+                _.DefaultChallengeScheme = AuthConstants.OidcScheme;
+                _.DefaultSignOutScheme = AuthConstants.OidcScheme;
+            })
+            .AddOpenIdConnect(AuthConstants.OidcScheme, _ =>
+            {
+                _.Authority = authAppSettings.AUTHORITY;
+                _.ClientId = authAppSettings.CLIENT_ID;
+                _.ClientSecret = authAppSettings.CLIENT_SECRET;
+
+                _.TokenValidationParameters = new()
+                {
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(0)
+                };
+
+                _.Events = new()
+                {
+                    OnRedirectToIdentityProvider = (ctx) =>
+                    {
+                        if (ctx.ProtocolMessage.RedirectUri.StartsWith(AuthConstants.HttpProto))
+                        {
+                            ctx.ProtocolMessage.RedirectUri = ctx.ProtocolMessage.RedirectUri.Replace(AuthConstants.HttpProto, AuthConstants.HttpsProto);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = async (Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx) =>
+                    {
+                        if (ctx.Principal != null && ClaimsPrincipalHelpers.ExtractUser(ctx.Principal, claimsAppSettings) is User user)
+                        {
+                            var repository = ctx.HttpContext.RequestServices.GetRequiredService<IHttpRepository>();
+                            var access = ctx.TokenEndpointResponse?.AccessToken;
+
+                            if (!string.IsNullOrEmpty(access))
+                            {
+                                await repository.UpsertEntityAsync<User>(user, HeaderParameters.Auth(access, null), CancellationToken.None);
+                            }
+                        }
+                    }
+                };
+
+                _.ResponseType = OpenIdConnectResponseType.Code;
+                _.GetClaimsFromUserInfoEndpoint = true;
+                _.SaveTokens = true;
+                _.Scope.Clear();
+
+                foreach (var scope in authAppSettings.SCOPES)
+                {
+                    _.Scope.Add(scope);
+                }
+            })
+            .AddCookie(AuthConstants.CookiesScheme, _ =>
+            {
+                _.ExpireTimeSpan = TimeSpan.FromHours(16);
+                _.SlidingExpiration = false;
+                _.Cookie.Name = $"__{authAppSettings.SESSION_NAME}".ToLower();
+                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                _.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                _.LogoutPath = AuthConstants.LogoutPath;
+                _.LoginPath = AuthConstants.LoginPath;
+            });
+
+        services
+            .AddSingleton<IHttpRepository>(_ =>
+            {
+                var options = SerializationHelpers.CreateStandardSerializationOptions();
+                var factory = _.GetRequiredService<IHttpClientFactory>();
+                return new HttpRepository(apiEndpoint, factory.CreateClient(AuthConstants.AuthHttpClient), options);
+            })
+            .AddHttpClient(AuthConstants.AuthHttpClient);
+
+
         return services;
     }
 

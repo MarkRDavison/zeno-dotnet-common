@@ -83,7 +83,7 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    public static IServiceCollection UseCoreDbContext<TDbContext>(this IServiceCollection services, bool productionMode, DatabaseAppSettings databaseAppSettings, params Type[] migrationTypes)
+    public static IServiceCollection UseCoreDbContext<TDbContext>(this IServiceCollection services)
         where TDbContext : DbContextBase<TDbContext>
     {
         services.AddScoped<IDbContext>(_ => _.GetRequiredService<IDbContext<TDbContext>>());

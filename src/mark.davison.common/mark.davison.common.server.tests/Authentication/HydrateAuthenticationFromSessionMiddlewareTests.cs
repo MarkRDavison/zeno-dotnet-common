@@ -126,7 +126,6 @@ public class HydrateAuthenticationFromSessionMiddlewareTests
         var userProfile = new UserProfile
         {
             sub = user.Sub,
-            email_verified = true,
             email = "email@test.com",
             name = "test",
             preferred_username = "t.p",
@@ -142,7 +141,6 @@ public class HydrateAuthenticationFromSessionMiddlewareTests
         await _middleware.Invoke(_context, _currentUserContext.Object);
 
         Assert.IsTrue(_context.User.HasClaim(_ => _.Type == nameof(UserProfile.sub)));
-        Assert.IsTrue(_context.User.HasClaim(_ => _.Type == nameof(UserProfile.email_verified)));
         Assert.IsTrue(_context.User.HasClaim(_ => _.Type == nameof(UserProfile.name)));
         Assert.IsTrue(_context.User.HasClaim(_ => _.Type == nameof(UserProfile.preferred_username)));
         Assert.IsTrue(_context.User.HasClaim(_ => _.Type == nameof(UserProfile.given_name)));
