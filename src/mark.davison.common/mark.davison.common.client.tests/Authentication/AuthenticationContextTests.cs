@@ -19,6 +19,8 @@ public class AuthenticationContextTests
         _navigationManager = new MockNavigationManager(baseUri, baseUri.Trim('/') + uri);
         _authenticationContext = new(_httpClientFactory.Object, _authenticationConfig.Object, _navigationManager);
         _httpMessageHandler = new();
+
+        _authenticationConfig.Setup(_ => _.HttpClientName).Returns("Auth");
     }
 
     [TestMethod]
