@@ -3,6 +3,7 @@ global using mark.davison.common.server.abstractions;
 global using mark.davison.common.server.abstractions.Configuration;
 global using mark.davison.common.server.abstractions.Identification;
 global using mark.davison.common.server.abstractions.Repository;
+global using Microsoft.AspNetCore.DataProtection;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.ChangeTracking;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;

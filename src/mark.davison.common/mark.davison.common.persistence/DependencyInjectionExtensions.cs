@@ -20,9 +20,10 @@ public static class DependencyInjectionExtensions
                     _.InstanceName = name + "_" + (productionMode ? "PROD_" : "DEV_");
                     _.Configuration = connectionMultiplexer.Configuration;
                 })
-                .AddSingleton(connectionMultiplexer);
+                .AddSingleton(connectionMultiplexer)
+                .AddDataProtection()
+                .PersistKeysToStackExchangeRedis(connectionMultiplexer, (productionMode ? "PROD_" : "DEV_") + "FINANCE_DataProtectionKeys");
         }
-
         return services;
     }
 
