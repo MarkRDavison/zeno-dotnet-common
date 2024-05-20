@@ -21,20 +21,6 @@ public class HttpRepositoryTests : IntegrationTestBase<SampleApplicationFactory,
     }
 
     [TestMethod]
-    public async Task HttpRepository_GetEntities_WithRemoteLinqWhereClause_Works()
-    {
-        Expression<Func<Author, bool>> expression = _ => _.FirstName.StartsWith("a");
-        var httpRepository = Services.GetRequiredService<IHttpRepository>();
-
-        var query = new QueryParameters();
-        query.Where(expression);
-
-        var authors = await httpRepository.GetEntitiesAsync<Author>(query, HeaderParameters.None, CancellationToken.None);
-
-        Assert.AreEqual(_authors.Where(expression.Compile()).Count(), authors.Count());
-    }
-
-    [TestMethod]
     public void CreateUriFromRelative_ForRelativeEndpoint_CreatesUriCorrectly()
     {
         string remoteEndpoint = "";

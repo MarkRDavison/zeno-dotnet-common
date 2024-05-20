@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace mark.davison.common.tests.Repository;
+﻿namespace mark.davison.common.tests.Repository;
 
 [TestClass]
 public class QueryParametersTests
@@ -62,33 +60,11 @@ public class QueryParametersTests
     }
 
     [TestMethod]
-    public void Where_SerializesExpressionCorrectly()
-    {
-        Expression<Func<TestClass, bool>> where = _ => _.Id.StartsWith("a") && _.Name.Contains("b");
-
-        var queryParams = new QueryParameters();
-        queryParams.Where(where);
-
-        Assert.IsTrue(queryParams.ContainsKey("where"));
-        Assert.IsFalse(string.IsNullOrEmpty(queryParams["where"]));
-    }
-
-    [TestMethod]
     public void CreateBody_WhereNoBodyParameters_ReturnsEmpty()
     {
         var queryParams = new QueryParameters();
 
         Assert.IsTrue(string.IsNullOrEmpty(queryParams.CreateBody()));
-    }
-
-    [TestMethod]
-    public void CreateBody_WhereBodyParameters_IncludesWhere_ReturnsNonEmpty()
-    {
-        var queryParams = new QueryParameters();
-
-        queryParams.Where<TestClass>(_ => _.Id == "a");
-
-        Assert.IsFalse(string.IsNullOrEmpty(queryParams.CreateBody()));
     }
 
     [TestMethod]

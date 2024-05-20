@@ -47,8 +47,6 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Primitives;
 global using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-global using Remote.Linq;
-global using Remote.Linq.Text.Json;
 global using StackExchange.Redis;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Linq.Expressions;

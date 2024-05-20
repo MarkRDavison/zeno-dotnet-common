@@ -35,7 +35,7 @@ public partial class AuthenticationContext : IAuthenticationContext
                 RequestUri = new Uri(_authenticationConfig.UserEndpoint)
             };
 
-            var client = _httpClientFactory.CreateClient("API");
+            var client = _httpClientFactory.CreateClient(AuthConstants.AuthHttpClient);
             using var response = await client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {

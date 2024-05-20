@@ -3,6 +3,29 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInjectionExtensions
 {
+    public static IServiceCollection UseRedis(this IServiceCollection services, RedisAppSettings redis, string name, bool productionMode)
+    {
+        if (!string.IsNullOrEmpty(redis.HOST))
+        {
+            var config = new ConfigurationOptions
+            {
+                EndPoints = { redis.HOST + ":" + redis.PORT },
+                Password = redis.PASSWORD
+            };
+
+            IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(config);
+            services
+                .AddStackExchangeRedisCache(_ =>
+                {
+                    _.InstanceName = name + "_" + (productionMode ? "PROD_" : "DEV_");
+                    _.Configuration = connectionMultiplexer.Configuration;
+                })
+                .AddSingleton(connectionMultiplexer);
+        }
+
+        return services;
+    }
+
     public static IServiceCollection UseDatabase<TDbContext>(this IServiceCollection services, bool productionMode, DatabaseAppSettings databaseAppSettings, params Type[] migrationTypes)
         where TDbContext : DbContextBase<TDbContext>
     {
@@ -68,7 +91,7 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    private static string GetMigrationAssembly(DatabaseType databaseType, params Type[] types)
+    private static string? GetMigrationAssembly(DatabaseType databaseType, params Type[] types)
     {
         var migrationAssemblyType = types.SelectMany(_ => _.Assembly.ExportedTypes).Where(_ =>
         {

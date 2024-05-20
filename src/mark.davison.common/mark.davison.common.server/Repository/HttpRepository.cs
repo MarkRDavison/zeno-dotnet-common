@@ -1,19 +1,19 @@
 ﻿namespace mark.davison.common.server.Repository;
 
-public abstract class HttpRepository : IHttpRepository
+public class HttpRepository : IHttpRepository
 {
     private readonly string _remoteEndpoint;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
 
 
-    protected HttpRepository(string remoteEndpoint, HttpClient httpClient)
+    public HttpRepository(string remoteEndpoint, HttpClient httpClient)
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;
         _options = SerializationHelpers.CreateStandardSerializationOptions();
     }
-    protected HttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
+    public HttpRepository(string remoteEndpoint, HttpClient httpClient, JsonSerializerOptions options)
     {
         _remoteEndpoint = remoteEndpoint.TrimEnd('/');
         _httpClient = httpClient;

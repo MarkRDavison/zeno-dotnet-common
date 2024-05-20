@@ -1,6 +1,5 @@
 ﻿namespace mark.davison.common.server.abstractions.Repository;
 
-[Obsolete]
 public interface IReadRepository
 {
     IQueryable<T> QueryEntities<T>()

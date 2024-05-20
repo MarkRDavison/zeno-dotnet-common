@@ -25,7 +25,7 @@ public sealed class DbContextBaseTests
     }
 
     [TestMethod]
-    public async Task UpsertWorks()
+    public async Task AddAsyncWorks()
     {
         var cancellationToken = CancellationToken.None;
         var author = new Author
@@ -42,9 +42,66 @@ public sealed class DbContextBaseTests
         await dbContext.AddAsync(author, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var savedAuthor = dbContext.Set<Author>().FirstOrDefaultAsync(_ => _.Id == author.Id);
+        var savedAuthor = await dbContext.Set<Author>().FirstOrDefaultAsync(_ => _.Id == author.Id);
 
         Assert.IsNotNull(savedAuthor);
+    }
+
+    [TestMethod]
+    public async Task UpsertWorks()
+    {
+        var cancellationToken = CancellationToken.None;
+        var author = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        var dbContext = _serviceProvider.GetRequiredService<IDbContext<TestDbContext>>();
+
+        await dbContext.UpsertEntityAsync(author, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var savedAuthor = await dbContext.Set<Author>().FirstOrDefaultAsync(_ => _.Id == author.Id);
+
+        Assert.IsNotNull(savedAuthor);
+    }
+
+    [TestMethod]
+    public async Task UpsertMultipleWorks()
+    {
+        var cancellationToken = CancellationToken.None;
+        var author1 = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+        var author2 = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        var dbContext = _serviceProvider.GetRequiredService<IDbContext<TestDbContext>>();
+
+        await dbContext.UpsertEntitiesAsync([author1, author2], cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var savedAuthor1 = await dbContext.GetByIdAsync<Author>(author1.Id, cancellationToken);
+
+        Assert.IsNotNull(savedAuthor1);
+        var savedAuthor2 = await dbContext.GetByIdAsync<Author>(author2.Id, cancellationToken);
+
+        Assert.IsNotNull(savedAuthor2);
     }
 
     [TestMethod]
@@ -71,6 +128,132 @@ public sealed class DbContextBaseTests
         var savedAuthor = await dbContext.Set<Author>().FirstOrDefaultAsync(_ => _.Id == author.Id);
 
         Assert.IsNull(savedAuthor);
+    }
+
+    [TestMethod]
+    public async Task DeleteByIdWorks()
+    {
+        var cancellationToken = CancellationToken.None;
+        var author = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        var dbContext = _serviceProvider.GetRequiredService<IDbContext<TestDbContext>>();
+
+        await dbContext.AddAsync(author, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        await dbContext.DeleteEntityByIdAsync<Author>(author.Id, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var savedAuthor = await dbContext.GetByIdAsync<Author>(author.Id, CancellationToken.None);
+
+        Assert.IsNull(savedAuthor);
+    }
+
+    [TestMethod]
+    public async Task DeleteByEntityWorks()
+    {
+        var cancellationToken = CancellationToken.None;
+        var author = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        var dbContext = _serviceProvider.GetRequiredService<IDbContext<TestDbContext>>();
+
+        await dbContext.AddAsync(author, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        await dbContext.DeleteEntityAsync<Author>(author, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var savedAuthor = await dbContext.GetByIdAsync<Author>(author.Id, CancellationToken.None);
+
+        Assert.IsNull(savedAuthor);
+    }
+
+    [TestMethod]
+    public async Task DeleteMultipleByIdWorks()
+    {
+        var cancellationToken = CancellationToken.None;
+        var author1 = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+        var author2 = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        var dbContext = _serviceProvider.GetRequiredService<IDbContext<TestDbContext>>();
+
+        await dbContext.UpsertEntitiesAsync([author1, author2], cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        await dbContext.DeleteEntitiesByIdAsync<Author>([author1.Id, author2.Id], cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var savedAuthor1 = await dbContext.GetByIdAsync<Author>(author1.Id, cancellationToken);
+
+        Assert.IsNull(savedAuthor1);
+        var savedAuthor2 = await dbContext.GetByIdAsync<Author>(author2.Id, cancellationToken);
+
+        Assert.IsNull(savedAuthor2);
+    }
+
+    [TestMethod]
+    public async Task DeleteMultipleByEntityWorks()
+    {
+        var cancellationToken = CancellationToken.None;
+        var author1 = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+        var author2 = new Author
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "First",
+            LastName = "Last",
+            Created = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        var dbContext = _serviceProvider.GetRequiredService<IDbContext<TestDbContext>>();
+
+        await dbContext.UpsertEntitiesAsync([author1, author2], cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        await dbContext.DeleteEntitiesAsync<Author>([author1, author2], cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var savedAuthor1 = await dbContext.GetByIdAsync<Author>(author1.Id, cancellationToken);
+
+        Assert.IsNull(savedAuthor1);
+        var savedAuthor2 = await dbContext.GetByIdAsync<Author>(author2.Id, cancellationToken);
+
+        Assert.IsNull(savedAuthor2);
     }
 
     [DataRow(true)]

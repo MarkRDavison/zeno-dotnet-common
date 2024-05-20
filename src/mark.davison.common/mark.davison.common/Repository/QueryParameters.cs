@@ -3,7 +3,6 @@
 public class QueryParameters : Dictionary<string, string>
 {
     public static readonly string[] BodyParameters = { "where", "project" };
-    private static readonly JsonSerializerOptions _options = new JsonSerializerOptions().ConfigureRemoteLinq();
 
     public string CreateQueryString()
     {
@@ -35,11 +34,6 @@ public class QueryParameters : Dictionary<string, string>
         return string.Empty;
     }
 
-    public void Where<TEntity>(Expression<Func<TEntity, bool>> where)
-        where TEntity : class, new()
-    {
-        this["where"] = JsonSerializer.Serialize(where.ToRemoteLinqExpression(), _options);
-    }
 
     public void Include(string path)
     {

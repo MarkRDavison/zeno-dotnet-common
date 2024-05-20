@@ -2,7 +2,7 @@
 
 public static class EndpointHelpers
 {
-    private static readonly JsonSerializerOptions _options = new JsonSerializerOptions().ConfigureRemoteLinq();
+    private static readonly JsonSerializerOptions _options = new JsonSerializerOptions();
 
     public static Task<JsonObject?> ExtractBody(HttpRequest request)
     {
@@ -39,12 +39,7 @@ public static class EndpointHelpers
 
         if (body != null && body.ContainsKey("where"))
         {
-            var expressionText = body["where"]!.GetValue<string>();
-            var deserialized = JsonSerializer
-                .Deserialize<Remote.Linq.Expressions.Expression>(
-                    expressionText,
-                    _options);
-            return deserialized?.ToLinqExpression() as Expression<Func<T, bool>>;
+            throw new NotImplementedException();
         }
         else
         {

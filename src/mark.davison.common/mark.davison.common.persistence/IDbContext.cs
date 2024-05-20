@@ -12,6 +12,15 @@ public interface IDbContext
 {
     DbSet<TEntity> Set<TEntity>() where TEntity : class;
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+    Task<TEntity?> GetByIdAsync<TEntity>(Guid id, CancellationToken cancellationToken) where TEntity : BaseEntity;
+    Task<TEntity> UpsertEntityAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : BaseEntity;
+    Task<List<TEntity>> UpsertEntitiesAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+    Task<TEntity?> DeleteEntityByIdAsync<TEntity>(Guid id, CancellationToken cancellationToken) where TEntity : BaseEntity;
+    Task<TEntity?> DeleteEntityAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : BaseEntity;
+    Task<List<TEntity>> DeleteEntitiesByIdAsync<TEntity>(List<Guid> ids, CancellationToken cancellationToken) where TEntity : BaseEntity;
+    Task<List<TEntity>> DeleteEntitiesAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken) where TEntity : BaseEntity;
 }
 
 public interface IDbContext<TContext> : IDbContext where TContext : DbContext

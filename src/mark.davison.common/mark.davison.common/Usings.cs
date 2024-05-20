@@ -1,8 +1,6 @@
 ﻿global using mark.davison.common.Changeset;
 global using mark.davison.common.Instrumentation;
 global using Microsoft.Extensions.Logging;
-global using Remote.Linq;
-global using Remote.Linq.Text.Json;
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Linq.Expressions;
