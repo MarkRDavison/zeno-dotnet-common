@@ -49,7 +49,7 @@ public class Startup
             .AddHttpClient()
             .AddHttpContextAccessor()
             .UseDatabase<TestDbContext>(false, dbSettings)
-            .UseCoreDbContext<TestDbContext>(false, dbSettings);
+            .UseCoreDbContext<TestDbContext>();
 
         services.UseCQRSServer();
         services
