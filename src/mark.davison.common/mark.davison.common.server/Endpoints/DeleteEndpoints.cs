@@ -2,7 +2,7 @@
 
 public static class DeleteEndpoints
 {
-    public static IEndpointRouteBuilder UseDelete<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
+    public static IEndpointRouteBuilder MapDelete<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapDelete(

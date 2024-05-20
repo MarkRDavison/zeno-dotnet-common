@@ -2,7 +2,7 @@
 
 public static class PostEndpoints
 {
-    public static IEndpointRouteBuilder UsePost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
+    public static IEndpointRouteBuilder MapPost<T>(this IEndpointRouteBuilder endpoints) where T : BaseEntity, new()
     {
         var entityName = typeof(T).Name.ToLowerInvariant();
         endpoints.MapPost(
@@ -11,14 +11,14 @@ public static class PostEndpoints
             {
                 using (logger.ProfileOperation(context: $"POST api/{entityName}"))
                 {
-                    return await PostEntity<T>(entity, context, logger, cancellationToken);
+                    return await PostEntity<T>(entity, context, cancellationToken);
                 }
             });
 
         return endpoints;
     }
 
-    public static async Task<IResult> PostEntity<T>(T entity, HttpContext context, ILogger<T> logger, CancellationToken cancellationToken)
+    public static async Task<IResult> PostEntity<T>(T entity, HttpContext context, CancellationToken cancellationToken)
         where T : BaseEntity, new()
     {
         var dbContext = context.RequestServices.GetRequiredService<IDbContext>();
@@ -30,17 +30,10 @@ public static class PostEndpoints
             await entityDefaulter.DefaultAsync(entity, currentUserContext.CurrentUser);
         }
 
-        var e = await dbContext.Set<T>().AddAsync(entity, cancellationToken);
-
-        var posted = e?.Entity;
-
-        if (posted == null)
-        {
-            return Results.UnprocessableEntity();
-        }
+        var e = await dbContext.UpsertEntityAsync<T>(entity, cancellationToken);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Results.Ok(posted);
+        return Results.Ok(e);
     }
 }

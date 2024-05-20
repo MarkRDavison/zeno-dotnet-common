@@ -37,7 +37,7 @@ public class Startup
             .AddControllers();
 
         services
-            .ConfigureHealthCheckServices<InitializationHostedService>();
+            .AddHealthCheckServices<InitializationHostedService>();
 
         var dbSettings = new DatabaseAppSettings
         {
@@ -48,10 +48,10 @@ public class Startup
         services
             .AddHttpClient()
             .AddHttpContextAccessor()
-            .UseDatabase<TestDbContext>(false, dbSettings)
-            .UseCoreDbContext<TestDbContext>();
+            .AddDatabase<TestDbContext>(false, dbSettings)
+            .AddCoreDbContext<TestDbContext>();
 
-        services.UseCQRSServer();
+        services.MapCQRSServer();
         services
             .AddSingleton<IChangesetQueue, RepositoryBackedChangesetQueue>()
             .AddTransient<IChangesetGroup, ChangesetGroup>();
@@ -71,15 +71,15 @@ public class Startup
             endpoints
                 .ConfigureCQRSEndpoints();
 
-            endpoints.UseGet<Comment>();
-            endpoints.UseGetById<Comment>();
-            endpoints.UsePost<Comment>();
-            endpoints.UseDelete<Comment>();
+            endpoints.MapGet<Comment>();
+            endpoints.MapGetById<Comment>();
+            endpoints.MapPost<Comment>();
+            endpoints.MapDelete<Comment>();
 
-            endpoints.UseGet<Author>();
-            endpoints.UseGetById<Author>();
-            endpoints.UsePost<Author>();
-            endpoints.UseDelete<Author>();
+            endpoints.MapGet<Author>();
+            endpoints.MapGetById<Author>();
+            endpoints.MapPost<Author>();
+            endpoints.MapDelete<Author>();
         });
     }
 }

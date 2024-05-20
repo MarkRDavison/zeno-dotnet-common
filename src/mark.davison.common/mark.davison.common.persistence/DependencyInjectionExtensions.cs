@@ -26,7 +26,7 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    public static IServiceCollection UseDatabase<TDbContext>(this IServiceCollection services, bool productionMode, DatabaseAppSettings databaseAppSettings, params Type[] migrationTypes)
+    public static IServiceCollection AddDatabase<TDbContext>(this IServiceCollection services, bool productionMode, DatabaseAppSettings databaseAppSettings, params Type[] migrationTypes)
         where TDbContext : DbContextBase<TDbContext>
     {
         if (databaseAppSettings.DATABASE_TYPE == DatabaseType.Sqlite)
@@ -83,7 +83,7 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    public static IServiceCollection UseCoreDbContext<TDbContext>(this IServiceCollection services)
+    public static IServiceCollection AddCoreDbContext<TDbContext>(this IServiceCollection services)
         where TDbContext : DbContextBase<TDbContext>
     {
         services.AddScoped<IDbContext>(_ => _.GetRequiredService<IDbContext<TDbContext>>());

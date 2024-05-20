@@ -360,7 +360,7 @@ public class CQRSGenerator : ISourceGenerator
 
         if (type == CQRSType.Server)
         {
-            stringBuilder.AppendLine("        public static IServiceCollection UseCQRSServer(this IServiceCollection services)");
+            stringBuilder.AppendLine("        public static IServiceCollection MapCQRSServer(this IServiceCollection services)");
             stringBuilder.AppendLine("        {");
             stringBuilder.AppendLine(string.Empty);
             stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.server.abstractions.CQRS.IQueryDispatcher, mark.davison.common.server.CQRS.QueryDispatcher>();");

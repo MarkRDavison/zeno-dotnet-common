@@ -36,7 +36,7 @@ public static class DependencyInversionExtensions
         return services;
     }
 
-    public static IServiceCollection UseRedis(this IServiceCollection services,
+    public static IServiceCollection UseRedisCache(this IServiceCollection services,
         RedisAppSettings redisSettings,
         string appName,
         bool productionMode)
@@ -83,7 +83,7 @@ public static class DependencyInversionExtensions
             });
 
         services
-            .UseRedis(redisSettings, appName, productionMode);
+            .UseRedisCache(redisSettings, appName, productionMode);
         return services;
     }
 
@@ -220,14 +220,14 @@ public static class DependencyInversionExtensions
         return services;
     }
 
-    public static IServiceCollection ConfigureHealthCheckServices(this IServiceCollection services)
+    public static IServiceCollection AddHealthCheckServices(this IServiceCollection services)
     {
-        services.ConfigureHealthCheckServices<GenericApplicationHealthStateHostedService>();
+        services.AddHealthCheckServices<GenericApplicationHealthStateHostedService>();
 
         return services;
     }
 
-    public static IServiceCollection ConfigureHealthCheckServices<THealthHosted>(this IServiceCollection services)
+    public static IServiceCollection AddHealthCheckServices<THealthHosted>(this IServiceCollection services)
         where THealthHosted : class, IApplicationHealthStateHostedService
     {
         services.AddSingleton<IApplicationHealthState, ApplicationHealthState>();

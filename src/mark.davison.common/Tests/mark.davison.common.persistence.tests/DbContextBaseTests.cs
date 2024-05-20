@@ -18,7 +18,7 @@ public sealed class DbContextBaseTests
 
         serviceCollection
             .AddLogging()
-            .UseDatabase<TestDbContext>(false, dbSettings, typeof(TestDbContext));
+            .AddDatabase<TestDbContext>(false, dbSettings, typeof(TestDbContext));
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
