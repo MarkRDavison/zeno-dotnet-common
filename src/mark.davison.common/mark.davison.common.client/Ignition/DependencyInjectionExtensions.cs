@@ -66,6 +66,7 @@ public static class DependencyInjectionExtensions
             {
                 var context = _.GetRequiredService<IAuthenticationContext>();
                 var authConfig = _.GetRequiredService<IAuthenticationConfig>();
+                authConfig.HttpClientName = httpClientName;
                 if (authConfig.BffBase == localBffRoot)
                 {
                     authConfig.SetBffBase(string.Empty);
@@ -110,6 +111,9 @@ public static class DependencyInjectionExtensions
             })
             .AddHttpClient(httpClientName)
             .AddHttpMessageHandler(_ => new CookieHandler());
+
+
+
         return services;
     }
 

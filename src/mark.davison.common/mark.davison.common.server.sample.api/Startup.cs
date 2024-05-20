@@ -51,7 +51,7 @@ public class Startup
             .AddDatabase<TestDbContext>(false, dbSettings)
             .AddCoreDbContext<TestDbContext>();
 
-        services.MapCQRSServer();
+        services.AddCQRSServer();
         services
             .AddSingleton<IChangesetQueue, RepositoryBackedChangesetQueue>()
             .AddTransient<IChangesetGroup, ChangesetGroup>();
@@ -69,7 +69,7 @@ public class Startup
             endpoints
                 .MapControllers();
             endpoints
-                .ConfigureCQRSEndpoints();
+                .MapCQRSEndpoints();
 
             endpoints.MapGet<Comment>();
             endpoints.MapGetById<Comment>();

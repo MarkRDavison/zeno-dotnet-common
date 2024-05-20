@@ -284,7 +284,7 @@ public class CQRSGenerator : ISourceGenerator
         stringBuilder.AppendLine("    public static class GenerateEndpointRouteExtensions");
         stringBuilder.AppendLine("    {");
         stringBuilder.AppendLine(string.Empty);
-        stringBuilder.AppendLine("        public static void ConfigureCQRSEndpoints(this IEndpointRouteBuilder endpoints)");
+        stringBuilder.AppendLine("        public static void MapCQRSEndpoints(this IEndpointRouteBuilder endpoints)");
         stringBuilder.AppendLine("        {");
         stringBuilder.AppendLine(string.Empty);
 
@@ -360,7 +360,7 @@ public class CQRSGenerator : ISourceGenerator
 
         if (type == CQRSType.Server)
         {
-            stringBuilder.AppendLine("        public static IServiceCollection MapCQRSServer(this IServiceCollection services)");
+            stringBuilder.AppendLine("        public static IServiceCollection AddCQRSServer(this IServiceCollection services)");
             stringBuilder.AppendLine("        {");
             stringBuilder.AppendLine(string.Empty);
             stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.server.abstractions.CQRS.IQueryDispatcher, mark.davison.common.server.CQRS.QueryDispatcher>();");

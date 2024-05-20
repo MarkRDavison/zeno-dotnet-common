@@ -5,6 +5,7 @@ public class AuthenticationConfig : IAuthenticationConfig
     public string LoginEndpoint { get; set; } = string.Empty;
     public string LogoutEndpoint { get; set; } = string.Empty;
     public string UserEndpoint { get; set; } = string.Empty;
+    public string HttpClientName { get; set; } = string.Empty;
     public string BffBase { get; private set; } = string.Empty;
     public void SetBffBase(string bffBase)
     {

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInjectionExtensions
 {
-    public static IServiceCollection UseRedis(this IServiceCollection services, RedisAppSettings redis, string name, bool productionMode)
+    public static IServiceCollection AddRedis(this IServiceCollection services, RedisAppSettings redis, string name, bool productionMode)
     {
         if (!string.IsNullOrEmpty(redis.HOST))
         {
