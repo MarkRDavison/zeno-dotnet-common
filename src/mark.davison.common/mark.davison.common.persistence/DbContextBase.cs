@@ -75,10 +75,24 @@ public abstract class DbContextBase<TContext> : DbContext, IDbContext<TContext> 
 
     }
 
+    public async Task<bool> AnyAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) where TEntity : BaseEntity
+    {
+        return await Set<TEntity>()
+            .Where(predicate)
+            .AnyAsync(cancellationToken);
+    }
+    public async Task<bool> ExistsAsync<TEntity>(Guid id, CancellationToken cancellationToken) where TEntity : BaseEntity
+    {
+        return await Set<TEntity>()
+            .Where(_ => _.Id == id)
+            .AnyAsync(cancellationToken);
+    }
+
     public async Task<TEntity?> GetByIdAsync<TEntity>(Guid id, CancellationToken cancellationToken) where TEntity : BaseEntity
     {
         return await FindAsync<TEntity>([id], cancellationToken: cancellationToken);
     }
+
     public async Task<TEntity> UpsertEntityAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : BaseEntity
     {
         var existing = await GetByIdAsync<TEntity>(entity.Id, cancellationToken);
@@ -97,6 +111,7 @@ public abstract class DbContextBase<TContext> : DbContext, IDbContext<TContext> 
             return existing;
         }
     }
+
     public async Task<List<TEntity>> UpsertEntitiesAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken) where TEntity : BaseEntity
     {
         var results = new List<TEntity>();

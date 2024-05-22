@@ -44,10 +44,20 @@ public static class DependencyInjectionExtensions
 
     public static IServiceCollection UseFluxorState(
         this IServiceCollection services,
+        Action<StoreHelperOptions> configure,
         params Type[] types)
     {
         services
-            .AddScoped<IStoreHelper, StoreHelper>()
+            .AddScoped<IStoreHelper>(_ =>
+            {
+                var options = new StoreHelperOptions();
+                configure?.Invoke(options);
+                return new StoreHelper(
+                    options,
+                    _.GetRequiredService<IDateService>(),
+                    _.GetRequiredService<IDispatcher>(),
+                    _.GetRequiredService<IActionSubscriber>());
+            })
             .AddFluxor(_ =>
             {
                 foreach (var type in types)

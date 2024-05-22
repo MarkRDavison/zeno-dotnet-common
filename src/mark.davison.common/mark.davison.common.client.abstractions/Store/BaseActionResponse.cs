@@ -16,6 +16,7 @@ public class BaseActionResponse<T> : BaseActionResponse
         ActionId = action.ActionId;
     }
 
+    // TODO: This is bad, not returning the expected type
     public static BaseActionResponse<T> From(Response response)
     {
         return new BaseActionResponse<T>

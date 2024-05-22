@@ -4,6 +4,7 @@ public class StoreHelper : IStoreHelper
 {
     internal bool _force;
 
+    private readonly StoreHelperOptions _options;
     private readonly IDateService _dateService;
     private readonly IDispatcher _dispatcher;
     private readonly IActionSubscriber _actionSubscriber;
@@ -40,10 +41,12 @@ public class StoreHelper : IStoreHelper
     }
 
     public StoreHelper(
+        StoreHelperOptions options,
         IDateService dateService,
         IDispatcher dispatcher,
         IActionSubscriber actionSubscriber)
     {
+        _options = options;
         _dateService = dateService;
         _dispatcher = dispatcher;
         _actionSubscriber = actionSubscriber;
@@ -109,7 +112,31 @@ public class StoreHelper : IStoreHelper
                 this,
                 (TActionResponse actionResponse) =>
                 {
-                    if (actionResponse.ActionId == action.ActionId)
+                    bool match = false;
+                    if (_options.ResponseCompareFunction != null)
+                    {
+                        match = _options.ResponseCompareFunction.Invoke(action, actionResponse);
+                    }
+                    else
+                    {
+                        if (actionResponse.ActionId == action.ActionId)
+                        {
+                            match = true;
+                        }
+
+                        if (_options.VerboseActionIdComparison)
+                        {
+                            Console.WriteLine(
+                                "Comparing action of type {0} with id {1} to response of type {2} with id {3}, match: {4}",
+                                typeof(TAction).Name,
+                                action.ActionId,
+                                typeof(TActionResponse).Name,
+                                actionResponse.ActionId,
+                                match);
+                        }
+                    }
+
+                    if (match)
                     {
                         result = actionResponse;
                         tcs.SetResult();

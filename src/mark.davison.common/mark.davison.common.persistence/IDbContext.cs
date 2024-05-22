@@ -13,6 +13,9 @@ public interface IDbContext
     DbSet<TEntity> Set<TEntity>() where TEntity : class;
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
+    Task<bool> AnyAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) where TEntity : BaseEntity;
+    Task<bool> ExistsAsync<TEntity>(Guid id, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
     Task<TEntity?> GetByIdAsync<TEntity>(Guid id, CancellationToken cancellationToken) where TEntity : BaseEntity;
     Task<TEntity> UpsertEntityAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : BaseEntity;
     Task<List<TEntity>> UpsertEntitiesAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken) where TEntity : BaseEntity;
