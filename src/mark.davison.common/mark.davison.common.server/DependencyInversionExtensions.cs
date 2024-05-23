@@ -119,6 +119,19 @@ public static class DependencyInversionExtensions
         ClaimsAppSettings claimsAppSettings,
         string apiEndpoint)
     {
+        return services.UseCookieOidcAuth(authAppSettings, claimsAppSettings, _ => { }, apiEndpoint);
+    }
+
+    public static IServiceCollection UseCookieOidcAuth(
+        this IServiceCollection services,
+        AuthAppSettings authAppSettings,
+        ClaimsAppSettings claimsAppSettings,
+        Action<AuthenticationConfiguration> configure,
+        string apiEndpoint)
+    {
+        var config = new AuthenticationConfiguration();
+        configure(config);
+
         services
             .AddAuthentication(_ =>
             {
@@ -158,7 +171,17 @@ public static class DependencyInversionExtensions
 
                             if (!string.IsNullOrEmpty(access))
                             {
-                                await repository.UpsertEntityAsync<User>(user, HeaderParameters.Auth(access, null), CancellationToken.None);
+                                var createdAt = DateTime.UtcNow;
+                                user.Created = createdAt;
+                                var upsertedUser = await repository.UpsertEntityAsync<User>(user, HeaderParameters.Auth(access, null), CancellationToken.None);
+
+                                if (upsertedUser?.Created == createdAt)
+                                {
+                                    if (config.OnUserCreated != null)
+                                    {
+                                        await config.OnUserCreated(upsertedUser);
+                                    }
+                                }
                             }
                         }
                     }

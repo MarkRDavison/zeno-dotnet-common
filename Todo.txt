@@ -1,5 +1,6 @@
 Todo:
 	-	Make HttpRepository.UpsertEntitiesAsync not do it one by one
+	-	When persisting a user after logging in, not all sub values will be guids, need to deterministically create a guid for the id from the string sub value
 
 Done:
 	-	Add cicd submodule

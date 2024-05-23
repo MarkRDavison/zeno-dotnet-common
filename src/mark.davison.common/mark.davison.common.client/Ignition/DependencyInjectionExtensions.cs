@@ -44,6 +44,13 @@ public static class DependencyInjectionExtensions
 
     public static IServiceCollection UseFluxorState(
         this IServiceCollection services,
+        params Type[] types)
+    {
+        return services.UseFluxorState(_ => { }, types);
+    }
+
+    public static IServiceCollection UseFluxorState(
+        this IServiceCollection services,
         Action<StoreHelperOptions> configure,
         params Type[] types)
     {
