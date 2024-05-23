@@ -179,7 +179,7 @@ public static class DependencyInversionExtensions
                                 {
                                     if (config.OnUserCreated != null)
                                     {
-                                        await config.OnUserCreated(upsertedUser);
+                                        await config.OnUserCreated(ctx.HttpContext.RequestServices, upsertedUser);
                                     }
                                 }
                             }

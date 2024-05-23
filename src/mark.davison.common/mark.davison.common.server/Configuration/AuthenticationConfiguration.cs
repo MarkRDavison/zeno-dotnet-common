@@ -2,5 +2,5 @@
 
 public sealed class AuthenticationConfiguration
 {
-    public Func<User, Task>? OnUserCreated { get; set; }
+    public Func<IServiceProvider, User, Task>? OnUserCreated { get; set; }
 }
