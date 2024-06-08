@@ -24,6 +24,10 @@ public static class DependencyInjectionExtensions
                 .AddDataProtection()
                 .PersistKeysToStackExchangeRedis(connectionMultiplexer, (productionMode ? "PROD_" : "DEV_") + "FINANCE_DataProtectionKeys");
         }
+        else if (!productionMode)
+        {
+            services.AddDistributedMemoryCache();
+        }
         return services;
     }
 

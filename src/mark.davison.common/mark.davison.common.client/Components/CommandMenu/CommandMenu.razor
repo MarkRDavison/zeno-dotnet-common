@@ -1,0 +1,6 @@
+﻿<MudMenu Disabled="@Disabled" Icon="@Icons.Material.Filled.MoreHoriz" AnchorOrigin="@AnchorOrigin">
+    @foreach (var item in Items)
+    {
+        <MudMenuItem OnClick="@(() => OnActivate(item))" OnTouch="@(() => OnActivate(item))">@item.Text</MudMenuItem>
+    }
+</MudMenu>

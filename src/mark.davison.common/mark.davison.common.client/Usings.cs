@@ -20,6 +20,7 @@ global using Microsoft.AspNetCore.Components.WebAssembly.Http;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.JSInterop;
+global using MudBlazor;
 global using System.Linq.Expressions;
 global using System.Net;
 global using System.Reflection;
