@@ -85,7 +85,7 @@ public static class WebUtilities
             {
                 property.SetValue(request, queryProperty);
             }
-            else if (property.PropertyType == typeof(Guid))
+            else if (property.PropertyType == typeof(Guid) || property.PropertyType == typeof(Guid?))
             {
                 if (Guid.TryParse(queryProperty, out var guid))
                 {
@@ -96,7 +96,7 @@ public static class WebUtilities
                     throw new InvalidOperationException("Invalid Guid format");
                 }
             }
-            else if (property.PropertyType == typeof(long))
+            else if (property.PropertyType == typeof(long) || property.PropertyType == typeof(long?))
             {
                 if (long.TryParse(queryProperty, out var lnum))
                 {
@@ -107,7 +107,7 @@ public static class WebUtilities
                     throw new InvalidOperationException("Invalid long format");
                 }
             }
-            else if (property.PropertyType == typeof(int))
+            else if (property.PropertyType == typeof(int) || property.PropertyType == typeof(int?))
             {
                 if (int.TryParse(queryProperty, out var lnum))
                 {
@@ -118,7 +118,7 @@ public static class WebUtilities
                     throw new InvalidOperationException("Invalid int format");
                 }
             }
-            else if (property.PropertyType == typeof(bool))
+            else if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(bool?))
             {
                 if (bool.TryParse(queryProperty, out var bval))
                 {
@@ -129,7 +129,7 @@ public static class WebUtilities
                     throw new InvalidOperationException("Invalid bool format");
                 }
             }
-            else if (property.PropertyType == typeof(DateOnly))
+            else if (property.PropertyType == typeof(DateOnly) || property.PropertyType == typeof(DateOnly))
             {
                 if (DateOnly.TryParse(queryProperty, out var dval))
                 {
@@ -142,7 +142,7 @@ public static class WebUtilities
             }
             else
             {
-                throw new InvalidOperationException($"Unhandled get property type {property.PropertyType.Name}");
+                throw new InvalidOperationException($"Unhandled get property type '{property.PropertyType.Name}'");
             }
         }
 
