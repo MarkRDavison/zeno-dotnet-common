@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
+    <ProjectReference Include="..\..\..\mark.davison.common.server\mark.davison.common.server.csproj" />
+	<!-- Don't need the OutputItemType when referencing as a nuget package -->
+    <ProjectReference Include="..\..\..\mark.davison.common.source.generators\mark.davison.common.source.generators.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Shared\mark.davison.example.shared.commands\mark.davison.example.shared.commands.csproj" />
+    <ProjectReference Include="..\..\Shared\mark.davison.example.shared.queries\mark.davison.example.shared.queries.csproj" />
+    <ProjectReference Include="..\Migrations\mark.davison.example.api.migrations.sqlite\mark.davison.example.api.migrations.sqlite.csproj" />
+  </ItemGroup>
+
+</Project>

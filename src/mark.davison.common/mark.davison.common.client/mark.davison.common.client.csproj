@@ -11,10 +11,10 @@
 		<PackageVersion>8.0.0</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Fluxor.Blazor.Web" Version="5.9.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.5" />
+		<PackageReference Include="Fluxor.Blazor.Web" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-		<PackageReference Include="MudBlazor" Version="6.19.1" />
+		<PackageReference Include="MudBlazor" Version="6.20.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />

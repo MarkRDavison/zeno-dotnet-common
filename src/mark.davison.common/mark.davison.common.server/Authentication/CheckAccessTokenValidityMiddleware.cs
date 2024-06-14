@@ -96,8 +96,15 @@ public class CheckAccessTokenValidityMiddleware
                 }
             }
         }
+        else
+        {
+            if (context.Request.Headers.TryGetValue(HeaderNames.Authorization, out var access))
+            {
+            }
+        }
 
         var accessToken = await context.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+
 
         if (!string.IsNullOrEmpty(accessToken))
         {

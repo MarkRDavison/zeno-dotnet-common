@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace mark.davison.common.server;
 
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
@@ -90,18 +92,57 @@ public static class DependencyInversionExtensions
 
     public static IServiceCollection AddJwtAuth(
         this IServiceCollection services,
-        AuthAppSettings authAppSettings)
+        params AuthAppSettings[] authAppSettings)
     {
-        services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+        AuthenticationBuilder authBuilder;
+
+        if (authAppSettings.Length > 1)
+        {
+            authBuilder = services.AddAuthentication();
+
+            foreach (var authSetting in authAppSettings)
+            {
+                services
+                    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(authSetting.CLIENT_ID, options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = authSetting.AUTHORITY,
+                            ValidateAudience = !string.IsNullOrEmpty(authSetting.AUDIENCE),
+                            ValidAudience = string.IsNullOrEmpty(authSetting.AUDIENCE) ? null : authSetting.AUDIENCE,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = false,
+                            ClockSkew = TimeSpan.Zero,
+                            SignatureValidator = (token, _) => new JsonWebToken(token),
+                            RequireExpirationTime = true,
+                        };
+                    });
+            }
+
+            services.AddAuthorization(_ =>
+            {
+                _.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .AddAuthenticationSchemes(authAppSettings.Select(_ => _.CLIENT_ID).ToArray())
+                    .Build();
+            });
+        }
+        else
+        {
+            var authSetting = authAppSettings.Single();
+
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = authAppSettings.AUTHORITY,
-                    ValidateAudience = !string.IsNullOrEmpty(authAppSettings.AUDIENCE),
-                    ValidAudience = string.IsNullOrEmpty(authAppSettings.AUDIENCE) ? null : authAppSettings.AUDIENCE,
+                    ValidIssuer = authSetting.AUTHORITY,
+                    ValidateAudience = !string.IsNullOrEmpty(authSetting.AUDIENCE),
+                    ValidAudience = string.IsNullOrEmpty(authSetting.AUDIENCE) ? null : authSetting.AUDIENCE,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = false,
                     ClockSkew = TimeSpan.Zero,
@@ -109,6 +150,9 @@ public static class DependencyInversionExtensions
                     RequireExpirationTime = true,
                 };
             });
+
+            services.AddAuthorization();
+        }
 
         return services;
     }
@@ -206,6 +250,21 @@ public static class DependencyInversionExtensions
                 _.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 _.LogoutPath = AuthConstants.LogoutPath;
                 _.LoginPath = AuthConstants.LoginPath;
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = authAppSettings.AUTHORITY,
+                    ValidateAudience = !string.IsNullOrEmpty(authAppSettings.AUDIENCE),
+                    ValidAudience = string.IsNullOrEmpty(authAppSettings.AUDIENCE) ? null : authAppSettings.AUDIENCE,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = false,
+                    ClockSkew = TimeSpan.Zero,
+                    SignatureValidator = (token, _) => new JsonWebToken(token),
+                    RequireExpirationTime = true,
+                };
             });
 
         services
