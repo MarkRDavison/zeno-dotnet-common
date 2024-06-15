@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mdcm="using:mark.davison.common.desktop.components.Models"
+			 xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d"
+             x:Class="mark.davison.common.desktop.components.AppBar">
+	<DockPanel Margin="8">
+		<TextBlock DockPanel.Dock="Left"
+				   VerticalAlignment="Center"
+				   FontSize="24"
+				   FontWeight="Bold"
+				   Text="{Binding $parent[UserControl].ApplicationTitle}" />
+
+		<Button DockPanel.Dock="Left"
+				Margin="8"
+				Command="{Binding $parent[UserControl].MenuToggleCommand}">
+			<materialIcons:MaterialIcon Kind="Menu" />
+		</Button>
+
+		<Button DockPanel.Dock="Right"
+				Margin="8"
+				IsVisible="{Binding $parent[UserControl].Username, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+			<Button.Content>
+				<materialIcons:MaterialIcon Kind="AccountCircle" />
+			</Button.Content>
+			<Button.Flyout>
+				<MenuFlyout ItemsSource="{Binding $parent[UserControl].FlyoutMenuItems}">
+					<MenuFlyout.ItemContainerTheme>
+						<ControlTheme TargetType="MenuItem" 
+									  BasedOn="{StaticResource {x:Type MenuItem}}"
+								      x:DataType="mdcm:FlyoutMenuItem">
+
+							<Setter Property="Header" Value="{Binding Name}"/>
+							<Setter Property="Command" Value="{Binding $parent[UserControl].ManageMenuCommand}"/>
+							<Setter Property="CommandParameter" Value="{Binding Value}"/>
+
+						</ControlTheme>
+					</MenuFlyout.ItemContainerTheme>
+				</MenuFlyout>
+			</Button.Flyout>
+		</Button>
+
+		<TextBlock DockPanel.Dock="Right"
+				   VerticalAlignment="Center"
+				   Text="{Binding $parent[UserControl].Username}" />
+		
+		<Panel />
+	</DockPanel>
+</UserControl>

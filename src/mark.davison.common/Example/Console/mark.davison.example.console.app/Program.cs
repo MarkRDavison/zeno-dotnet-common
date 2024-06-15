@@ -41,9 +41,9 @@ var options = new OidcClientOptions
 OidcClient _oidcClient = new OidcClient(options);
 var result = await _oidcClient.LoginAsync(new LoginRequest());
 
-if (result.IsError)
+if (result is null || result.IsError)
 {
-    Console.WriteLine("\n\nError:\n{0}", result.Error);
+    Console.WriteLine("\n\nError:\n{0}", result?.Error ?? "Unknown error");
     Console.ReadKey();
     return;
 }
@@ -58,7 +58,7 @@ HttpClient _apiClient = new HttpClient(result.RefreshTokenHandler)
 var repository = new ClientHttpRepository(ApiRppt, _apiClient, factory.CreateLogger<ClientHttpRepository>());
 
 Console.WriteLine("\n\nClaims:");
-foreach (var claim in result.User.Claims)
+foreach (var claim in result!.User.Claims)
 {
     Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
 }
@@ -67,7 +67,7 @@ Console.WriteLine($"\nidentity token: {result.IdentityToken}");
 Console.WriteLine($"access token:   {result.AccessToken}");
 Console.WriteLine($"refresh token:  {result?.RefreshToken ?? "none"}");
 
-var currentAccessToken = result.AccessToken;
+var currentAccessToken = result!.AccessToken;
 var currentRefreshToken = result.RefreshToken;
 _apiClient.SetBearerToken(currentAccessToken);
 

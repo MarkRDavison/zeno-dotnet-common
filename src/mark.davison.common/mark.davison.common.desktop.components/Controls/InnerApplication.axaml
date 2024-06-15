@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mdc="using:mark.davison.common.desktop.components"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="mark.davison.common.desktop.components.InnerApplication">
+	<DockPanel>
+		<mdc:AppBar DockPanel.Dock="Top"
+					MenuToggleCommand="{Binding ToggleMenuCommand}"
+					ManageMenuCommand="{Binding ManageMenuCommand}"
+					ApplicationTitle="{Binding ApplicationTitle}"
+					Username="{Binding Username}"/>
+		<mdc:NavMenu DockPanel.Dock="Left"
+					 MenuOpen="{Binding NavMenuOpen}"
+					 Pages="{Binding Pages}"
+					 SelectedPage="{Binding SelectedPage}"
+					 SelectPageCommand="{Binding SelectPageCommand}"/>
+	</DockPanel>
+</UserControl>

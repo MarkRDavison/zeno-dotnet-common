@@ -92,11 +92,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.example.web.se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.example.bff", "Example\Bff\mark.davison.example.bff\mark.davison.example.bff.csproj", "{3EE6459F-D652-4D97-A48F-EEEB7501AAE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.example.console.app", "Example\Console\mark.davison.example.console.app\mark.davison.example.console.app.csproj", "{7B0F4505-FBAE-4ABA-87DE-89980C823B43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.example.console.app", "Example\Console\mark.davison.example.console.app\mark.davison.example.console.app.csproj", "{7B0F4505-FBAE-4ABA-87DE-89980C823B43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Console", "Console", "{FDF16B80-7C0F-4C30-B7AA-06745F2EF0C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{49ECA715-D2F0-456F-9B8C-595189CE2746}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.example.desktop.ui", "Example\Avalonia\mark.davison.example.desktop.ui\mark.davison.example.desktop.ui.csproj", "{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.desktop.components", "mark.davison.common.desktop.components\mark.davison.common.desktop.components.csproj", "{6D153224-6D5C-41B1-B6C5-20410A971E46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -240,6 +244,14 @@ Global
 		{7B0F4505-FBAE-4ABA-87DE-89980C823B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B0F4505-FBAE-4ABA-87DE-89980C823B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B0F4505-FBAE-4ABA-87DE-89980C823B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D153224-6D5C-41B1-B6C5-20410A971E46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D153224-6D5C-41B1-B6C5-20410A971E46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D153224-6D5C-41B1-B6C5-20410A971E46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D153224-6D5C-41B1-B6C5-20410A971E46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,6 +287,7 @@ Global
 		{7B0F4505-FBAE-4ABA-87DE-89980C823B43} = {FDF16B80-7C0F-4C30-B7AA-06745F2EF0C2}
 		{FDF16B80-7C0F-4C30-B7AA-06745F2EF0C2} = {CA252822-D1FC-4217-A330-80EF7E4F29E7}
 		{49ECA715-D2F0-456F-9B8C-595189CE2746} = {CA252822-D1FC-4217-A330-80EF7E4F29E7}
+		{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6} = {49ECA715-D2F0-456F-9B8C-595189CE2746}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3DD14FA-86D9-4C81-B641-8C5CB3A57E71}
