@@ -6,17 +6,28 @@ public sealed class DialogService : IDialogService
         where TResponse : Response, new()
         where TDialogViewModel : IViewModelDialogViewModel
     {
+        return await ShowDialogAsync<TResponse, TDialogViewModel>(viewModel, new DialogSettings
+        {
+            CanResize = false,
+            ShowInTaskbar = true,
+            SizeToContent = SizeToContent.WidthAndHeight
+        });
+    }
+    public async Task<TResponse?> ShowDialogAsync<TResponse, TDialogViewModel>(TDialogViewModel viewModel, DialogSettings settings)
+        where TResponse : Response, new()
+        where TDialogViewModel : IViewModelDialogViewModel
+    {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
             desktop.MainWindow is not null)
         {
             var dialog = new ViewModelDialogWindow
             {
-                SizeToContent = SizeToContent.WidthAndHeight,
-                MinWidth = 400,
-                MinHeight = 300,
-                CanResize = false,
+                SizeToContent = settings.SizeToContent,
+                MinWidth = settings.MinWidth,
+                MinHeight = settings.MinHeight,
+                CanResize = settings.CanResize,
+                ShowInTaskbar = settings.ShowInTaskbar,
                 SystemDecorations = SystemDecorations.Full,
-                ShowInTaskbar = true,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 ExtendClientAreaToDecorationsHint = true,
                 Icon = desktop.MainWindow.Icon,
