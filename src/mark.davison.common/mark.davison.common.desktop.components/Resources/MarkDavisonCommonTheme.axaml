@@ -1,0 +1,81 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	
+	<SolidColorBrush x:Key="PrimaryDark" Color="DarkSlateGray" />
+	<SolidColorBrush x:Key="Primary" Color="SlateGray" />
+	<SolidColorBrush x:Key="PrimaryLight" Color="LightSteelBlue" />
+	
+	<SolidColorBrush x:Key="DarkSeaGreen" Color="DarkSeaGreen" />
+	<SolidColorBrush x:Key="SeaGreen" Color="SeaGreen" />
+	<SolidColorBrush x:Key="LightSeaGreen" Color="LightSeaGreen" />
+
+	<SolidColorBrush x:Key="DarkSalmon" Color="DarkSalmon" />
+	<SolidColorBrush x:Key="Salmon" Color="Salmon" />
+	<SolidColorBrush x:Key="LightSalmon" Color="LightSalmon" />
+
+
+	<SolidColorBrush x:Key="Success" Color="PaleGreen" />
+	<SolidColorBrush x:Key="Warning" Color="Gold" />
+	<SolidColorBrush x:Key="Error" Color="IndianRed" />
+
+	<Design.PreviewWith>
+		<Border BorderThickness="2">
+			<StackPanel Orientation="Vertical">
+				<Grid>
+					<Grid.Styles>
+						<Style Selector="Panel">
+							<Setter Property="Margin" Value="4" />
+							<Setter Property="Width" Value="40" />
+							<Setter Property="Height" Value="40" />
+						</Style>
+					</Grid.Styles>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<Panel Grid.Row="0" Grid.Column="0" Background="{StaticResource PrimaryDark}" />
+					<Panel Grid.Row="1" Grid.Column="0" Background="{StaticResource Primary}" />
+					<Panel Grid.Row="2" Grid.Column="0" Background="{StaticResource PrimaryLight}" />
+				
+					<Panel Grid.Row="0" Grid.Column="1" Background="{StaticResource DarkSeaGreen}" />
+					<Panel Grid.Row="1" Grid.Column="1" Background="{StaticResource SeaGreen}" />
+					<Panel Grid.Row="2" Grid.Column="1" Background="{StaticResource LightSeaGreen}" />
+
+					<Panel Grid.Row="0" Grid.Column="2" Background="{StaticResource DarkSalmon}" />
+					<Panel Grid.Row="1" Grid.Column="2" Background="{StaticResource Salmon}" />
+					<Panel Grid.Row="2" Grid.Column="2" Background="{StaticResource LightSalmon}" />
+
+					<Panel Grid.Row="0" Grid.Column="3" Background="{StaticResource Success}" />
+					<Panel Grid.Row="1" Grid.Column="3" Background="{StaticResource Warning}" />
+					<Panel Grid.Row="2" Grid.Column="3" Background="{StaticResource Error}" />
+				</Grid>
+				<StackPanel Orientation="Horizontal">
+					<StackPanel.Styles>
+						<Style Selector="Button">
+							<Setter Property="Margin" Value="4" />
+						</Style>
+					</StackPanel.Styles>
+					<StackPanel Orientation="Vertical">
+						<Button Background="{StaticResource PrimaryDark}">Button</Button>
+						<Button Background="{StaticResource Primary}">Button</Button>
+						<Button Background="{StaticResource PrimaryLight}">Button</Button>
+					</StackPanel>
+					<StackPanel Orientation="Vertical">
+						<Button Background="{StaticResource PrimaryDark}">Button</Button>
+						<Button Background="{StaticResource Primary}">Button</Button>
+						<Button Background="{StaticResource PrimaryLight}">Button</Button>
+					</StackPanel>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+</ResourceDictionary>

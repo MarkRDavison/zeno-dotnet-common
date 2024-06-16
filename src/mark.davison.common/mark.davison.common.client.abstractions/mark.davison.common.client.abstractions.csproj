@@ -10,7 +10,7 @@
 		<PackageVersion>8.0.0</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="Fluxor" Version="5.9.1" />
+	  <PackageReference Include="Fluxor" Version="6.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />

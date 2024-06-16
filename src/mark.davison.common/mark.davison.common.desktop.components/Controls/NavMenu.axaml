@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="mark.davison.common.desktop.components.NavMenu">
+			<TabControl TabStripPlacement="Left"
+						ItemsSource="{Binding $parent[UserControl].Pages}"
+						SelectedItem="{Binding $parent[UserControl].SelectedPage}">
+				<TabControl.Styles>
+					<Style Selector="TabItem">
+						<Setter Property="IsVisible" Value="{Binding $parent[UserControl].MenuOpen}" />
+					</Style>
+				</TabControl.Styles>
+				<TabControl.ItemTemplate>
+					<DataTemplate>
+						<Panel>
+							<Button Command="{Binding $parent[UserControl].SelectPageCommand}"
+									CommandParameter="{Binding .}"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch">
+								<TextBlock VerticalAlignment="Center"
+										   HorizontalAlignment="Center"
+										   Text="{Binding Name}" />
+							</Button>
+						</Panel>
+					</DataTemplate>
+				</TabControl.ItemTemplate>
+				<TabControl.ContentTemplate>
+					<DataTemplate>
+						<ContentControl Content="{Binding $parent[UserControl].SelectedPage}"
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"/>
+					</DataTemplate>
+				</TabControl.ContentTemplate>
+			</TabControl>
+</UserControl>
