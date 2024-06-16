@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:mark.davison.example.desktop.ui.ViewModels"
+             x:Class="mark.davison.example.desktop.ui.ExampleDialogPageView"
+			 x:DataType="vm:ExampleDialogPageViewModel"
+			 HorizontalAlignment="Center"
+			 VerticalAlignment="Center">
+	<StackPanel Orientation="Vertical">
+	<Button Command="{Binding OpenDialogCommand}">Open Dialog</Button>
+		<Label>Status:</Label>
+		<TextBlock Text="{Binding ResponseStatus}"/>
+		<Label>Errors:</Label>
+		<TextBlock Text="{Binding ResponseErrors}"/>
+		<Label>Warnings:</Label>
+		<TextBlock Text="{Binding ResponseWarnings}"/>
+	</StackPanel>
+</UserControl>

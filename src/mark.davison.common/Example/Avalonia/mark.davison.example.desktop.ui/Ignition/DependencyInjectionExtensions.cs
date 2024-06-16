@@ -12,7 +12,8 @@ public static class DependencyInjectionExtensions
                 _.ClientId = "zeno-example-public";
                 _.Scope = "openid profile email offline_access zeno-example-public";
                 _.PersistenceLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "example");
-            });
+            })
+            .AddTransient<ExampleDialogPageViewModel>();
 
         return services;
     }

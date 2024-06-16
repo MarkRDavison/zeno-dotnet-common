@@ -1,0 +1,70 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:mark.davison.common.desktop.components.Windows"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="mark.davison.common.desktop.components.ViewModelDialogWindow"
+		x:DataType="vm:IViewModelDialogViewModel">
+    
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" MinWidth="300" />
+		</Grid.ColumnDefinitions>
+		<Panel MinHeight="64" Background="DarkSlateGray" Grid.Row="0" Grid.ColumnSpan="2">
+			<TextBlock Margin="8" Text="{Binding Title}" />
+		</Panel>
+		<Panel MinHeight="256" Grid.Row="1" Grid.ColumnSpan="2">
+			<ContentControl Content="{Binding .}" />
+		</Panel>
+		<Panel Background="Transparent"
+			   Grid.Row="1" 
+			   ZIndex="99" 
+			   HorizontalAlignment="Stretch"
+			   VerticalAlignment="Top"
+			   Grid.Column="1">
+			<ItemsControl ItemsSource="{Binding $parent[Window].Errors}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border BorderThickness="1" 
+								BorderBrush="Crimson"
+								CornerRadius="4"
+								Margin="4">
+							<DockPanel
+								Background="IndianRed">
+								<TextBlock Text="{Binding .}" 
+										   DockPanel.Dock="Left"
+										   VerticalAlignment="Center"
+										   Margin="4" />
+								<Button Command="{Binding $parent[Window].ClearErrorCommand}"
+										CommandParameter="{Binding .}"
+										DockPanel.Dock="Right"
+										Margin="4">x</Button>
+								<Panel />
+							</DockPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Panel>
+		<DockPanel MinHeight="32" Background="DarkSlateGray" Grid.Row="2" Grid.ColumnSpan="2">
+			<DockPanel.Styles>
+				<Style Selector="Button">
+					<Setter Property="VerticalAlignment" Value="Stretch" />
+					<Setter Property="Margin" Value="16" />
+				</Style>
+			</DockPanel.Styles>
+			<Button DockPanel.Dock="Left" Click="Cancel_Button_Click">Cancel</Button>
+			<Button DockPanel.Dock="Right" 
+					Click="PrimaryButtonClick" 
+					IsEnabled="{Binding IsValid}">Save</Button>
+			<Panel />
+		</DockPanel>
+	</Grid>
+</Window>

@@ -8,7 +8,8 @@ public static class DependencyInjectionExtensions
             .AddLogging()
             .AddTransient<OidcAuthenticatorViewModel>()
             .AddSingleton<ICommonApplicationNotificationService, CommonApplicationNotificationService>()
-            .AddSingleton<IDesktopAuthenticationService, DesktopAuthenticationService>();
+            .AddSingleton<IDesktopAuthenticationService, DesktopAuthenticationService>()
+            .AddSingleton<IDialogService, DialogService>();
 
         return services;
     }

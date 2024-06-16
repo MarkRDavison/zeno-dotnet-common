@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:mark.davison.example.desktop.ui.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="mark.davison.example.desktop.ui.ExampleDialogView"
+			 x:DataType="vm:ExampleDialogViewModel">
+	<StackPanel Margin="16">
+		<CheckBox IsChecked="{Binding TriggerErrorOnSubmit}">Trigger error on submit</CheckBox>
+		<Label>Numer of errors</Label>
+		<NumericUpDown Value="{Binding ErrorsToTrigger}" Minimum="1" Maximum="10" FormatString="N0" />
+	</StackPanel>
+</UserControl>
