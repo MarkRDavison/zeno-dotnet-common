@@ -66,6 +66,8 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 
         _commonApplicationNotificationService.NotifyAuthenticationStateChanged();
 
+        PersistLogin();
+
         return (true, "Success");
     }
 

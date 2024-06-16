@@ -37,7 +37,7 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
         OnPropertyChanged(nameof(Username));
     }
 
-    public bool RequireAuthentication => _authSettings is not null && !_desktopAuthenticationService.IsAuthenticated;
+    public bool RequireAuthentication => !string.IsNullOrEmpty(_authSettings?.Value.Authority) && !_desktopAuthenticationService.IsAuthenticated && OidcAuthenticatorViewModel is not null;
 
     public OidcAuthenticatorViewModel? OidcAuthenticatorViewModel { get; }
 
