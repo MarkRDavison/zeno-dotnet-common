@@ -10,7 +10,7 @@ public static class DependencyInjectionExtensions
             {
                 _.Authority = "https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi";
                 _.ClientId = "zeno-example-public";
-                _.Scope = "openid profile email offline_access zeno-example-public";
+                _.Scope = "openid profile email offline_access";
                 _.PersistenceLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "example");
             })
             .AddTransient<ExampleDialogPageViewModel>();

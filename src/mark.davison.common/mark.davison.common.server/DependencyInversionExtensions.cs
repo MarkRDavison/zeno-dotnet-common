@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace mark.davison.common.server;
+﻿namespace mark.davison.common.server;
 
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
@@ -177,6 +175,21 @@ public static class DependencyInversionExtensions
         configure(config);
 
         services
+            .AddSingleton<ITicketStore, DistributedCacheTicketStore>()
+            .AddOptions<CookieAuthenticationOptions>(AuthConstants.CookiesScheme)
+            .Configure<ITicketStore>((_, store) =>
+            {
+                _.ExpireTimeSpan = TimeSpan.FromHours(16);
+                _.SlidingExpiration = false;
+                _.Cookie.Name = $"__{authAppSettings.SESSION_NAME}".ToLower();
+                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                _.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                _.LogoutPath = AuthConstants.LogoutPath;
+                _.LoginPath = AuthConstants.LoginPath;
+                _.SessionStore = store;
+            });
+
+        services
             .AddAuthentication(_ =>
             {
                 _.DefaultScheme = AuthConstants.CookiesScheme;
@@ -241,16 +254,17 @@ public static class DependencyInversionExtensions
                     _.Scope.Add(scope);
                 }
             })
-            .AddCookie(AuthConstants.CookiesScheme, _ =>
-            {
-                _.ExpireTimeSpan = TimeSpan.FromHours(16);
-                _.SlidingExpiration = false;
-                _.Cookie.Name = $"__{authAppSettings.SESSION_NAME}".ToLower();
-                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
-                _.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                _.LogoutPath = AuthConstants.LogoutPath;
-                _.LoginPath = AuthConstants.LoginPath;
-            })
+            .AddCookie(AuthConstants.CookiesScheme)
+            //.AddCookie(AuthConstants.CookiesScheme, _ =>
+            //{
+            //    _.ExpireTimeSpan = TimeSpan.FromHours(16);
+            //    _.SlidingExpiration = false;
+            //    _.Cookie.Name = $"__{authAppSettings.SESSION_NAME}".ToLower();
+            //    _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+            //    _.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            //    _.LogoutPath = AuthConstants.LogoutPath;
+            //    _.LoginPath = AuthConstants.LoginPath;
+            //})
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
