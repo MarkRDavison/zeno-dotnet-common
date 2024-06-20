@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\mark.davison.common.client\mark.davison.common.client.csproj" />
+    <ProjectReference Include="..\..\..\mark.davison.common.client.web\mark.davison.common.client.web.csproj" />
     <ProjectReference Include="..\..\Shared\mark.davison.example.shared.models.dto\mark.davison.example.shared.models.dto.csproj" />
   </ItemGroup>
 

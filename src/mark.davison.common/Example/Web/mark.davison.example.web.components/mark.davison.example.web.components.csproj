@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\mark.davison.common.client\mark.davison.common.client.csproj" />
+    <ProjectReference Include="..\..\..\mark.davison.common.client.web\mark.davison.common.client.web.csproj" />
     <ProjectReference Include="..\mark.davison.example.web.services\mark.davison.example.web.services.csproj" />
   </ItemGroup>
 

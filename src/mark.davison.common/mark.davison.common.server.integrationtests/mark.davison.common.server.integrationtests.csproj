@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
-    <ProjectReference Include="..\mark.davison.common.client\mark.davison.common.client.csproj" />
+    <ProjectReference Include="..\mark.davison.common.client.web.abstractions\mark.davison.common.client.web.abstractions.csproj" />
+    <ProjectReference Include="..\mark.davison.common.client.web\mark.davison.common.client.web.csproj" />
     <ProjectReference Include="..\mark.davison.common.server.sample.api\mark.davison.common.server.sample.api.csproj" />
     <ProjectReference Include="..\mark.davison.common.server.test\mark.davison.common.server.test.csproj" />
   </ItemGroup>

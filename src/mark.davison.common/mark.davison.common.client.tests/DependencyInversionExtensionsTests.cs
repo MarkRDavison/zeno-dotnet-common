@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.tests;
+﻿namespace mark.davison.common.client.web.tests;
 
 [TestClass]
 public class DependencyInversionExtensionsTests

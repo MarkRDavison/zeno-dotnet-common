@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.tests.Authentication;
+﻿namespace mark.davison.common.client.web.tests.Authentication;
 
 // TODO: Move to test utility library
 public class TestHandler : DelegatingHandler

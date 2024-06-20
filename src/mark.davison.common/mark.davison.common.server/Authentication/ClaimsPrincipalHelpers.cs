@@ -15,15 +15,13 @@ public static class ClaimsPrincipalHelpers
         var lastNameClaimValue = ExtractClaimValue(claimsPrincipal, claimsSettings.OIDC_LAST_NAME_ATTRIBUTE);
         var usernameClaimValue = ExtractClaimValue(claimsPrincipal, claimsSettings.OIDC_USERNAME_ATTRIBUTE);
         var emailClaimValue = ExtractClaimValue(claimsPrincipal, claimsSettings.OIDC_EMAIL_ATTRIBUTE);
-        var adminClaimValue = ExtractClaimValue(claimsPrincipal, claimsSettings.OIDC_ADMIN_ATTRIBUTE);
-
-        _ = bool.TryParse(adminClaimValue, out bool admin);
+        var adminClaimValue = claimsPrincipal.Claims.Any(_ => string.Equals(_.Type, "groups", StringComparison.OrdinalIgnoreCase) && _.Value == claimsSettings.OIDC_ADMIN_GROUP_NAME);
 
         return new User
         {
             Id = id,
             Sub = id,
-            Admin = admin,
+            Admin = adminClaimValue,
             Email = emailClaimValue,
             First = firstNameClaimValue,
             Last = lastNameClaimValue,

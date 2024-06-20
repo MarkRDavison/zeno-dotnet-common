@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server;
+﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+
+namespace mark.davison.common.server;
 
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
@@ -161,7 +163,7 @@ public static class DependencyInversionExtensions
         ClaimsAppSettings claimsAppSettings,
         string apiEndpoint)
     {
-        return services.UseCookieOidcAuth(authAppSettings, claimsAppSettings, _ => { }, apiEndpoint);
+        return services.UseCookieOidcAuth(authAppSettings, claimsAppSettings, _ => { }, _ => { }, _ => { }, _ => { }, apiEndpoint);
     }
 
     public static IServiceCollection UseCookieOidcAuth(
@@ -169,6 +171,9 @@ public static class DependencyInversionExtensions
         AuthAppSettings authAppSettings,
         ClaimsAppSettings claimsAppSettings,
         Action<AuthenticationConfiguration> configure,
+        Action<CookieAuthenticationOptions> configureCookie,
+        Action<JwtBearerOptions> configureJwt,
+        Action<OpenIdConnectOptions> configureOidc,
         string apiEndpoint)
     {
         var config = new AuthenticationConfiguration();
@@ -187,6 +192,7 @@ public static class DependencyInversionExtensions
                 _.LogoutPath = AuthConstants.LogoutPath;
                 _.LoginPath = AuthConstants.LoginPath;
                 _.SessionStore = store;
+                configureCookie(_);
             });
 
         services
@@ -253,18 +259,10 @@ public static class DependencyInversionExtensions
                 {
                     _.Scope.Add(scope);
                 }
+
+                configureOidc(_);
             })
             .AddCookie(AuthConstants.CookiesScheme)
-            //.AddCookie(AuthConstants.CookiesScheme, _ =>
-            //{
-            //    _.ExpireTimeSpan = TimeSpan.FromHours(16);
-            //    _.SlidingExpiration = false;
-            //    _.Cookie.Name = $"__{authAppSettings.SESSION_NAME}".ToLower();
-            //    _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
-            //    _.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            //    _.LogoutPath = AuthConstants.LogoutPath;
-            //    _.LoginPath = AuthConstants.LoginPath;
-            //})
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -279,6 +277,7 @@ public static class DependencyInversionExtensions
                     SignatureValidator = (token, _) => new JsonWebToken(token),
                     RequireExpirationTime = true,
                 };
+                configureJwt(options);
             });
 
         services

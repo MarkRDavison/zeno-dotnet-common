@@ -371,10 +371,10 @@ public class CQRSGenerator : ISourceGenerator
             stringBuilder.AppendLine("        public static IServiceCollection UseCQRSClient(this IServiceCollection services)");
             stringBuilder.AppendLine("        {");
             stringBuilder.AppendLine(string.Empty);
-            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.abstractions.CQRS.IQueryDispatcher, mark.davison.common.client.CQRS.QueryDispatcher>();");
-            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.abstractions.CQRS.ICommandDispatcher, mark.davison.common.client.CQRS.CommandDispatcher>();");
-            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.abstractions.CQRS.IActionDispatcher, mark.davison.common.client.CQRS.ActionDispatcher>();");
-            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.abstractions.CQRS.ICQRSDispatcher, mark.davison.common.client.CQRS.CQRSDispatcher>();");
+            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.web.abstractions.CQRS.IQueryDispatcher, mark.davison.common.client.web.CQRS.QueryDispatcher>();");
+            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.web.abstractions.CQRS.ICommandDispatcher, mark.davison.common.client.web.CQRS.CommandDispatcher>();");
+            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.web.abstractions.CQRS.IActionDispatcher, mark.davison.common.client.web.CQRS.ActionDispatcher>();");
+            stringBuilder.AppendLine("            services.AddScoped<mark.davison.common.client.web.abstractions.CQRS.ICQRSDispatcher, mark.davison.common.client.web.CQRS.CQRSDispatcher>();");
         }
 
         stringBuilder.AppendLine(string.Empty);

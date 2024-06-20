@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.tests.CQRS;
+﻿namespace mark.davison.common.client.web.tests.CQRS;
 
 
 [TestClass]

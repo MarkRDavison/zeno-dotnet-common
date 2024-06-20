@@ -1,9 +1,9 @@
-global using mark.davison.common.client.abstractions.Authentication;
-global using mark.davison.common.client.abstractions.CQRS;
-global using mark.davison.common.client.Authentication;
-global using mark.davison.common.client.CQRS;
-global using mark.davison.common.client.Repository;
-global using mark.davison.common.client.tests.cqrs;
+global using mark.davison.common.client.web.abstractions.Authentication;
+global using mark.davison.common.client.web.abstractions.CQRS;
+global using mark.davison.common.client.web.Authentication;
+global using mark.davison.common.client.web.CQRS;
+global using mark.davison.common.client.web.Repository;
+global using mark.davison.common.client.web.tests.cqrs;
 global using mark.davison.common.CQRS;
 global using mark.davison.common.Identification;
 global using mark.davison.common.test;

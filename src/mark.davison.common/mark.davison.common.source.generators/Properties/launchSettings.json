@@ -6,7 +6,7 @@
     },
     "Profile 2": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\mark.davison.common.client.tests\\mark.davison.common.client.tests.csproj"
+      "targetProject": "..\\mark.davison.common.client.tests\\mark.davison.common.client.web.tests.csproj"
     }
   }
 }

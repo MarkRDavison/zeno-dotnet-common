@@ -1,0 +1,25 @@
+﻿@namespace mark.davison.common.client.web.Components
+
+<div onmouseover="@(()=> OnHoverEnter())"
+     onmouseout="@(()=> OnHoverExit())">
+@if (Value)
+{
+    <MudTooltip Text="@ActiveTooltip" Placement="Placement.Right">
+    <MudIcon 
+         Style="@_activeStyle"
+         Class="clickable-icon-active" 
+         Icon="@ActiveIcon"
+         onclick="@(async () => await OnClickIcon(false))" />
+    </MudTooltip>
+}
+else
+{
+    <MudTooltip Text="@InactiveTooltip" Placement="Placement.Right">
+    <MudIcon 
+         Style="@_inactiveStyle"
+         Class="clickable-icon-inactive" 
+         Icon="@InactiveIcon"
+         onclick="@(async () => await OnClickIcon(true))" />
+    </MudTooltip>
+}
+</div>

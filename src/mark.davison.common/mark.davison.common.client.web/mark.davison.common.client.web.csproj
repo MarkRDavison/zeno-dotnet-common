@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<PackageId>markdavison.common.client.web</PackageId>
+		<IsPackable>true</IsPackable>
+		<Author>Mark Davison</Author>
+		<Description>Common client web utilities</Description>
+		<PackageVersion>8.0.0</PackageVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Fluxor.Blazor.Web" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="MudBlazor" Version="6.20.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\mark.davison.common.client.web.abstractions\mark.davison.common.client.web.abstractions.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="wwwroot\css\mark.davison.common.client.css">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\js\mark.davison.common.client.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+</Project>

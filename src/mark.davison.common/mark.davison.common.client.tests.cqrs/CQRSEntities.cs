@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.tests.cqrs;
+﻿namespace mark.davison.common.client.web.tests.cqrs;
 
 
 public class ExampleCommandRequest : ICommand<ExampleCommandRequest, ExampleCommandResponse>

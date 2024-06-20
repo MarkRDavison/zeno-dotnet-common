@@ -1,6 +1,6 @@
-﻿global using mark.davison.common.client.abstractions.Authentication;
-global using mark.davison.common.client.Authentication;
-global using mark.davison.common.client.Ignition;
+﻿global using mark.davison.common.client.Ignition;
+global using mark.davison.common.client.web.abstractions.Authentication;
+global using mark.davison.common.client.web.Authentication;
 global using mark.davison.example.web.components.Ignition;
 global using mark.davison.example.web.features;
 global using mark.davison.example.web.ui;

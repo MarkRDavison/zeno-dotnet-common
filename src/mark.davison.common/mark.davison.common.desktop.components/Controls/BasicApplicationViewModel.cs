@@ -58,13 +58,14 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanSelectPage))]
+    [RelayCommand]
     private void SelectPage(BasicApplicationPageViewModel viewModel)
     {
-        SelectedPageIndex = Pages.IndexOf(viewModel);
+        if (!viewModel.Disabled)
+        {
+            SelectedPageIndex = Pages.IndexOf(viewModel);
+        }
     }
-
-    private static bool CanSelectPage(BasicApplicationPageViewModel viewModel) => !viewModel.Disabled;
 
     [ObservableProperty]
     private bool _navMenuOpen = true;

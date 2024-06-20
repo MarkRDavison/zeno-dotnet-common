@@ -9,5 +9,5 @@ public sealed class ClaimsAppSettings : IAppSettings
     public string OIDC_FIRST_NAME_ATTRIBUTE { get; set; } = string.Empty;
     public string OIDC_LAST_NAME_ATTRIBUTE { get; set; } = string.Empty;
     public string OIDC_USERNAME_ATTRIBUTE { get; set; } = string.Empty;
-    public string OIDC_ADMIN_ATTRIBUTE { get; set; } = string.Empty;
+    public string OIDC_ADMIN_GROUP_NAME { get; set; } = string.Empty;
 }
