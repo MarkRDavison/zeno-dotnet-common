@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.web.abstractions.Store;
+﻿namespace mark.davison.common.client.abstractions.Store;
 
 public interface IStoreHelper
 {

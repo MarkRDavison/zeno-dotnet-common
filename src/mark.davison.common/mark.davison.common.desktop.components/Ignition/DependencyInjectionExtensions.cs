@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.Ignition;
+﻿namespace mark.davison.common.client.desktop.components.Ignition;
 
 public static class DependencyInjectionExtensions
 {

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.integrationtests.Tests.CQRS;
+﻿using mark.davison.common.client.abstractions.Repository;
+
+namespace mark.davison.common.server.integrationtests.Tests.CQRS;
 
 [TestClass]
 public class CQRSTests : IntegrationTestBase<SampleApplicationFactory, AppSettings>

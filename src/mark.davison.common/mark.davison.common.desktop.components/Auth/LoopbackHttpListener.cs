@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 
-namespace mark.davison.common.desktop.components.Auth;
+namespace mark.davison.common.client.desktop.components.Auth;
 
 public class LoopbackHttpListener : IDisposable
 {

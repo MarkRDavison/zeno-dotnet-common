@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.web.Repository;
+﻿namespace mark.davison.common.client.Repository;
 
 public class ClientHttpRepository : IClientHttpRepository
 {

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.integrationtests;
+﻿using mark.davison.common.client.abstractions.Repository;
+
+namespace mark.davison.common.server.integrationtests;
 
 public class SampleApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {

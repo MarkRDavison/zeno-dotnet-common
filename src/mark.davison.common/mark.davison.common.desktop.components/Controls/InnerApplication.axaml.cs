@@ -1,4 +1,4 @@
-namespace mark.davison.common.desktop.components;
+namespace mark.davison.common.client.desktop.components;
 
 public partial class InnerApplication : UserControl
 {

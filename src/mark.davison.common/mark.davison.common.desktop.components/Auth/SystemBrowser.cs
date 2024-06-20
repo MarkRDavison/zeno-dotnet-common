@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
-namespace mark.davison.common.desktop.components.Auth;
+namespace mark.davison.common.client.desktop.components.Auth;
 
 public class SystemBrowser : IBrowser
 {

@@ -3,7 +3,7 @@
         xmlns:vm="using:mark.davison.example.desktop.ui.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:mdc="clr-namespace:mark.davison.common.desktop.components;assembly=mark.davison.common.desktop.components"
+		xmlns:mdc="clr-namespace:mark.davison.common.client.desktop.components;assembly=mark.davison.common.client.desktop.components"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="mark.davison.example.desktop.ui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.integrationtests;
+﻿using mark.davison.common.client.Repository;
+
+namespace mark.davison.common.server.integrationtests;
 
 public class SampleClientHttpRepository : ClientHttpRepository
 {

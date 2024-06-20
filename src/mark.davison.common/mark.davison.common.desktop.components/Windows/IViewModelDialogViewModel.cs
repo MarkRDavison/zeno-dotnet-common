@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.Windows;
+﻿namespace mark.davison.common.client.desktop.components.Windows;
 
 public interface IViewModelDialogViewModel
 {

@@ -2,14 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:mark.davison.common.desktop.components.Windows"
+        xmlns:vm="using:mark.davison.common.client.desktop.components.Windows"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="mark.davison.common.desktop.components.ViewModelDialogWindow"
-		x:DataType="vm:IViewModelDialogViewModel">
+        x:Class="mark.davison.common.client.desktop.components.ViewModelDialogWindow"
+		x:DataType="vm:IViewModelDialogViewModel"
+		Title="{Binding Title}">
     
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
@@ -17,14 +17,11 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" MinWidth="300" />
 		</Grid.ColumnDefinitions>
-		<Panel MinHeight="64" Background="DarkSlateGray" Grid.Row="0" Grid.ColumnSpan="2">
-			<TextBlock Margin="8" Text="{Binding Title}" />
-		</Panel>
-		<Panel MinHeight="256" Grid.Row="1" Grid.ColumnSpan="2">
+		<Panel MinHeight="256" Grid.Row="0" Grid.ColumnSpan="2">
 			<ContentControl Content="{Binding .}" />
 		</Panel>
 		<Panel Background="Transparent"
-			   Grid.Row="1" 
+			   Grid.Row="0" 
 			   ZIndex="99" 
 			   HorizontalAlignment="Stretch"
 			   VerticalAlignment="Top"
@@ -53,7 +50,7 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 		</Panel>
-		<DockPanel MinHeight="32" Background="DarkSlateGray" Grid.Row="2" Grid.ColumnSpan="2">
+		<DockPanel MinHeight="32" Background="DarkSlateGray" Grid.Row="1" Grid.ColumnSpan="2">
 			<DockPanel.Styles>
 				<Style Selector="Button">
 					<Setter Property="VerticalAlignment" Value="Stretch" />

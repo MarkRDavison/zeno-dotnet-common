@@ -1,4 +1,7 @@
-﻿namespace mark.davison.common.client.Ignition;
+﻿using mark.davison.common.client.abstractions.Repository;
+using mark.davison.common.client.Repository;
+
+namespace mark.davison.common.client.Ignition;
 
 public static class DependencyInjectionExtensions
 {

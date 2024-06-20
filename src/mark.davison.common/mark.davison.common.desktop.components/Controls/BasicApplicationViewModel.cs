@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.Controls;
+﻿namespace mark.davison.common.client.desktop.components.Controls;
 
 public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 {

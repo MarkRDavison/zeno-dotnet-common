@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="mark.davison.common.desktop.components.NavMenu">
+             x:Class="mark.davison.common.client.desktop.components.NavMenu">
 			<TabControl TabStripPlacement="Left"
 						ItemsSource="{Binding $parent[UserControl].Pages}"
 						SelectedItem="{Binding $parent[UserControl].SelectedPage}">

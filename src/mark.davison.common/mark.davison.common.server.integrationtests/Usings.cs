@@ -1,8 +1,6 @@
 global using mark.davison.common.Changeset;
 global using mark.davison.common.client.web.abstractions.Authentication;
-global using mark.davison.common.client.web.abstractions.Repository;
 global using mark.davison.common.client.web.Authentication;
-global using mark.davison.common.client.web.Repository;
 global using mark.davison.common.persistence;
 global using mark.davison.common.persistence.EntityDefaulter;
 global using mark.davison.common.Repository;

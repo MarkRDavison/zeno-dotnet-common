@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.ViewModels;
+﻿namespace mark.davison.common.client.desktop.components.ViewModels;
 
 public abstract partial class BasicApplicationPageViewModel : ObservableObject, IBasicApplicationPageViewModel
 {

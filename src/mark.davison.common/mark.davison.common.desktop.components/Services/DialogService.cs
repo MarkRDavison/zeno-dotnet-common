@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.Services;
+﻿namespace mark.davison.common.client.desktop.components.Services;
 
 public sealed class DialogService : IDialogService
 {
@@ -29,7 +29,8 @@ public sealed class DialogService : IDialogService
                 ShowInTaskbar = settings.ShowInTaskbar,
                 SystemDecorations = SystemDecorations.Full,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                ExtendClientAreaToDecorationsHint = true,
+                ExtendClientAreaToDecorationsHint = false,
+                ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome,
                 Icon = desktop.MainWindow.Icon,
                 DataContext = viewModel
             };

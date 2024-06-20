@@ -1,5 +1,5 @@
 ﻿using IdentityModel.Client;
-using mark.davison.common.client.web.Repository;
+using mark.davison.common.client.Repository;
 using mark.davison.example.console.app;
 using Microsoft.Extensions.Logging;
 

@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace mark.davison.common.client.web.abstractions.Repository;
+﻿namespace mark.davison.common.client.abstractions.Repository;
 
 public interface IClientHttpRepository
 {

@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.Models;
+﻿namespace mark.davison.common.client.desktop.components.Models;
 
 public sealed class OdicClientSettings
 {

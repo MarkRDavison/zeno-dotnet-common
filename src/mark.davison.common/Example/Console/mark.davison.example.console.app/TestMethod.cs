@@ -1,4 +1,4 @@
-﻿using mark.davison.common.client.web.abstractions.Repository;
+﻿using mark.davison.common.client.abstractions.Repository;
 using mark.davison.example.shared.models.dto.Scenarios.Commands;
 using System.Text.Json;
 

@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.desktop.components.Services;
+﻿namespace mark.davison.common.client.desktop.components.Services;
 
 public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 {

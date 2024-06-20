@@ -1,4 +1,4 @@
-﻿using mark.davison.common.desktop.components.Services;
+﻿using mark.davison.common.client.desktop.components.Services;
 
 namespace mark.davison.example.desktop.ui.ViewModels;
 

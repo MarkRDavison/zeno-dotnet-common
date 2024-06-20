@@ -13,6 +13,7 @@
 	  <PackageReference Include="Fluxor" Version="6.0.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
 		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />
 	</ItemGroup>
 </Project>
