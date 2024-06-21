@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="markdavison.common.migrations.sqlite" Version="8.4.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\mark.davison.common.migrations.sqlite\mark.davison.common.migrations.sqlite.csproj" />
     <ProjectReference Include="..\..\..\..\mark.davison.example.api.configuration\mark.davison.example.api.configuration.csproj" />
     <ProjectReference Include="..\..\..\..\mark.davison.example.api.persistence\mark.davison.example.api.persistence.csproj" />
   </ItemGroup>
