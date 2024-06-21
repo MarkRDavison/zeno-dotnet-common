@@ -4,6 +4,7 @@ namespace mark.davison.common.client.desktop.components.Controls;
 
 public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 {
+    private bool _initialAuthenticatedRender = true;
     private bool disposedValue;
     private readonly IServiceProvider _services;
     private readonly IOptions<OdicClientSettings>? _authSettings;
@@ -30,12 +31,26 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
     void Setup()
     {
         _commonApplicationNotificationService.AuthenticationStateChanged += OnAuthChanged;
+
+        if (OidcAuthenticatorViewModel is null)
+        {
+            _ = SelectPage(Pages[SelectedPageIndex]);
+        }
     }
 
     private void OnAuthChanged(object? sender, EventArgs e)
     {
         OnPropertyChanged(nameof(ActiveViewModel));
         OnPropertyChanged(nameof(Username));
+
+        if (OidcAuthenticatorViewModel is not null)
+        {
+            if (_initialAuthenticatedRender)
+            {
+                _ = SelectPage(Pages[SelectedPageIndex]);
+            }
+        }
+        _initialAuthenticatedRender = false;
     }
 
     public bool RequireAuthentication => !string.IsNullOrEmpty(_authSettings?.Value.Authority) && !_desktopAuthenticationService.IsAuthenticated && OidcAuthenticatorViewModel is not null;
