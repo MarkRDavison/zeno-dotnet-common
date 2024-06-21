@@ -8,5 +8,5 @@ public partial class ExamplePageViewModel : BasicApplicationPageViewModel
     }
 
     public override string Name { get; }
-    public override bool Disabled => false;
+    public override bool Disabled => Name.Contains("isabled");
 }

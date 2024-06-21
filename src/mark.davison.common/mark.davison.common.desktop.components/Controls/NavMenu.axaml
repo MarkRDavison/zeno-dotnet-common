@@ -11,6 +11,9 @@
 					<Style Selector="TabItem">
 						<Setter Property="IsVisible" Value="{Binding $parent[UserControl].MenuOpen}" />
 					</Style>
+					<Style Selector="TabItem">
+						<Setter Property="IsEnabled" Value="{Binding Disabled, Converter={x:Static BoolConverters.Not}}" />
+					</Style>
 				</TabControl.Styles>
 				<TabControl.ItemTemplate>
 					<DataTemplate>
@@ -18,7 +21,8 @@
 							<Button Command="{Binding $parent[UserControl].SelectPageCommand}"
 									CommandParameter="{Binding .}"
 									HorizontalAlignment="Stretch"
-									VerticalAlignment="Stretch">
+									VerticalAlignment="Stretch"
+									IsEnabled="{Binding Disabled, Converter={x:Static BoolConverters.Not}}">
 								<TextBlock VerticalAlignment="Center"
 										   HorizontalAlignment="Center"
 										   Text="{Binding Name}" />
