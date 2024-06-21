@@ -1,4 +1,8 @@
-﻿namespace mark.davison.common.client.desktop.components.Services;
+﻿using mark.davison.common.client.abstractions.Repository;
+using mark.davison.common.client.Repository;
+using Microsoft.Extensions.Logging;
+
+namespace mark.davison.common.client.desktop.components.Services;
 
 public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 {
@@ -8,15 +12,19 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
     private string _accessToken = string.Empty;
     private string _refreshToken = string.Empty;
     private string _username = string.Empty;
+    private bool _clientCreated;
     private readonly IOptions<OdicClientSettings> _authSettings;
     private readonly ICommonApplicationNotificationService _commonApplicationNotificationService;
+    private readonly ILogger<DesktopAuthenticationService> _logger;
 
     public DesktopAuthenticationService(
         IOptions<OdicClientSettings> authSettings,
-        ICommonApplicationNotificationService commonApplicationNotificationService)
+        ICommonApplicationNotificationService commonApplicationNotificationService,
+        ILogger<DesktopAuthenticationService> logger)
     {
         _authSettings = authSettings;
         _commonApplicationNotificationService = commonApplicationNotificationService;
+        _logger = logger;
     }
 
     public bool IsAuthenticated =>
@@ -172,5 +180,48 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
         File.Delete(path);
 
         _commonApplicationNotificationService.NotifyAuthenticationStateChanged();
+    }
+
+    public IClientHttpRepository GetAuthenticatedClient(string remoteEndpoint)
+    {
+        if (_clientCreated)
+        {
+            throw new InvalidOperationException("Cannot GetAuthenticatedClient multiple times");
+        }
+        _clientCreated = true;
+
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri(remoteEndpoint)
+        };
+
+        var clientRepository = new ClientHttpRepository(remoteEndpoint, client, _logger);
+
+        clientRepository.OnInvalidResponse += ClientRepository_OnInvalidResponse;
+
+        return clientRepository;
+    }
+
+    private async void ClientRepository_OnInvalidResponse(object? sender, InvalidResponseEventArgs e)
+    {
+        var tcs = new TaskCompletionSource();
+
+        e.RetryWaitTask = tcs.Task;
+        e.Retry = true;
+
+        var result = await _oidcClient!.RefreshTokenAsync(_refreshToken);
+
+        _identityToken = result?.IdentityToken ?? string.Empty;
+        _accessToken = result?.AccessToken ?? string.Empty;
+        _refreshToken = result?.RefreshToken ?? string.Empty;
+
+        if (result is null || result.IsError)
+        {
+            _commonApplicationNotificationService.NotifyAuthenticationStateChanged();
+            tcs.SetResult();
+            return;
+        }
+
+        tcs.SetResult();
     }
 }

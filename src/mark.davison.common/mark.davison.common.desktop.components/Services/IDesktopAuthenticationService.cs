@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.client.desktop.components.Services;
+﻿using mark.davison.common.client.abstractions.Repository;
+
+namespace mark.davison.common.client.desktop.components.Services;
 
 public interface IDesktopAuthenticationService
 {
@@ -8,4 +10,5 @@ public interface IDesktopAuthenticationService
     Task<(bool, string)> LoginFromPersisted();
     void PersistLogin();
     void Logout();
+    IClientHttpRepository GetAuthenticatedClient(string remoteEndpoint);
 }

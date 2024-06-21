@@ -1,5 +1,4 @@
-﻿using mark.davison.common.client.abstractions.Form;
-using mark.davison.common.client.abstractions.Repository;
+﻿using mark.davison.common.client.abstractions.Repository;
 using mark.davison.common.client.Repository;
 
 namespace mark.davison.common.client.Ignition;
@@ -113,16 +112,16 @@ public static class DependencyInjectionExtensions
                         _.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientName),
                         _.GetRequiredService<ILogger<ClientHttpRepository>>());
 
-                clientHttpRepository.OnInvalidResponse += async (object? sender, HttpStatusCode status) =>
+                clientHttpRepository.OnInvalidResponse += async (object? sender, InvalidResponseEventArgs e) =>
                 {
-                    if (status == HttpStatusCode.Unauthorized)
+                    if (e.Status == HttpStatusCode.Unauthorized)
                     {
                         Console.Error.WriteLine("Received 401 - Validating auth state");
                         await context.ValidateAuthState();
                     }
                     else
                     {
-                        Console.Error.WriteLine("Received HttpStatusCode.{0} - Not handling...", status);
+                        Console.Error.WriteLine("Received HttpStatusCode.{0} - Not handling...", e.Status);
                     }
                 };
 

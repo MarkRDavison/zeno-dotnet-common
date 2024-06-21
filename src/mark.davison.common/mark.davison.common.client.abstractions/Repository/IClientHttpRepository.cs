@@ -19,6 +19,6 @@ public interface IClientHttpRepository
         where TRequest : class, ICommand<TRequest, TResponse>, new()
         where TResponse : Response, new();
 
-    event EventHandler<HttpStatusCode> OnInvalidResponse;
+    event EventHandler<InvalidResponseEventArgs> OnInvalidResponse;
 
 }

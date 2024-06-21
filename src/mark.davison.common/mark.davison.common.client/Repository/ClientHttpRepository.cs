@@ -6,6 +6,7 @@ public class ClientHttpRepository : IClientHttpRepository
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
     private readonly ILogger _logger;
+    private bool _suppressRetry;
 
     public ClientHttpRepository(string remoteEndpoint, HttpClient httpClient, ILogger logger) : this(remoteEndpoint, httpClient, logger, SerializationHelpers.CreateStandardSerializationOptions())
     {
@@ -39,7 +40,22 @@ public class ClientHttpRepository : IClientHttpRepository
 
         if (!response.IsSuccessStatusCode)
         {
-            OnInvalidResponse?.Invoke(this, response.StatusCode);
+            var args = new InvalidResponseEventArgs { Status = response.StatusCode, Request = requestMessage };
+            OnInvalidResponse?.Invoke(this, args);
+
+            if (args.Retry)
+            {
+                if (_suppressRetry)
+                {
+                    _suppressRetry = false;
+                }
+                else
+                {
+                    _suppressRetry = true;
+                    await args.RetryWaitTask;
+                    return await Get<TResponse, TRequest>(request, cancellationToken);
+                }
+            }
         }
 
         var body = await response.Content.ReadAsStringAsync();
@@ -87,7 +103,22 @@ public class ClientHttpRepository : IClientHttpRepository
 
         if (!response.IsSuccessStatusCode)
         {
-            OnInvalidResponse?.Invoke(this, response.StatusCode);
+            var args = new InvalidResponseEventArgs { Status = response.StatusCode, Request = requestMessage };
+            OnInvalidResponse?.Invoke(this, args);
+
+            if (args.Retry)
+            {
+                if (_suppressRetry)
+                {
+                    _suppressRetry = false;
+                }
+                else
+                {
+                    _suppressRetry = true;
+                    await args.RetryWaitTask;
+                    return await Post<TResponse, TRequest>(request, cancellationToken);
+                }
+            }
         }
 
         var body = await response.Content.ReadAsStringAsync();
@@ -132,5 +163,5 @@ public class ClientHttpRepository : IClientHttpRepository
         return queryParameters;
     }
 
-    public event EventHandler<HttpStatusCode> OnInvalidResponse = default!;
+    public event EventHandler<InvalidResponseEventArgs> OnInvalidResponse = default!;
 }
