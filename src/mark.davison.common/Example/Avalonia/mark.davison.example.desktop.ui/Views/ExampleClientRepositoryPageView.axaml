@@ -3,21 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:mark.davison.example.desktop.ui.ViewModels"
-		     xmlns:mdc="clr-namespace:mark.davison.common.client.desktop.components;assembly=mark.davison.common.client.desktop.components"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="mark.davison.example.desktop.ui.ExamplePageView"
-			 x:DataType="vm:ExamplePageViewModel">
-	
+             x:Class="mark.davison.example.desktop.ui.ExampleClientRepositoryPageView"
+			 x:DataType="vm:ExampleClientRepositoryPageViewModel">
+
+
 	<StackPanel Orientation="Vertical"
 				VerticalAlignment="Center"
 				HorizontalAlignment="Center">
-
-		<TextBlock Text="{Binding Name}"
-				   FontSize="64"/>
-
 		<TextBlock FontSize="32">
-			<Run Text="First selection:"/>
-			<Run Text="{Binding FirstTimeText}"/>
+			<Run Text="Request: "/>
+			<Run Text="{Binding Request}"/>
+		</TextBlock>
+		<TextBlock FontSize="32">
+			<Run Text="Response: "/>
+			<Run Text="{Binding Response}"/>
 		</TextBlock>
 	</StackPanel>
+	
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using mark.davison.common.client.abstractions.Repository;
+﻿using IdentityModel.Client;
+using mark.davison.common.client.abstractions.Repository;
 using mark.davison.common.client.Repository;
 using Microsoft.Extensions.Logging;
 
@@ -8,6 +9,7 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 {
     private readonly string _loginInfoFilename = "login.json";
     private OidcClient? _oidcClient;
+    private HttpClient? _client;
     private string _identityToken = string.Empty;
     private string _accessToken = string.Empty;
     private string _refreshToken = string.Empty;
@@ -72,6 +74,8 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 
         SetLoginResult(result);
 
+        _client?.SetBearerToken(_accessToken);
+
         _commonApplicationNotificationService.NotifyAuthenticationStateChanged();
 
         PersistLogin();
@@ -97,7 +101,6 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
         {
             return (false, "Login info file does not exist");
         }
-
 
         var text = File.ReadAllText(path);
 
@@ -134,6 +137,8 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 
         var userInfo = await _oidcClient.GetUserInfoAsync(_accessToken);
         _username = userInfo.Claims.First(_ => _.Type == "preferred_username").Value.ToString();
+
+        _client?.SetBearerToken(_accessToken);
 
         _commonApplicationNotificationService.NotifyAuthenticationStateChanged();
 
@@ -174,6 +179,7 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
         _accessToken = string.Empty;
         _refreshToken = string.Empty;
         _username = string.Empty;
+        _client?.SetBearerToken(_accessToken);
 
         var path = Path.Combine(_authSettings.Value.PersistenceLocation, _loginInfoFilename);
 
@@ -190,12 +196,12 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
         }
         _clientCreated = true;
 
-        var client = new HttpClient
+        _client = new HttpClient
         {
             BaseAddress = new Uri(remoteEndpoint)
         };
 
-        var clientRepository = new ClientHttpRepository(remoteEndpoint, client, _logger);
+        var clientRepository = new ClientHttpRepository(remoteEndpoint, _client, _logger);
 
         clientRepository.OnInvalidResponse += ClientRepository_OnInvalidResponse;
 
@@ -214,6 +220,8 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
         _identityToken = result?.IdentityToken ?? string.Empty;
         _accessToken = result?.AccessToken ?? string.Empty;
         _refreshToken = result?.RefreshToken ?? string.Empty;
+
+        _client?.SetBearerToken(_accessToken);
 
         if (result is null || result.IsError)
         {

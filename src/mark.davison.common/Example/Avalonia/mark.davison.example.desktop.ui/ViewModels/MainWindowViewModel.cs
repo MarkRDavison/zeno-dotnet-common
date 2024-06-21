@@ -10,6 +10,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         BasicApplicationViewModel.Pages.Add(new ExampleDataGridPageViewModel());
         BasicApplicationViewModel.Pages.Add(new ExamplePageViewModel("Page 2"));
+        BasicApplicationViewModel.Pages.Add(services.GetRequiredService<ExampleClientRepositoryPageViewModel>());
         BasicApplicationViewModel.Pages.Add(new ExamplePageViewModel("Disabled"));
         BasicApplicationViewModel.Pages.Add(services.GetRequiredService<ExampleDialogPageViewModel>());
     }

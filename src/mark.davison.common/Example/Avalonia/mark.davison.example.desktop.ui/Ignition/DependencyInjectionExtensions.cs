@@ -14,7 +14,10 @@ public static class DependencyInjectionExtensions
                 _.PersistenceLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "example");
             })
             .AddTransient<ExampleDialogPageViewModel>()
+            .AddTransient<ExampleClientRepositoryPageViewModel>()
             .AddTransient<IFormSubmission<ExampleFormViewModel>, ExampleFormViewModelSubmission>();
+
+        services.AddSingleton<IClientHttpRepository>(_ => _.GetRequiredService<IDesktopAuthenticationService>().GetAuthenticatedClient("https://localhost:50000"));
 
         return services;
     }

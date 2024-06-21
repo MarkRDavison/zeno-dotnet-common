@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\mark.davison.common.desktop.components\mark.davison.common.client.desktop.csproj" />
+    <ProjectReference Include="..\..\Shared\mark.davison.example.shared.models.dto\mark.davison.example.shared.models.dto.csproj" />
   </ItemGroup>
 
   <ItemGroup>
