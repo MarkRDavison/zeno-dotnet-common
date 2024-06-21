@@ -4,6 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<PackageId>markdavison.common.client</PackageId>
+	<IsPackable>true</IsPackable>
+	<Author>Mark Davison</Author>
+	<Description>Common client utilities</Description>
+	<PackageVersion>8.0.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

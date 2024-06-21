@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<PackageId>markdavison.common.desktop.components.abstrations</PackageId>
+	<PackageId>markdavison.common.desktop.abstrations</PackageId>
 	<IsPackable>true</IsPackable>
 	<Author>Mark Davison</Author>
 	<Description>Common desktop abstractions</Description>
