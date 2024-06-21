@@ -1,4 +1,4 @@
-﻿namespace mark.davison.common.client.web.abstractions.Form;
+﻿namespace mark.davison.common.client.abstractions.Form;
 
 public interface IFormSubmission<TFormViewModel> where TFormViewModel : IFormViewModel
 {

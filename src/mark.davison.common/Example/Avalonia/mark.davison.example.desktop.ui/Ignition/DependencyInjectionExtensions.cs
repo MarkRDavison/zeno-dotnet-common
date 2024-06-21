@@ -13,7 +13,8 @@ public static class DependencyInjectionExtensions
                 _.Scope = "openid profile email offline_access";
                 _.PersistenceLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "example");
             })
-            .AddTransient<ExampleDialogPageViewModel>();
+            .AddTransient<ExampleDialogPageViewModel>()
+            .AddTransient<IFormSubmission<ExampleFormViewModel>, ExampleFormViewModelSubmission>();
 
         return services;
     }

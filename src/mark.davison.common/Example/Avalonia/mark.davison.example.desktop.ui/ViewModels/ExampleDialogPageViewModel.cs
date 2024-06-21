@@ -1,6 +1,4 @@
-﻿using mark.davison.common.client.desktop.components.Services;
-
-namespace mark.davison.example.desktop.ui.ViewModels;
+﻿namespace mark.davison.example.desktop.ui.ViewModels;
 
 public partial class ExampleDialogPageViewModel : BasicApplicationPageViewModel
 {
@@ -12,6 +10,7 @@ public partial class ExampleDialogPageViewModel : BasicApplicationPageViewModel
     }
 
     public override string Name => "Dialogs";
+
     public override bool Disabled => false;
 
     [ObservableProperty]
@@ -33,7 +32,8 @@ public partial class ExampleDialogPageViewModel : BasicApplicationPageViewModel
     [RelayCommand]
     private async Task OpenDialog()
     {
-        Response = await _dialogService.ShowDialogAsync<Response, ExampleDialogViewModel>(
-            new ExampleDialogViewModel());
+        Response = await _dialogService.ShowDialogAsync<Response, ExampleFormViewModel>(
+            new ExampleFormViewModel(),
+            new DialogSettings { Title = "Example form", PrimaryText = "Submit" });
     }
 }

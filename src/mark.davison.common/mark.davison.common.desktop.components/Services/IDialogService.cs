@@ -2,10 +2,10 @@
 
 public interface IDialogService
 {
-    Task<TResponse?> ShowDialogAsync<TResponse, TDialogViewModel>(TDialogViewModel viewModel)
+    Task<TResponse?> ShowDialogAsync<TResponse, TFormViewModel>(TFormViewModel viewModel)
         where TResponse : Response, new()
-        where TDialogViewModel : IViewModelDialogViewModel;
-    Task<TResponse?> ShowDialogAsync<TResponse, TDialogViewModel>(TDialogViewModel viewModel, DialogSettings settings)
+        where TFormViewModel : IFormViewModel;
+    Task<TResponse?> ShowDialogAsync<TResponse, TFormViewModel>(TFormViewModel viewModel, DialogSettings settings)
         where TResponse : Response, new()
-        where TDialogViewModel : IViewModelDialogViewModel;
+        where TFormViewModel : IFormViewModel;
 }

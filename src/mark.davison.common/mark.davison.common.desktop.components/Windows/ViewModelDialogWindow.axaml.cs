@@ -1,3 +1,5 @@
+using mark.davison.common.client.desktop.ViewModels;
+
 namespace mark.davison.common.client.desktop.components;
 
 public partial class ViewModelDialogWindow : Window
@@ -25,11 +27,11 @@ public partial class ViewModelDialogWindow : Window
 
     private async void PrimaryButtonClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (DataContext is IViewModelDialogViewModel vm)
+        if (DataContext is ViewModelDialogViewModel vm)
         {
             IsEnabled = false;
             Errors.Clear();
-            var result = await vm.PrimaryCallback();
+            var result = await vm.Primary();
 
             IsEnabled = true;
             if (result.Success)

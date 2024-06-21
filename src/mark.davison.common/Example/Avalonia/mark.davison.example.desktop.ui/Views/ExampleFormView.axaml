@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:mark.davison.example.desktop.ui.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="mark.davison.example.desktop.ui.ExampleDialogView"
-			 x:DataType="vm:ExampleDialogViewModel">
+             x:Class="mark.davison.example.desktop.ui.ExampleFormView"
+			 x:DataType="vm:ExampleFormViewModel">
 	<StackPanel Margin="16">
 		<CheckBox IsChecked="{Binding TriggerErrorOnSubmit}">Trigger error on submit</CheckBox>
 		<Label>Numer of errors</Label>

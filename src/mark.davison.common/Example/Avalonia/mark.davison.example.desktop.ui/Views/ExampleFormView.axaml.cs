@@ -1,8 +1,8 @@
 namespace mark.davison.example.desktop.ui;
 
-public partial class ExampleDialogView : UserControl
+public partial class ExampleFormView : UserControl
 {
-    public ExampleDialogView()
+    public ExampleFormView()
     {
         InitializeComponent();
     }

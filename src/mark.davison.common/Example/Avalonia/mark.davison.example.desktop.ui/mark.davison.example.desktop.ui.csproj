@@ -27,6 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\mark.davison.common.desktop.components\mark.davison.common.client.desktop.components.csproj" />
+    <ProjectReference Include="..\..\..\mark.davison.common.desktop.components\mark.davison.common.client.desktop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\ExampleFormView.axaml.cs">
+      <DependentUpon>ExampleFormView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

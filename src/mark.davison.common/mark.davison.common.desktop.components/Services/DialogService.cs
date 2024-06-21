@@ -2,26 +2,34 @@
 
 public sealed class DialogService : IDialogService
 {
-    public async Task<TResponse?> ShowDialogAsync<TResponse, TDialogViewModel>(TDialogViewModel viewModel)
-        where TResponse : Response, new()
-        where TDialogViewModel : IViewModelDialogViewModel
+    private IServiceProvider _serviceProvider;
+
+    public DialogService(IServiceProvider serviceProvider)
     {
-        return await ShowDialogAsync<TResponse, TDialogViewModel>(viewModel, new DialogSettings
+        _serviceProvider = serviceProvider;
+    }
+
+    public async Task<TResponse?> ShowDialogAsync<TResponse, TFormViewModel>(TFormViewModel viewModel)
+        where TResponse : Response, new()
+        where TFormViewModel : IFormViewModel
+    {
+        return await ShowDialogAsync<TResponse, TFormViewModel>(viewModel, new DialogSettings
         {
             CanResize = false,
             ShowInTaskbar = true,
             SizeToContent = SizeToContent.WidthAndHeight
         });
     }
-    public async Task<TResponse?> ShowDialogAsync<TResponse, TDialogViewModel>(TDialogViewModel viewModel, DialogSettings settings)
+    public async Task<TResponse?> ShowDialogAsync<TResponse, TFormViewModel>(TFormViewModel viewModel, DialogSettings settings)
         where TResponse : Response, new()
-        where TDialogViewModel : IViewModelDialogViewModel
+        where TFormViewModel : IFormViewModel
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
             desktop.MainWindow is not null)
         {
             var dialog = new ViewModelDialogWindow
             {
+                Title = settings.Title,
                 SizeToContent = settings.SizeToContent,
                 MinWidth = settings.MinWidth,
                 MinHeight = settings.MinHeight,
@@ -32,7 +40,14 @@ public sealed class DialogService : IDialogService
                 ExtendClientAreaToDecorationsHint = false,
                 ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome,
                 Icon = desktop.MainWindow.Icon,
-                DataContext = viewModel
+                DataContext = new ViewModelDialogViewModel<TFormViewModel>(
+                    viewModel,
+                    _serviceProvider.GetRequiredService<IFormSubmission<TFormViewModel>>())
+                {
+                    ShowCancel = settings.ShowCancel,
+                    CancelText = settings.CancelText,
+                    PrimaryText = settings.PrimaryText
+                }
             };
 
             return await dialog.ShowDialog<TResponse?>(desktop.MainWindow);

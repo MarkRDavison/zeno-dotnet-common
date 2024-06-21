@@ -2,11 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:mark.davison.common.client.desktop.components.Windows"
+        xmlns:vm="using:mark.davison.common.client.desktop.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="mark.davison.common.client.desktop.components.ViewModelDialogWindow"
-		x:DataType="vm:IViewModelDialogViewModel"
-		Title="{Binding Title}">
+		x:DataType="vm:ViewModelDialogViewModel">
     
 	<Grid>
 		<Grid.RowDefinitions>
@@ -18,7 +17,7 @@
 			<ColumnDefinition Width="*" MinWidth="300" />
 		</Grid.ColumnDefinitions>
 		<Panel MinHeight="256" Grid.Row="0" Grid.ColumnSpan="2">
-			<ContentControl Content="{Binding .}" />
+			<ContentControl Content="{Binding FormViewModel}" />
 		</Panel>
 		<Panel Background="Transparent"
 			   Grid.Row="0" 
@@ -57,10 +56,25 @@
 					<Setter Property="Margin" Value="16" />
 				</Style>
 			</DockPanel.Styles>
-			<Button DockPanel.Dock="Left" Click="Cancel_Button_Click">Cancel</Button>
+			<Button DockPanel.Dock="Left" 
+					Click="Cancel_Button_Click"
+					IsVisible="{Binding ShowCancel}">
+				<TextBlock Text="{Binding CancelText}" />
+			</Button>
 			<Button DockPanel.Dock="Right" 
 					Click="PrimaryButtonClick" 
-					IsEnabled="{Binding IsValid}">Save</Button>
+					IsEnabled="{Binding IsValid}">
+				<Panel>
+					<TextBlock IsVisible="{Binding $parent[Window].IsEnabled}" 
+							   Text="{Binding PrimaryText}" />
+					<ProgressBar IsVisible="{Binding $parent[Window].IsEnabled, Converter={x:Static BoolConverters.Not}}"
+								 IsIndeterminate="True"
+								 MinWidth="48"
+								 Width="48"
+								 MaxWidth="48"
+								 HorizontalAlignment="Right" />
+				</Panel>
+			</Button>
 			<Panel />
 		</DockPanel>
 	</Grid>

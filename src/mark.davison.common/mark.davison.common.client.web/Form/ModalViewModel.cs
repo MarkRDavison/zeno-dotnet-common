@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.client.web.Form;
+﻿using mark.davison.common.client.abstractions.Form;
+
+namespace mark.davison.common.client.web.Form;
 
 public class ModalViewModel<TFormViewModel, TForm> : IModalViewModel<TFormViewModel, TForm>
     where TFormViewModel : class, IFormViewModel, new()

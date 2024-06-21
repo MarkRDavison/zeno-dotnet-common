@@ -1,8 +1,8 @@
 ﻿global using Fluxor;
+global using mark.davison.common.client.abstractions.Form;
 global using mark.davison.common.client.abstractions.Store;
 global using mark.davison.common.client.web.abstractions.Authentication;
 global using mark.davison.common.client.web.abstractions.CQRS;
-global using mark.davison.common.client.web.abstractions.Form;
 global using mark.davison.common.client.web.abstractions.Navigation;
 global using mark.davison.common.client.web.Authentication;
 global using mark.davison.common.client.web.CQRS;
