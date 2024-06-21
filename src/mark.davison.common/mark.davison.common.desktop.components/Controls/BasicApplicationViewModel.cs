@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.client.desktop.components.Controls;
+﻿using Avalonia.Threading;
+
+namespace mark.davison.common.client.desktop.components.Controls;
 
 public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 {
@@ -7,7 +9,6 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
     private readonly IOptions<OdicClientSettings>? _authSettings;
     private readonly ICommonApplicationNotificationService _commonApplicationNotificationService;
     private readonly IDesktopAuthenticationService _desktopAuthenticationService;
-
 
     public BasicApplicationViewModel(string applicationTitle, IServiceProvider services)
     {
@@ -59,11 +60,12 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void SelectPage(BasicApplicationPageViewModel viewModel)
+    private async Task SelectPage(BasicApplicationPageViewModel viewModel)
     {
         if (!viewModel.Disabled)
         {
-            SelectedPageIndex = Pages.IndexOf(viewModel);
+            await viewModel.SelectAsync();
+            Dispatcher.UIThread.Invoke(() => SelectedPageIndex = Pages.IndexOf(viewModel));
         }
     }
 

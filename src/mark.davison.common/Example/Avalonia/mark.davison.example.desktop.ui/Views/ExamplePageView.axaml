@@ -11,8 +11,16 @@
 		<vm:ExamplePageViewModel/>
 	</Design.DataContext>
 	
-	<TextBlock VerticalAlignment="Center" 
-			   HorizontalAlignment="Center" 
-			   Text="{Binding Name}"
-			   FontSize="64"/>
+	<StackPanel Orientation="Vertical"
+				VerticalAlignment="Center"
+				HorizontalAlignment="Center">
+
+		<TextBlock Text="{Binding Name}"
+				   FontSize="64"/>
+
+		<TextBlock FontSize="32">
+			<Run Text="First selection:"/>
+			<Run Text="{Binding FirstTimeText}"/>
+		</TextBlock>
+	</StackPanel>
 </UserControl>
