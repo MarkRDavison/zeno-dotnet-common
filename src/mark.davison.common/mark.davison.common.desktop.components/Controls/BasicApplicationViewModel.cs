@@ -1,6 +1,4 @@
-﻿using Avalonia.Threading;
-
-namespace mark.davison.common.client.desktop.components.Controls;
+﻿namespace mark.davison.common.client.desktop.components.Controls;
 
 public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 {
@@ -86,6 +84,9 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private bool _navMenuOpen = true;
+
+    [ObservableProperty]
+    private ObservableObject? _appBarChildContentViewModel;
 
     public string Username => _desktopAuthenticationService.Username;
 

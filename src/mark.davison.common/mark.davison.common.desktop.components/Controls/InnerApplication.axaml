@@ -10,7 +10,8 @@
 					MenuToggleCommand="{Binding ToggleMenuCommand}"
 					ManageMenuCommand="{Binding ManageMenuCommand}"
 					ApplicationTitle="{Binding ApplicationTitle}"
-					Username="{Binding Username}"/>
+					Username="{Binding Username}"
+					ChildContent="{Binding AppBarChildContentViewModel}"/>
 		<mdc:NavMenu DockPanel.Dock="Left"
 					 MenuOpen="{Binding NavMenuOpen}"
 					 Pages="{Binding Pages}"

@@ -6,7 +6,10 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         BasicApplicationViewModel = new BasicApplicationViewModel(
             "Example",
-            services);
+            services)
+        {
+            AppBarChildContentViewModel = new AppBarChildContentViewModel()
+        };
 
         BasicApplicationViewModel.Pages.Add(new ExampleDataGridPageViewModel());
         BasicApplicationViewModel.Pages.Add(new ExamplePageViewModel("Page 2"));

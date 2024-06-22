@@ -33,8 +33,9 @@
 				<TabControl.ContentTemplate>
 					<DataTemplate>
 						<ContentControl Content="{Binding $parent[UserControl].SelectedPage}"
+										SizeChanged="ContentControl_SizeChanged"
 										VerticalAlignment="Stretch"
-										HorizontalAlignment="Stretch"/>
+										HorizontalAlignment="Stretch" />
 					</DataTemplate>
 				</TabControl.ContentTemplate>
 			</TabControl>

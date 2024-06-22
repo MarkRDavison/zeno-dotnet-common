@@ -46,6 +46,11 @@
 				   VerticalAlignment="Center"
 				   Text="{Binding $parent[UserControl].Username}" />
 		
-		<Panel />
+		<ContentControl Content="{Binding $parent[UserControl].ChildContent}"
+						VerticalAlignment="Center"
+						VerticalContentAlignment="Center"
+						HorizontalAlignment="Center"
+						HorizontalContentAlignment="Center"/>
+		
 	</DockPanel>
 </UserControl>

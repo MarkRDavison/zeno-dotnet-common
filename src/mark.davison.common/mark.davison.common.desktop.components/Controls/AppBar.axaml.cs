@@ -44,5 +44,14 @@ public partial class AppBar : UserControl
         set => SetValue(UsernameProperty, value);
     }
 
+    public static readonly StyledProperty<ObservableObject> ChildContentProperty =
+        AvaloniaProperty.Register<AppBar, ObservableObject>(nameof(ChildContent));
+
+    public ObservableObject ChildContent
+    {
+        get => GetValue(ChildContentProperty);
+        set => SetValue(ChildContentProperty, value);
+    }
+
     public ObservableCollection<FlyoutMenuItem> FlyoutMenuItems { get; } = [];
 }

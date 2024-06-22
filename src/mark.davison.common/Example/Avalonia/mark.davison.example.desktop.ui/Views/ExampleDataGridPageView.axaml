@@ -11,7 +11,8 @@
 			  ItemsSource="{Binding DataGridRowItems}"
 			  IsReadOnly="True"
 			  GridLinesVisibility="Horizontal"
-			  BorderThickness="1">
+			  BorderThickness="1"
+			  Background="DarkSlateGray">
 		<DataGrid.Columns>
 			<DataGridTextColumn Header="First Name"  Binding="{Binding FirstName}"/>
 			<DataGridTextColumn Header="Last Name" Binding="{Binding LastName}" />
