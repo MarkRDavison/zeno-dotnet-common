@@ -39,6 +39,17 @@ public partial class ProgrammaticNavigationPageViewModel : BasicApplicationPageV
         return !string.IsNullOrEmpty(SelectedPageGroup) && !string.IsNullOrEmpty(SelectedPage);
     }
 
+    [RelayCommand]
+    private void ToggleDisabledToggle()
+    {
+        var disabledPage = _basicApplicationViewModel.PageGroups.SelectMany(_ => _.SubPages).FirstOrDefault(_ => _.Name.Contains("isabled"));
+
+        if (disabledPage is ExamplePageViewModel examplePage)
+        {
+            examplePage.DisabledToggle = !examplePage.DisabledToggle;
+        }
+    }
+
     public List<string> PageGroups => [.. _basicApplicationViewModel.PageGroups.Select(_ => _.Id)];
     public List<string> Pages => _basicApplicationViewModel.PageGroups.FirstOrDefault(_ => _.Id == SelectedPageGroup)?.SubPages.Select(_ => _.Id).ToList() ?? [];
 

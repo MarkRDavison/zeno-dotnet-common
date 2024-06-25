@@ -18,5 +18,6 @@
 				  IsEnabled="{Binding SelectedPageGroup, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 				  Width="240"/>
 		<Button Command="{Binding NavigateCommand}">Navigate</Button>
+		<Button Command="{Binding ToggleDisabledToggleCommand}">Toggle disabled</Button>
 	</StackPanel>
 </UserControl>

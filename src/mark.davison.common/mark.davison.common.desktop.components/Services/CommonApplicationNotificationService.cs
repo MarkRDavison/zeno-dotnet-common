@@ -14,4 +14,10 @@ public class CommonApplicationNotificationService : ICommonApplicationNotificati
     {
         PageChanged?.Invoke(this, new ChangePageEventArgs(groupId, pageId));
     }
+
+    public event EventHandler PageEnabledStateChanged = default!;
+    public void NotifyPageEnabledStateChanged()
+    {
+        PageEnabledStateChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

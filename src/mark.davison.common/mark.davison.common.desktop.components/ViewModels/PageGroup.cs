@@ -29,6 +29,12 @@ public partial class PageGroup : ObservableObject
         page.Select();
     }
 
+    internal void NotifyDisabledChange()
+    {
+        OnPropertyChanged(nameof(Disabled));
+        OnPropertyChanged(nameof(SubPages));
+    }
+
     // TODO: Maybe need children to notify when their Disabled flag changes???
     public bool Disabled => SubPages.Any(x => x.Disabled);
 }

@@ -30,11 +30,23 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
     {
         _commonApplicationNotificationService.AuthenticationStateChanged += OnAuthChanged;
         _commonApplicationNotificationService.PageChanged += OnPageChanged;
+        _commonApplicationNotificationService.PageEnabledStateChanged += _commonApplicationNotificationService_PageEnabledStateChanged;
 
         if (OidcAuthenticatorViewModel is null)
         {
             SelectFirstEnabledPage();
         }
+    }
+
+    private void _commonApplicationNotificationService_PageEnabledStateChanged(object? sender, EventArgs e)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            foreach (var pg in PageGroups)
+            {
+                pg.NotifyDisabledChange();
+            }
+        });
     }
 
     private void SelectFirstEnabledPage()

@@ -11,6 +11,8 @@ public partial class MainWindowViewModel : ViewModelBase
             AppBarChildContentViewModel = new AppBarChildContentViewModel()
         };
 
+        var appNotification = services.GetRequiredService<ICommonApplicationNotificationService>();
+
         BasicApplicationViewModel.PageGroups.Add(new("Navigation",
             [
                 new ProgrammaticNavigationPageViewModel(
@@ -23,7 +25,7 @@ public partial class MainWindowViewModel : ViewModelBase
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("Misc",
             [
-                new ExamplePageViewModel("Page 2")
+                new ExamplePageViewModel("Page 2", appNotification)
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("CQRS",
             [
@@ -31,7 +33,7 @@ public partial class MainWindowViewModel : ViewModelBase
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("Disabled",
             [
-                new ExamplePageViewModel("Sub disabled")
+                new ExamplePageViewModel("Sub disabled", appNotification)
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("Dialog",
             [

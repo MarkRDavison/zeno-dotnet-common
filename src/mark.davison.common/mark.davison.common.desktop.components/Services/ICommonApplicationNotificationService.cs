@@ -19,4 +19,7 @@ public interface ICommonApplicationNotificationService
 
     event EventHandler<ChangePageEventArgs> PageChanged;
     void ChangePage(string groupId, string pageId);
+
+    event EventHandler PageEnabledStateChanged;
+    void NotifyPageEnabledStateChanged();
 }
