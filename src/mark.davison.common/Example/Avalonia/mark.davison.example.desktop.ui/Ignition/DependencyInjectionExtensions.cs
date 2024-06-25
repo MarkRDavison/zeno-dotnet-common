@@ -14,6 +14,7 @@ public static class DependencyInjectionExtensions
                 _.PersistenceLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "example");
             })
             .AddTransient<ExampleDialogPageViewModel>()
+            .AddTransient<ExampleSubPageViewModel>()
             .AddTransient<ExampleClientRepositoryPageViewModel>()
             .AddTransient<IFormSubmission<ExampleFormViewModel>, ExampleFormViewModelSubmission>();
 

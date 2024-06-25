@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:mark.davison.example.desktop.ui.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="mark.davison.example.desktop.ui.ProgrammaticNavigationPageView"
+			 x:DataType="vm:ProgrammaticNavigationPageViewModel">
+	<StackPanel Orientation="Vertical"
+				VerticalAlignment="Center"
+				HorizontalAlignment="Center">
+		<TextBlock FontSize="32" Text="Navigation" />
+		<ComboBox ItemsSource="{Binding PageGroups}"
+				  SelectedItem="{Binding SelectedPageGroup}"
+				  Width="240"/>
+		<ComboBox ItemsSource="{Binding Pages}"
+				  SelectedItem="{Binding SelectedPage}"
+				  IsEnabled="{Binding SelectedPageGroup, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+				  Width="240"/>
+		<Button Command="{Binding NavigateCommand}">Navigate</Button>
+	</StackPanel>
+</UserControl>

@@ -14,6 +14,7 @@ global using mark.davison.common.client.desktop.components.Ignition;
 global using mark.davison.common.client.desktop.components.Models;
 global using mark.davison.common.client.desktop.components.Services;
 global using mark.davison.common.client.desktop.components.ViewModels;
+global using mark.davison.common.client.desktop.ViewModels;
 global using mark.davison.common.CQRS;
 global using mark.davison.example.desktop.ui.Ignition;
 global using mark.davison.example.desktop.ui.Models;

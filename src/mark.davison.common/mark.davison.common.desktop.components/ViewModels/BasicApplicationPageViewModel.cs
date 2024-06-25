@@ -4,17 +4,17 @@ public abstract partial class BasicApplicationPageViewModel : ObservableObject, 
 {
     private bool _firstSelection = true;
 
-
-    public async Task SelectAsync()
+    public void Select()
     {
         OnSelected(_firstSelection);
-        await OnSelectedAsync(_firstSelection);
+        _ = OnSelectedAsync(_firstSelection);
         _firstSelection = false;
     }
 
     protected virtual void OnSelected(bool firstTime) { }
     protected virtual Task OnSelectedAsync(bool firstTime) => Task.CompletedTask;
 
+    public virtual string Id => Name;
     public abstract string Name { get; }
     public abstract bool Disabled { get; }
 }

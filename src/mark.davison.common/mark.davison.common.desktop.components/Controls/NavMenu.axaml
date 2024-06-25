@@ -5,8 +5,8 @@
              mc:Ignorable="d"
              x:Class="mark.davison.common.client.desktop.components.NavMenu">
 			<TabControl TabStripPlacement="Left"
-						ItemsSource="{Binding $parent[UserControl].Pages}"
-						SelectedItem="{Binding $parent[UserControl].SelectedPage}">
+						ItemsSource="{Binding $parent[UserControl].PageGroups}"
+						SelectedItem="{Binding $parent[UserControl].SelectedPageGroup}">
 				<TabControl.Styles>
 					<Style Selector="TabItem">
 						<Setter Property="IsVisible" Value="{Binding $parent[UserControl].MenuOpen}" />
@@ -17,25 +17,47 @@
 				</TabControl.Styles>
 				<TabControl.ItemTemplate>
 					<DataTemplate>
-						<Panel>
-							<Button Command="{Binding $parent[UserControl].SelectPageCommand}"
-									CommandParameter="{Binding .}"
-									HorizontalAlignment="Stretch"
-									VerticalAlignment="Stretch"
-									IsEnabled="{Binding Disabled, Converter={x:Static BoolConverters.Not}}">
-								<TextBlock VerticalAlignment="Center"
-										   HorizontalAlignment="Center"
-										   Text="{Binding Name}" />
-							</Button>
-						</Panel>
+						<Button Command="{Binding $parent[UserControl].SelectPageGroupCommand}"
+								CommandParameter="{Binding .}"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch"
+								IsEnabled="{Binding Disabled, Converter={x:Static BoolConverters.Not}}">
+							<TextBlock VerticalAlignment="Center"
+									   HorizontalAlignment="Center"
+									   Text="{Binding Name}" />
+						</Button>
 					</DataTemplate>
 				</TabControl.ItemTemplate>
 				<TabControl.ContentTemplate>
 					<DataTemplate>
-						<ContentControl Content="{Binding $parent[UserControl].SelectedPage}"
-										SizeChanged="ContentControl_SizeChanged"
-										VerticalAlignment="Stretch"
-										HorizontalAlignment="Stretch" />
+						<StackPanel Orientation="Vertical">
+							<TabControl TabStripPlacement="Top" 
+										ItemsSource="{Binding $parent[UserControl].SelectedPageGroup.SubPages}"
+										SelectedItem="{Binding $parent[UserControl].SelectedPageGroup.SubPage}">
+								<TabControl.ItemTemplate>
+									<DataTemplate>
+										<Panel>
+											<Button Command="{Binding $parent[UserControl].SelectedPageGroup.SelectSubPageCommand}"
+													CommandParameter="{Binding .}"
+													HorizontalAlignment="Stretch"
+													VerticalAlignment="Stretch"
+													IsEnabled="{Binding Disabled, Converter={x:Static BoolConverters.Not}}">
+												<TextBlock VerticalAlignment="Center"
+														   HorizontalAlignment="Center"
+														   Text="{Binding Name}" />
+											</Button>
+										</Panel>
+									</DataTemplate>
+								</TabControl.ItemTemplate>
+								<TabControl.ContentTemplate>
+									<DataTemplate>
+										<ContentControl Content="{Binding $parent[UserControl].SelectedPageGroup.SubPage}"
+														VerticalAlignment="Stretch"
+														HorizontalAlignment="Stretch"/>
+									</DataTemplate>
+								</TabControl.ContentTemplate>
+							</TabControl>
+						</StackPanel>
 					</DataTemplate>
 				</TabControl.ContentTemplate>
 			</TabControl>

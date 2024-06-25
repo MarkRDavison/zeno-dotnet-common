@@ -19,31 +19,31 @@ public partial class NavMenu : UserControl
         set { SetValue(MenuOpenProperty, value); }
     }
 
-    public static readonly StyledProperty<ObservableCollection<BasicApplicationPageViewModel>> PagesProperty =
-    AvaloniaProperty.Register<AppBar, ObservableCollection<BasicApplicationPageViewModel>>(nameof(Pages));
+    public static readonly StyledProperty<ObservableCollection<PageGroup>> PageGroupsProperty =
+    AvaloniaProperty.Register<AppBar, ObservableCollection<PageGroup>>(nameof(PageGroups));
 
-    public ObservableCollection<BasicApplicationPageViewModel> Pages
+    public ObservableCollection<PageGroup> PageGroups
     {
-        get { return GetValue(PagesProperty); }
-        set { SetValue(PagesProperty, value); }
+        get { return GetValue(PageGroupsProperty); }
+        set { SetValue(PageGroupsProperty, value); }
     }
 
-    public static readonly StyledProperty<IRelayCommand<BasicApplicationPageViewModel>> SelectPageCommandProperty =
-    AvaloniaProperty.Register<AppBar, IRelayCommand<BasicApplicationPageViewModel>>(nameof(SelectPageCommand));
+    public static readonly StyledProperty<IRelayCommand<PageGroup>> SelectPageGroupCommandProperty =
+    AvaloniaProperty.Register<AppBar, IRelayCommand<PageGroup>>(nameof(SelectPageGroupCommand));
 
-    public IRelayCommand<BasicApplicationPageViewModel> SelectPageCommand
+    public IRelayCommand<PageGroup> SelectPageGroupCommand
     {
-        get { return GetValue(SelectPageCommandProperty); }
-        set { SetValue(SelectPageCommandProperty, value); }
+        get { return GetValue(SelectPageGroupCommandProperty); }
+        set { SetValue(SelectPageGroupCommandProperty, value); }
     }
 
-    public static readonly StyledProperty<BasicApplicationPageViewModel> SelectedPageProperty =
-    AvaloniaProperty.Register<AppBar, BasicApplicationPageViewModel>(nameof(SelectedPage));
+    public static readonly StyledProperty<PageGroup> SelectedPageGroupProperty =
+    AvaloniaProperty.Register<AppBar, PageGroup>(nameof(SelectedPageGroup));
 
-    public BasicApplicationPageViewModel SelectedPage
+    public PageGroup SelectedPageGroup
     {
-        get { return GetValue(SelectedPageProperty); }
-        set { SetValue(SelectedPageProperty, value); }
+        get { return GetValue(SelectedPageGroupProperty); }
+        set { SetValue(SelectedPageGroupProperty, value); }
     }
 
     public static readonly StyledProperty<Breakpoint> BreakpointProperty =

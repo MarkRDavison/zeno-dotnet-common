@@ -8,4 +8,10 @@ public class CommonApplicationNotificationService : ICommonApplicationNotificati
     {
         AuthenticationStateChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    public event EventHandler<ChangePageEventArgs> PageChanged = default!;
+    public void ChangePage(string groupId, string pageId)
+    {
+        PageChanged?.Invoke(this, new ChangePageEventArgs(groupId, pageId));
+    }
 }

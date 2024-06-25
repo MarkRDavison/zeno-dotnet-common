@@ -9,7 +9,7 @@ public partial class ExampleDialogPageViewModel : BasicApplicationPageViewModel
         _dialogService = dialogService;
     }
 
-    public override string Name => "Dialogs";
+    public override string Name => "Standard submit";
 
     public override bool Disabled => false;
 

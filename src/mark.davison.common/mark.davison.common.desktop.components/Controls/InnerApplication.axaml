@@ -14,8 +14,8 @@
 					ChildContent="{Binding AppBarChildContentViewModel}"/>
 		<mdc:NavMenu DockPanel.Dock="Left"
 					 MenuOpen="{Binding NavMenuOpen}"
-					 Pages="{Binding Pages}"
-					 SelectedPage="{Binding SelectedPage}"
-					 SelectPageCommand="{Binding SelectPageCommand}"/>
+					 PageGroups="{Binding PageGroups}"
+					 SelectedPageGroup="{Binding SelectedPageGroup}"
+					 SelectPageGroupCommand="{Binding SelectPageGroupCommand}" />
 	</DockPanel>
 </UserControl>

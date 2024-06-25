@@ -33,6 +33,6 @@ public partial class ExampleClientRepositoryPageViewModel : BasicApplicationPage
     [ObservableProperty]
     private string? _response = "Not sent yet";
 
-    public override string Name => "CQRS";
+    public override string Name => "Select";
     public override bool Disabled => false;
 }
