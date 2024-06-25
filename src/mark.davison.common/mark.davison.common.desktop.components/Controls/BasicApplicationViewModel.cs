@@ -39,11 +39,11 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 
     private void OnPageChanged(object? sender, ChangePageEventArgs e)
     {
-        if (PageGroups.FirstOrDefault(_ => _.Id == e.GroupId) is { } pageGroup)
+        if (PageGroups.FirstOrDefault(_ => _.Id == e.GroupId) is { Disabled: false } pageGroup)
         {
             var selectedGroupIndex = PageGroups.IndexOf(pageGroup);
 
-            if (pageGroup.SubPages.FirstOrDefault(_ => _.Id == e.PageId) is { } page)
+            if (pageGroup.SubPages.FirstOrDefault(_ => _.Id == e.PageId) is { Disabled: false } page)
             {
                 var selectedPageIndex = pageGroup.SubPages.IndexOf(page);
 
