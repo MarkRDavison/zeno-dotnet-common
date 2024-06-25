@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:mark.davison.common.client.desktop.components.ViewModels"
              mc:Ignorable="d"
              x:Class="mark.davison.common.client.desktop.components.NavMenu">
 			<TabControl TabStripPlacement="Left"
@@ -34,6 +35,11 @@
 							<TabControl TabStripPlacement="Top" 
 										ItemsSource="{Binding $parent[UserControl].SelectedPageGroup.SubPages}"
 										SelectedItem="{Binding $parent[UserControl].SelectedPageGroup.SubPage}">
+								<TabControl.Styles>
+									<Style Selector="TabItem">
+										<Setter Property="IsVisible" Value="{Binding $parent[TabControl].DataContext.Single, Converter={x:Static BoolConverters.Not}}" />
+									</Style>
+								</TabControl.Styles>
 								<TabControl.ItemTemplate>
 									<DataTemplate>
 										<Panel>
