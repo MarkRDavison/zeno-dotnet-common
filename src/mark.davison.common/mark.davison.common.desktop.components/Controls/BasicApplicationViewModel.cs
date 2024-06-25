@@ -33,17 +33,31 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
 
         if (OidcAuthenticatorViewModel is null)
         {
-            SelectPageGroup(SelectedPageGroup);
+            SelectFirstEnabledPage();
         }
     }
 
-    private void OnPageChanged(object? sender, ChangePageEventArgs e)
+    private void SelectFirstEnabledPage()
     {
-        if (PageGroups.FirstOrDefault(_ => _.Id == e.GroupId) is { Disabled: false } pageGroup)
+        foreach (var g in PageGroups.Where(_ => !_.Disabled))
+        {
+            if (g.SubPages.FirstOrDefault(_ => !_.Disabled) is { } p)
+            {
+                SelectPage(g.Id, p.Id);
+                break;
+            }
+        }
+    }
+
+    private void OnPageChanged(object? sender, ChangePageEventArgs e) => SelectPage(e.GroupId, e.PageId);
+
+    private void SelectPage(string groupId, string pageId)
+    {
+        if (PageGroups.FirstOrDefault(_ => _.Id == groupId) is { Disabled: false } pageGroup)
         {
             var selectedGroupIndex = PageGroups.IndexOf(pageGroup);
 
-            if (pageGroup.SubPages.FirstOrDefault(_ => _.Id == e.PageId) is { Disabled: false } page)
+            if (pageGroup.SubPages.FirstOrDefault(_ => _.Id == pageId) is { Disabled: false } page)
             {
                 var selectedPageIndex = pageGroup.SubPages.IndexOf(page);
 
@@ -66,7 +80,7 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
         {
             if (_initialAuthenticatedRender)
             {
-                SelectPageGroup(SelectedPageGroup);
+                SelectFirstEnabledPage();
             }
         }
         _initialAuthenticatedRender = false;
@@ -105,6 +119,8 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
                 if (groupIndex != -1)
                 {
                     SelectedPageGroupIndex = groupIndex;
+
+                    group.SubPage?.Select();
                 }
             });
         }

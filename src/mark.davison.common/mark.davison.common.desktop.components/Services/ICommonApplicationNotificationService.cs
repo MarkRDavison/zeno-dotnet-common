@@ -16,6 +16,7 @@ public interface ICommonApplicationNotificationService
 {
     event EventHandler AuthenticationStateChanged;
     void NotifyAuthenticationStateChanged();
+
     event EventHandler<ChangePageEventArgs> PageChanged;
     void ChangePage(string groupId, string pageId);
 }

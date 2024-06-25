@@ -2,7 +2,10 @@
 
 public partial class PageGroup : ObservableObject
 {
-    public PageGroup(string name, IEnumerable<BasicApplicationPageViewModel> pages, string? id = null)
+    public PageGroup(
+        string name,
+        IEnumerable<BasicApplicationPageViewModel> pages,
+        string? id = null)
     {
         Id = id ?? name;
         Name = name;
@@ -23,7 +26,9 @@ public partial class PageGroup : ObservableObject
     private void SelectSubPage(BasicApplicationPageViewModel page)
     {
         SelectedIndex = SubPages.IndexOf(page);
+        page.Select();
     }
 
-    public bool Disabled => false;
+    // TODO: Maybe need children to notify when their Disabled flag changes???
+    public bool Disabled => SubPages.Any(x => x.Disabled);
 }
