@@ -51,6 +51,7 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
                 {
                     SelectedPageGroupIndex = selectedGroupIndex;
                     pageGroup.SelectedIndex = selectedPageIndex;
+                    page.Select();
                 });
             }
         }
