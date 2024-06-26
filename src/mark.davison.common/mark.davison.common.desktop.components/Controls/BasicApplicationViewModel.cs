@@ -59,6 +59,7 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
                                 pg.SelectedIndex = 0;
                             }
                         });
+                        pg.SubPages[pg.SelectedIndex].Select();
                         return;
                     }
                 }
