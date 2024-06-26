@@ -10,7 +10,10 @@ public partial class ProgrammaticNavigationPageViewModel : BasicApplicationPageV
 
     public ProgrammaticNavigationPageViewModel(
         BasicApplicationViewModel basicApplicationViewModel,
-        ICommonApplicationNotificationService commonApplicationNotificationService)
+        ICommonApplicationNotificationService commonApplicationNotificationService
+    ) : base(
+        commonApplicationNotificationService)
+
     {
         _basicApplicationViewModel = basicApplicationViewModel;
         _commonApplicationNotificationService = commonApplicationNotificationService;

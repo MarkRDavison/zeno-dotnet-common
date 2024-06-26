@@ -9,7 +9,8 @@
 			 HorizontalAlignment="Center"
 			 VerticalAlignment="Center">
 	<StackPanel Orientation="Vertical">
-	<Button Command="{Binding OpenDialogCommand}">Open Dialog</Button>
+		<Button Command="{Binding OpenInformationDialogCommand}">Open InformationDialog</Button>
+		<Button Command="{Binding OpenDialogCommand}">Open Dialog</Button>
 		<Label>Status:</Label>
 		<TextBlock Text="{Binding ResponseStatus}"/>
 		<Label>Errors:</Label>

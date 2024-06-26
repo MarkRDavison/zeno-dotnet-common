@@ -21,7 +21,7 @@ public partial class MainWindowViewModel : ViewModelBase
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("Data",
             [
-                new ExampleDataGridPageViewModel()
+                new ExampleDataGridPageViewModel(appNotification)
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("Misc",
             [
@@ -42,7 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase
         BasicApplicationViewModel.PageGroups.Add(new("Sub Pages",
             [
                 services.GetRequiredService<ExampleSubPageViewModel>(),
-                new ExampleSubPageChildViewModel("2nd sub page")
+                new ExampleSubPageChildViewModel("2nd sub page", true, appNotification)
             ]));
     }
 

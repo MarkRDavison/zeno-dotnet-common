@@ -30,7 +30,8 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
     {
         _commonApplicationNotificationService.AuthenticationStateChanged += OnAuthChanged;
         _commonApplicationNotificationService.PageChanged += OnPageChanged;
-        _commonApplicationNotificationService.PageEnabledStateChanged += _commonApplicationNotificationService_PageEnabledStateChanged;
+        _commonApplicationNotificationService.PageEnabledStateChanged += OnPageEnabledStateChanged;
+        _commonApplicationNotificationService.PageClosed += OnPageClosed;
 
         if (OidcAuthenticatorViewModel is null)
         {
@@ -38,7 +39,34 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void _commonApplicationNotificationService_PageEnabledStateChanged(object? sender, EventArgs e)
+    private void OnPageClosed(object? sender, ClosePageEventArgs e)
+    {
+        foreach (var pg in PageGroups)
+        {
+            if (pg.Id == e.GroupId || string.IsNullOrEmpty(e.GroupId))
+            {
+                foreach (var page in pg.SubPages)
+                {
+                    if (page.Id == e.PageId)
+                    {
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            var index = pg.SubPages.IndexOf(page);
+                            pg.SubPages.Remove(page);
+
+                            if (pg.SelectedIndex == index)
+                            {
+                                pg.SelectedIndex = 0;
+                            }
+                        });
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnPageEnabledStateChanged(object? sender, EventArgs e)
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -162,7 +190,9 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
         {
             if (disposing)
             {
+                _commonApplicationNotificationService.PageClosed -= OnPageClosed;
                 _commonApplicationNotificationService.PageChanged -= OnPageChanged;
+                _commonApplicationNotificationService.PageEnabledStateChanged -= OnPageEnabledStateChanged;
                 _commonApplicationNotificationService.AuthenticationStateChanged -= OnAuthChanged;
             }
 

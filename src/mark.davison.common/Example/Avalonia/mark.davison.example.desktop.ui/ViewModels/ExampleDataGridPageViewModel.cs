@@ -2,7 +2,11 @@
 
 public partial class ExampleDataGridPageViewModel : BasicApplicationPageViewModel
 {
-    public ExampleDataGridPageViewModel()
+    public ExampleDataGridPageViewModel(
+        ICommonApplicationNotificationService commonApplicationNotificationService
+    ) : base(
+        commonApplicationNotificationService)
+
     {
         DataGridRowItems.Add(new DataGridRowItem { FirstName = "John", LastName = "Doe", Age = 52 });
         DataGridRowItems.Add(new DataGridRowItem { FirstName = "Jane", LastName = "Doe", Age = 22 });

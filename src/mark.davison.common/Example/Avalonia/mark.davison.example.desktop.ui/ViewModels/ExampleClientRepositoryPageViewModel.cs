@@ -4,7 +4,11 @@ public partial class ExampleClientRepositoryPageViewModel : BasicApplicationPage
 {
     private readonly IClientHttpRepository _clientHttpRepository;
 
-    public ExampleClientRepositoryPageViewModel(IClientHttpRepository clientHttpRepository)
+    public ExampleClientRepositoryPageViewModel(
+        IClientHttpRepository clientHttpRepository,
+        ICommonApplicationNotificationService commonApplicationNotificationService
+    ) : base(
+        commonApplicationNotificationService)
     {
         _clientHttpRepository = clientHttpRepository;
     }

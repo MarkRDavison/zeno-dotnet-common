@@ -15,6 +15,12 @@ public class CommonApplicationNotificationService : ICommonApplicationNotificati
         PageChanged?.Invoke(this, new ChangePageEventArgs(groupId, pageId));
     }
 
+    public event EventHandler<ClosePageEventArgs> PageClosed = default!;
+    public void ClosePage(string groupId, string pageId)
+    {
+        PageClosed?.Invoke(this, new ClosePageEventArgs(groupId, pageId));
+    }
+
     public event EventHandler PageEnabledStateChanged = default!;
     public void NotifyPageEnabledStateChanged()
     {

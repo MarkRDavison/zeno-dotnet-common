@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:mark.davison.common.client.desktop.components.ViewModels"
+			 xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d"
              x:Class="mark.davison.common.client.desktop.components.NavMenu">
 			<TabControl TabStripPlacement="Left"
@@ -42,7 +43,7 @@
 								</TabControl.Styles>
 								<TabControl.ItemTemplate>
 									<DataTemplate>
-										<Panel>
+										<Grid>
 											<Button Command="{Binding $parent[UserControl].SelectedPageGroup.SelectSubPageCommand}"
 													CommandParameter="{Binding .}"
 													HorizontalAlignment="Stretch"
@@ -50,9 +51,28 @@
 													IsEnabled="{Binding Disabled, Converter={x:Static BoolConverters.Not}}">
 												<TextBlock VerticalAlignment="Center"
 														   HorizontalAlignment="Center"
-														   Text="{Binding Name}" />
+														   Text="{Binding Name}"
+														   Classes.IsClosable="{Binding IsClosable}">
+													<TextBlock.Styles>
+														<Style Selector="TextBlock.IsClosable">
+															<Setter Property="Margin" Value="0 0 28 0" />
+														</Style>
+													</TextBlock.Styles>
+												</TextBlock>
 											</Button>
-										</Panel>
+											<Button HorizontalAlignment="Right" 
+													VerticalAlignment="Center" 
+													Padding="0"
+													ZIndex="99" 
+													Width="24" 
+													Height="24"
+													CornerRadius="12"
+													Margin="4"
+													IsVisible="{Binding IsClosable}"
+													Command="{Binding CloseCommand}">
+												<materialIcons:MaterialIcon Kind="Close" />												
+											</Button>
+										</Grid>
 									</DataTemplate>
 								</TabControl.ItemTemplate>
 								<TabControl.ContentTemplate>

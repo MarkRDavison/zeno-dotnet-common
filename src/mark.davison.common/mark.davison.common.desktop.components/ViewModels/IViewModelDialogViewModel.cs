@@ -2,6 +2,6 @@
 
 public interface IViewModelDialogViewModel<TFormViewModel> where TFormViewModel : IFormViewModel
 {
-    TFormViewModel FormViewModel { get; }
+    TFormViewModel Content { get; }
     IFormSubmission<TFormViewModel> FormSubmission { get; }
 }

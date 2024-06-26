@@ -8,4 +8,7 @@ public interface IDialogService
     Task<TResponse?> ShowDialogAsync<TResponse, TFormViewModel>(TFormViewModel viewModel, DialogSettings settings)
         where TResponse : Response, new()
         where TFormViewModel : IFormViewModel;
+
+    Task ShowInformationDialogAsync(string content);
+    Task ShowInformationDialogAsync(string content, DialogSettings settings);
 }

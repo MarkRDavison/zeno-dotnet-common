@@ -12,15 +12,39 @@ internal sealed class ViewModelDialogViewModel<TFormViewModel> : ViewModelDialog
 {
     public ViewModelDialogViewModel(TFormViewModel formViewModel, IFormSubmission<TFormViewModel> formSubmission)
     {
-        FormViewModel = formViewModel;
+        Content = formViewModel;
         FormSubmission = formSubmission;
     }
 
-    public TFormViewModel FormViewModel { get; }
+    public TFormViewModel Content { get; }
     public IFormSubmission<TFormViewModel> FormSubmission { get; }
 
     public override async Task<Response> Primary()
     {
-        return await FormSubmission.Primary(FormViewModel);
+        return await FormSubmission.Primary(Content);
     }
+}
+
+internal sealed class InnerInformationDialogViewModel
+{
+    public InnerInformationDialogViewModel(string primary) : this(primary, string.Empty) { }
+    public InnerInformationDialogViewModel(string primary, string secondary)
+    {
+        PrimaryContent = primary;
+        SecondaryContent = secondary;
+    }
+
+    public string PrimaryContent { get; }
+    public string SecondaryContent { get; }
+}
+
+internal sealed class InformationDialogViewModel : ViewModelDialogViewModel
+{
+    public InformationDialogViewModel(string content)
+    {
+        Content = new InnerInformationDialogViewModel(content);
+    }
+
+    public InnerInformationDialogViewModel Content { get; }
+    public override Task<Response> Primary() => Task.FromResult(new Response());
 }

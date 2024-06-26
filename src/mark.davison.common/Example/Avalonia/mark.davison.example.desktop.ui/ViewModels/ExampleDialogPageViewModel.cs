@@ -4,7 +4,11 @@ public partial class ExampleDialogPageViewModel : BasicApplicationPageViewModel
 {
     private readonly IDialogService _dialogService;
 
-    public ExampleDialogPageViewModel(IDialogService dialogService)
+    public ExampleDialogPageViewModel(
+        IDialogService dialogService,
+        ICommonApplicationNotificationService commonApplicationNotificationService
+    ) : base(
+        commonApplicationNotificationService)
     {
         _dialogService = dialogService;
     }
@@ -35,5 +39,18 @@ public partial class ExampleDialogPageViewModel : BasicApplicationPageViewModel
         Response = await _dialogService.ShowDialogAsync<Response, ExampleFormViewModel>(
             new ExampleFormViewModel(),
             new DialogSettings { Title = "Example form", PrimaryText = "Submit" });
+    }
+
+    [RelayCommand]
+    private async Task OpenInformationDialog()
+    {
+        await _dialogService.ShowInformationDialogAsync(
+            "Hello world here is some information",
+            new DialogSettings
+            {
+                Title = "Information",
+                PrimaryText = "Ok",
+                ShowCancel = false
+            });
     }
 }

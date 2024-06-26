@@ -3,7 +3,7 @@
 public partial class ExamplePageViewModel : BasicApplicationPageViewModel
 {
     private readonly ICommonApplicationNotificationService _commonApplicationNotificationService;
-    public ExamplePageViewModel(string name, ICommonApplicationNotificationService commonApplicationNotificationService)
+    public ExamplePageViewModel(string name, ICommonApplicationNotificationService commonApplicationNotificationService) : base(commonApplicationNotificationService)
     {
         Name = name;
         _commonApplicationNotificationService = commonApplicationNotificationService;
