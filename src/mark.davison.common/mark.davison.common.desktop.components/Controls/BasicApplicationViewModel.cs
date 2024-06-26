@@ -52,14 +52,18 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
                         Dispatcher.UIThread.Invoke(() =>
                         {
                             var index = pg.SubPages.IndexOf(page);
-                            pg.SubPages.Remove(page);
-
-                            if (pg.SelectedIndex == index)
+                            if (index != -1)
                             {
-                                pg.SelectedIndex = 0;
+                                pg.SubPages.Remove(page);
+
+                                if (pg.SelectedIndex == index)
+                                {
+                                    pg.SelectedIndex = 0;
+                                }
+
+                                pg.SubPages[pg.SelectedIndex].Select();
                             }
                         });
-                        pg.SubPages[pg.SelectedIndex].Select();
                         return;
                     }
                 }
