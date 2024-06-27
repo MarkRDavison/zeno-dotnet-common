@@ -56,7 +56,8 @@ public partial class BasicApplicationViewModel : ObservableObject, IDisposable
                             {
                                 pg.SubPages.Remove(page);
 
-                                if (pg.SelectedIndex == index)
+                                if (pg.SelectedIndex == index ||
+                                    pg.SelectedIndex >= pg.SubPages.Count)
                                 {
                                     pg.SelectedIndex = 0;
                                 }

@@ -2,17 +2,19 @@
 
 public partial class ExampleSubPageChildViewModel : BasicApplicationPageViewModel
 {
-    public ExampleSubPageChildViewModel(string name, bool canClose,
+    public ExampleSubPageChildViewModel(int number, bool canClose,
         ICommonApplicationNotificationService commonApplicationNotificationService
     ) : base(
         commonApplicationNotificationService)
 
     {
-        Name = name;
+        Number = number;
         IsClosable = canClose;
     }
 
-    public override string Name { get; }
+    public int Number { get; }
+
+    public override string Name => $"Child {Number}";
     public override bool Disabled => false;
     public override bool IsClosable { get; }
 }

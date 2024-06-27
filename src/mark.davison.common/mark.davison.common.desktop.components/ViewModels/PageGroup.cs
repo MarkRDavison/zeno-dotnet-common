@@ -10,6 +10,12 @@ public partial class PageGroup : ObservableObject
         Id = id ?? name;
         Name = name;
         SubPages = [.. pages];
+        SubPages.CollectionChanged += SubPages_CollectionChanged;
+    }
+
+    private void SubPages_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(Single));
     }
 
     public string Id { get; }
@@ -35,6 +41,7 @@ public partial class PageGroup : ObservableObject
     {
         OnPropertyChanged(nameof(Disabled));
         OnPropertyChanged(nameof(SubPages));
+        OnPropertyChanged(nameof(Single));
     }
 
     public bool Disabled => SubPages.Any(x => x.Disabled);

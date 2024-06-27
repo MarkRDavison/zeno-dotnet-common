@@ -12,5 +12,6 @@
 
 		<TextBlock Text="{Binding Name}"
 				   FontSize="64"/>
+		<Button Command="{Binding OpenChildCommand}">Open child</Button>
 	</StackPanel>
 </UserControl>

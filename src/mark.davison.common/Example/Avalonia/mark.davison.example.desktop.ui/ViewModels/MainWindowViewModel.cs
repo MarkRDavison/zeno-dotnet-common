@@ -41,8 +41,11 @@ public partial class MainWindowViewModel : ViewModelBase
             ]));
         BasicApplicationViewModel.PageGroups.Add(new("Sub Pages",
             [
-                services.GetRequiredService<ExampleSubPageViewModel>(),
-                new ExampleSubPageChildViewModel("2nd sub page", true, appNotification)
+                new ExampleSubPageViewModel(
+                    services.GetRequiredService<ICommonApplicationNotificationService>(),
+                    BasicApplicationViewModel),
+                new ExampleSubPageChildViewModel(1, true, appNotification),
+                new ExampleSubPageChildViewModel(2, true, appNotification)
             ]));
     }
 
