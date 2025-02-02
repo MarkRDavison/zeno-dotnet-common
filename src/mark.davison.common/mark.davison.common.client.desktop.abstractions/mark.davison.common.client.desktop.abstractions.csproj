@@ -1,18 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<PackageId>markdavison.common.desktop.abstrations</PackageId>
-	<IsPackable>true</IsPackable>
-	<Author>Mark Davison</Author>
-	<Description>Common desktop abstractions</Description>
-	<PackageVersion>8.0.0</PackageVersion>
+    <PackageId>markdavison.common.desktop.abstrations</PackageId>
+    <IsPackable>true</IsPackable>
+    <Author>Mark Davison</Author>
+    <Description>Common desktop abstractions</Description>
+    <PackageVersion>9.0.0</PackageVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
   </ItemGroup>
-
 </Project>

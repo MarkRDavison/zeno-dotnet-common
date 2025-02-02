@@ -47,7 +47,7 @@ public class OpenIdConnectResolverTests
             Times.Once);
 
         Assert.AreEqual(
-            "https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi",
+            "https://auth.markdavison.kiwi/realms/markdavison.kiwi",
             _options.OpenIdConnectConfiguration.Issuer);
     }
 
