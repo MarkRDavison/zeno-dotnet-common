@@ -4,7 +4,7 @@ using mark.davison.example.console.app;
 using Microsoft.Extensions.Logging;
 
 // TODO: To config - but its all public so its fine :)
-const string Authority = "https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi";
+const string Authority = "https://keycloak.markdavison.kiwi/realms/markdavison.kiwi";
 const string ClientId = "zeno-example-public";
 const string Scope = "openid profile email offline_access";
 const string ApiRppt = "https://localhost:50000";

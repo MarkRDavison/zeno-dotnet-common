@@ -8,7 +8,7 @@ public static class DependencyInjectionExtensions
             .AddCommonDesktop()
             .Configure<OdicClientSettings>(_ =>
             {
-                _.Authority = "https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi";
+                _.Authority = "https://keycloak.markdavison.kiwi/realms/markdavison.kiwi";
                 _.ClientId = "zeno-example-public";
                 _.Scope = "openid profile email offline_access";
                 _.PersistenceLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "example");
