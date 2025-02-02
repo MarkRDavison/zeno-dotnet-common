@@ -10,7 +10,7 @@
 		<IsPackable>true</IsPackable>
 		<Author>Mark Davison</Author>
 		<Description>Common Source Generators</Description>
-		<PackageVersion>8.0.0</PackageVersion>
+		<PackageVersion>9.0.0</PackageVersion>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 	<ItemGroup>

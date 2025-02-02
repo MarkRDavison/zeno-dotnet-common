@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Example\Shared\mark.davison.example.shared.models\mark.davison.example.shared.models.csproj" />
     <ProjectReference Include="..\mark.davison.common.persistence\mark.davison.common.persistence.csproj" />
   </ItemGroup>
-
 </Project>

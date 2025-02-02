@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<PackageId>markdavison.common.client.web.abstractions</PackageId>
-		<IsPackable>true</IsPackable>
-		<Author>Mark Davison</Author>
-		<Description>Common client web abstractions</Description>
-		<PackageVersion>8.0.0</PackageVersion>
-	</PropertyGroup>
-	<ItemGroup>
-	  <PackageReference Include="Fluxor" Version="6.0.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
-		<ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>markdavison.common.client.web.abstractions</PackageId>
+    <IsPackable>true</IsPackable>
+    <Author>Mark Davison</Author>
+    <Description>Common client web abstractions</Description>
+    <PackageVersion>9.0.0</PackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Fluxor" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
+    <ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />
+  </ItemGroup>
 </Project>
