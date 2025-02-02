@@ -203,12 +203,12 @@ public sealed class DesktopAuthenticationService : IDesktopAuthenticationService
 
         var clientRepository = new ClientHttpRepository(remoteEndpoint, _client, _logger);
 
-        clientRepository.OnInvalidResponse += ClientRepository_OnInvalidResponse;
+        clientRepository.OnInvalidHttpResponse += ClientRepository_OnInvalidResponse;
 
         return clientRepository;
     }
 
-    private async void ClientRepository_OnInvalidResponse(object? sender, InvalidResponseEventArgs e)
+    private async void ClientRepository_OnInvalidResponse(object? sender, InvalidHttpResponseEventArgs e)
     {
         var tcs = new TaskCompletionSource();
 

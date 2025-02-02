@@ -112,7 +112,7 @@ public static class DependencyInjectionExtensions
                         _.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientName),
                         _.GetRequiredService<ILogger<ClientHttpRepository>>());
 
-                clientHttpRepository.OnInvalidResponse += async (object? sender, InvalidResponseEventArgs e) =>
+                clientHttpRepository.OnInvalidHttpResponse += async (object? sender, InvalidHttpResponseEventArgs e) =>
                 {
                     if (e.Status == HttpStatusCode.Unauthorized)
                     {

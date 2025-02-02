@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.common.client.abstractions.Repository;
 
-public sealed class InvalidResponseEventArgs : EventArgs
+public sealed class InvalidHttpResponseEventArgs : EventArgs
 {
     public required HttpStatusCode Status { get; init; }
     public required HttpRequestMessage Request { get; init; }

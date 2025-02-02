@@ -40,8 +40,8 @@ public class ClientHttpRepository : IClientHttpRepository
 
         if (!response.IsSuccessStatusCode)
         {
-            var args = new InvalidResponseEventArgs { Status = response.StatusCode, Request = requestMessage };
-            OnInvalidResponse?.Invoke(this, args);
+            var args = new InvalidHttpResponseEventArgs { Status = response.StatusCode, Request = requestMessage };
+            OnInvalidHttpResponse?.Invoke(this, args);
 
             if (args.Retry)
             {
@@ -103,8 +103,8 @@ public class ClientHttpRepository : IClientHttpRepository
 
         if (!response.IsSuccessStatusCode)
         {
-            var args = new InvalidResponseEventArgs { Status = response.StatusCode, Request = requestMessage };
-            OnInvalidResponse?.Invoke(this, args);
+            var args = new InvalidHttpResponseEventArgs { Status = response.StatusCode, Request = requestMessage };
+            OnInvalidHttpResponse?.Invoke(this, args);
 
             if (args.Retry)
             {
@@ -163,5 +163,5 @@ public class ClientHttpRepository : IClientHttpRepository
         return queryParameters;
     }
 
-    public event EventHandler<InvalidResponseEventArgs> OnInvalidResponse = default!;
+    public event EventHandler<InvalidHttpResponseEventArgs> OnInvalidHttpResponse = default!;
 }
