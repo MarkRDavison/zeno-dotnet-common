@@ -3,33 +3,32 @@ name: Bump version and publish nuget
 on:
   push:
     tags:
-     - '[0-9]+.[0-9]+.[0-9]+'
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   publish:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Setup Python3
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.x
-    - name: Update project versions
-      run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version ${{ github.ref_name }}
-    - name: Restore dependencies
-      working-directory: ./src/mark.davison.common
-      run: dotnet restore
-    - name: Create nuget packages
-      working-directory: ./src/mark.davison.common
-      run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
-    - name: Push nuget packages
-      working-directory: ./src/mark.davison.common
-      run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-service-endpoint
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+      - name: Setup Python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - name: Update project versions
+        run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version ${{ github.ref_name }}
+      - name: Restore dependencies
+        working-directory: ./src/mark.davison.common
+        run: dotnet restore
+      - name: Create nuget packages
+        working-directory: ./src/mark.davison.common
+        run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
+      - name: Push nuget packages
+        working-directory: ./src/mark.davison.common
+        run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-service-endpoint
