@@ -35,7 +35,7 @@
     private EditContext? _editContext;
 
     [CascadingParameter, EditorRequired]
-    public required MudDialogInstance MudDialog { get; set; }
+    public required IMudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public string PrimaryText { get; set; } = "Ok";
@@ -93,7 +93,7 @@
 
             if (response.Success)
             {
-                MudDialog.Close(DialogResult.Ok(true));
+                MudDialog.Close(DialogResult.Ok(response));
             }
             else
             {

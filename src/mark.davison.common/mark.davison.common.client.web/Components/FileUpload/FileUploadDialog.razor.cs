@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using MudBlazor;
 
 namespace mark.davison.common.client.web.Components;
 
@@ -12,7 +11,7 @@ public partial class FileUploadDialog<T> where T : class, new()
     private T? data;
 
     [CascadingParameter, EditorRequired]
-    public required MudDialogInstance MudDialog { get; set; }
+    public required IMudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public string PrimaryText { get; set; } = "Ok";
@@ -77,7 +76,7 @@ public partial class FileUploadDialog<T> where T : class, new()
 
         if (response.Success)
         {
-            MudDialog.Close(DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(response));
             data = null;
         }
         else

@@ -7,7 +7,6 @@
         }
         else {
             <MudMenuItem OnClick="@(() => OnActivate(item))"
-                         OnTouch="@(() => OnActivate(item))"
                          Disabled="@item.Disabled">@item.Text</MudMenuItem>
         }
     }
