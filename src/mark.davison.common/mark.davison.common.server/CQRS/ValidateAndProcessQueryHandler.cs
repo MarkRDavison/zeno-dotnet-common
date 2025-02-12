@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.common.server.CQRS;
 
-public abstract class ValidateAndProcessQueryHandler<TRequest, TResponse>
+public class ValidateAndProcessQueryHandler<TRequest, TResponse>
     : IQueryHandler<TRequest, TResponse>
     where TRequest : class, IQuery<TRequest, TResponse>, new()
     where TResponse : Response, new()

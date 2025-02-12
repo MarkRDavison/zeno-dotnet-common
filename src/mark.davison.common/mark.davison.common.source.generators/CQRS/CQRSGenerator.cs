@@ -101,7 +101,7 @@ public class CQRSGenerator : ISourceGenerator
                 _.TypeArguments[0].Name == commandInterface?.TypeArguments[0]?.Name &&
                 _.TypeArguments[1].Name == commandInterface?.TypeArguments[1]?.Name);
         });
-        if (commandInterface != null && commandHandler != null)
+        if (commandInterface != null)
         {
             var requestFQN = commandInterface.TypeArguments[0].ToDisplayString();
             var responseFQN = commandInterface.TypeArguments[1].ToDisplayString();
@@ -113,7 +113,7 @@ public class CQRSGenerator : ISourceGenerator
                 Type = CQRSActivityType.Command,
                 Request = requestFQN,
                 Response = responseFQN,
-                Handler = commandHandler.ToDisplayString(),
+                Handler = commandHandler?.ToDisplayString() ?? string.Empty,
                 Processor = processor?.ToDisplayString() ?? string.Empty,
                 Validator = validator?.ToDisplayString() ?? string.Empty,
                 Path = requestAttribute?.NamedArguments.FirstOrDefault(_ => _.Key == "Path").Value.Value as string ?? string.Empty,
@@ -151,7 +151,7 @@ public class CQRSGenerator : ISourceGenerator
                 _.TypeArguments[0].Name == queryInterface?.TypeArguments[0]?.Name &&
                 _.TypeArguments[1].Name == queryInterface?.TypeArguments[1]?.Name);
         });
-        if (queryInterface != null && queryHandler != null)
+        if (queryInterface != null)
         {
             var requestFQN = queryInterface.TypeArguments[0].ToDisplayString();
             var responseFQN = queryInterface.TypeArguments[1].ToDisplayString();
@@ -163,7 +163,7 @@ public class CQRSGenerator : ISourceGenerator
                 Type = CQRSActivityType.Query,
                 Request = requestFQN,
                 Response = responseFQN,
-                Handler = queryHandler.ToDisplayString(),
+                Handler = queryHandler?.ToDisplayString() ?? string.Empty,
                 Processor = processor?.ToDisplayString() ?? string.Empty,
                 Validator = validator?.ToDisplayString() ?? string.Empty,
                 Path = requestAttribute?.NamedArguments.FirstOrDefault(_ => _.Key == "Path").Value.Value as string ?? string.Empty,
@@ -381,7 +381,22 @@ public class CQRSGenerator : ISourceGenerator
 
         foreach (var command in activities.Where(_ => _.Type == CQRSActivityType.Command))
         {
-            stringBuilder.AppendLine($"            services.AddScoped<ICommandHandler<{command.Request},{command.Response}>, {command.Handler}>();");
+
+            if (string.IsNullOrEmpty(command.Handler))
+            {
+                if (!string.IsNullOrEmpty(command.Processor))
+                {
+                    AddValidateAndProcessCommandHandler(stringBuilder, command);
+                }
+                else
+                {
+                    stringBuilder.AppendLine($"            No ICommandHandler available for <{command.Request},{command.Response}>, and no processor to auto gen");
+                }
+            }
+            else
+            {
+                stringBuilder.AppendLine($"            services.AddScoped<ICommandHandler<{command.Request},{command.Response}>, {command.Handler}>();");
+            }
             if (!string.IsNullOrEmpty(command.Validator))
             {
                 stringBuilder.AppendLine($"            services.AddScoped<ICommandValidator<{command.Request},{command.Response}>, {command.Validator}>();");
@@ -393,7 +408,21 @@ public class CQRSGenerator : ISourceGenerator
         }
         foreach (var query in activities.Where(_ => _.Type == CQRSActivityType.Query))
         {
-            stringBuilder.AppendLine($"            services.AddScoped<IQueryHandler<{query.Request},{query.Response}>, {query.Handler}>();");
+            if (string.IsNullOrEmpty(query.Handler))
+            {
+                if (!string.IsNullOrEmpty(query.Processor))
+                {
+                    AddValidateAndProcessQueryHandler(stringBuilder, query);
+                }
+                else
+                {
+                    stringBuilder.AppendLine($"            No IQueryHandler available for <{query.Request},{query.Response}>, and no processor to auto gen");
+                }
+            }
+            else
+            {
+                stringBuilder.AppendLine($"            services.AddScoped<IQueryHandler<{query.Request},{query.Response}>, {query.Handler}>();");
+            }
             if (!string.IsNullOrEmpty(query.Validator))
             {
                 stringBuilder.AppendLine($"            services.AddScoped<IQueryValidator<{query.Request},{query.Response}>, {query.Validator}>();");
@@ -421,5 +450,37 @@ public class CQRSGenerator : ISourceGenerator
         stringBuilder.AppendLine("}");
 
         context.AddSource("CQRSDependecyInjectionExtensions.g.cs", SourceText.From(stringBuilder.ToString(), Encoding.UTF8));
+    }
+
+    private static void AddValidateAndProcessQueryHandler(StringBuilder stringBuilder, CQRSActivity query)
+    {
+        stringBuilder.AppendLine($"            services.AddScoped<IQueryHandler<{query.Request},{query.Response}>>(_ =>");
+        stringBuilder.AppendLine($"            {{");
+        stringBuilder.AppendLine($"                return new mark.davison.common.server.CQRS.ValidateAndProcessQueryHandler<{query.Request},{query.Response}>(");
+        stringBuilder.AppendLine($"                    _.GetRequiredService<IQueryProcessor<{query.Request},{query.Response}>>(){(string.IsNullOrEmpty(query.Validator) ? string.Empty : ",")}");
+
+        if (!string.IsNullOrEmpty(query.Validator))
+        {
+            stringBuilder.AppendLine($"                    _.GetRequiredService<IQueryValidator<{query.Request},{query.Response}>>()");
+        }
+        stringBuilder.AppendLine($"                );");
+
+        stringBuilder.AppendLine($"            }});");
+    }
+
+    private static void AddValidateAndProcessCommandHandler(StringBuilder stringBuilder, CQRSActivity command)
+    {
+        stringBuilder.AppendLine($"            services.AddScoped<ICommandHandler<{command.Request},{command.Response}>>(_ =>");
+        stringBuilder.AppendLine($"            {{");
+        stringBuilder.AppendLine($"                return new mark.davison.common.server.CQRS.ValidateAndProcessCommandHandler<{command.Request},{command.Response}>(");
+        stringBuilder.AppendLine($"                    _.GetRequiredService<ICommandProcessor<{command.Request},{command.Response}>>(){(string.IsNullOrEmpty(command.Validator) ? string.Empty : ",")}");
+
+        if (!string.IsNullOrEmpty(command.Validator))
+        {
+            stringBuilder.AppendLine($"                    _.GetRequiredService<ICommandValidator<{command.Request},{command.Response}>>()");
+        }
+        stringBuilder.AppendLine($"                );");
+
+        stringBuilder.AppendLine($"            }});");
     }
 }
