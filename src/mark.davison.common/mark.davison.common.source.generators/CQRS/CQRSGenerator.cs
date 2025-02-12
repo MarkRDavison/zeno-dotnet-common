@@ -390,7 +390,7 @@ public class CQRSGenerator : ISourceGenerator
                 }
                 else
                 {
-                    stringBuilder.AppendLine($"            No ICommandHandler available for <{command.Request},{command.Response}>, and no processor to auto gen");
+                    stringBuilder.AppendLine($"            // No ICommandHandler available for <{command.Request},{command.Response}>, and no processor to auto gen");
                 }
             }
             else
@@ -416,7 +416,7 @@ public class CQRSGenerator : ISourceGenerator
                 }
                 else
                 {
-                    stringBuilder.AppendLine($"            No IQueryHandler available for <{query.Request},{query.Response}>, and no processor to auto gen");
+                    stringBuilder.AppendLine($"            // No IQueryHandler available for <{query.Request},{query.Response}>, and no processor to auto gen");
                 }
             }
             else
