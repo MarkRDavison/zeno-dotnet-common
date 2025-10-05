@@ -5,7 +5,10 @@ public static class CQRSSources
 {
     public static string UseCQRSServerAttribute(string ns)
     {
-        return $@"namespace {ns};
+        return $@"
+using System;
+
+namespace {ns};
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class UseCQRSServerAttribute : Attribute
@@ -20,7 +23,10 @@ public class UseCQRSServerAttribute : Attribute
     }
     public static string UseCQRSClientAttribute(string ns)
     {
-        return $@"namespace {ns};
+        return $@"
+using System;
+
+namespace {ns};
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class UseCQRSClientAttribute : Attribute

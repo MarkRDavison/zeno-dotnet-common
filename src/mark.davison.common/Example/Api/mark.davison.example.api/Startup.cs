@@ -27,7 +27,7 @@ public class Startup(IConfiguration Configuration)
             .AddCoreDbContext<ExampleDbContext>()
             .AddScoped<IExampleDbContext>(_ => _.GetRequiredService<ExampleDbContext>())
             .AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc))
-            .AddCQRSServer()
+            //.AddCQRSServer()
             .AddHttpClient()
             .AddHttpContextAccessor();
     }
@@ -63,8 +63,8 @@ public class Startup(IConfiguration Configuration)
                     .MapGet<User>()
                     .MapGetById<User>()
                     .MapPost<User>()
-                    .MapHealthChecks()
-                    .MapCQRSEndpoints();
+                    .MapHealthChecks();
+                    //.MapCQRSEndpoints(); // TODO: RE-ADD ONCE SOURCE GENERATOR FIXED
             });
     }
 }

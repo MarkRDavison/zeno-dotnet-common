@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32616.157
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11018.127 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common", "mark.davison.common\mark.davison.common.csproj", "{C248DA37-0EF2-4295-8FF7-21A58BEA0486}"
 EndProject
@@ -110,6 +110,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.client.abstractions", "mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj", "{5B50B4E5-57A8-46E3-A8A8-987F4B8CB038}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.common.client.desktop.abstractions", "mark.davison.common.client.desktop.abstractions\mark.davison.common.client.desktop.abstractions.csproj", "{E1AA5E93-62C9-4026-9BC2-76BF11E72ABA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.common.source.generators.test", "Tests\mark.davison.common.source.generators.test\mark.davison.common.source.generators.test.csproj", "{DFE8133D-99E3-4B6D-888B-B28E00DD4F59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -273,6 +275,10 @@ Global
 		{E1AA5E93-62C9-4026-9BC2-76BF11E72ABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1AA5E93-62C9-4026-9BC2-76BF11E72ABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1AA5E93-62C9-4026-9BC2-76BF11E72ABA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFE8133D-99E3-4B6D-888B-B28E00DD4F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFE8133D-99E3-4B6D-888B-B28E00DD4F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFE8133D-99E3-4B6D-888B-B28E00DD4F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFE8133D-99E3-4B6D-888B-B28E00DD4F59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -309,6 +315,7 @@ Global
 		{49ECA715-D2F0-456F-9B8C-595189CE2746} = {CA252822-D1FC-4217-A330-80EF7E4F29E7}
 		{BC07FD88-04F4-45CF-9064-4BBE7EC9D3B6} = {49ECA715-D2F0-456F-9B8C-595189CE2746}
 		{05A62A17-0488-409C-AC8F-E22D57F2D15D} = {AB6060AB-1134-458E-86B8-65609A815A91}
+		{DFE8133D-99E3-4B6D-888B-B28E00DD4F59} = {AB6060AB-1134-458E-86B8-65609A815A91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3DD14FA-86D9-4C81-B641-8C5CB3A57E71}

@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.common.source.generators.CQRS;
 
+/*
 [ExcludeFromCodeCoverage]
 [Generator]
 public class CQRSGenerator : ISourceGenerator
@@ -484,3 +485,4 @@ public class CQRSGenerator : ISourceGenerator
         stringBuilder.AppendLine($"            }});");
     }
 }
+*/

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.CQRS;
+﻿using System;
+
+namespace mark.davison.common.CQRS;
 
 [ExcludeFromCodeCoverage]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
