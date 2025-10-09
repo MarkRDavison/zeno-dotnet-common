@@ -72,7 +72,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(current, static (spc, source) => Execute(source, spc));
     }
 
-    private static CqrsSourceGeneratorActivity?ParseRequestInterface(GeneratorSyntaxContext ctx, INamedTypeSymbol symbol)
+    private static CqrsSourceGeneratorActivity? ParseRequestInterface(GeneratorSyntaxContext ctx, INamedTypeSymbol symbol)
     {
         if (symbol.AllInterfaces.Length == 0)
         {
@@ -129,6 +129,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 }
 
                 string? endpoint = null;
+                bool allowAnonymoous = false;
 
                 var endpointAttribute = attributes.FirstOrDefault(_ =>
                 {
@@ -138,19 +139,30 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                         return false;
                     }
 
-                    if (_.NamedArguments.Any(na => na.Key == "Path"))
-                    {
-                        var pathArg = _.NamedArguments.Single(na => na.Key == "Path");
+                    return true;
+                });
 
-                        if (pathArg.Value.Value is string pathValue && !string.IsNullOrEmpty(pathValue)) 
+                if (endpointAttribute is not null)
+                {
+                    if (endpointAttribute.NamedArguments.Any(na => na.Key == "Path"))
+                    {
+                        var pathArg = endpointAttribute.NamedArguments.Single(na => na.Key == "Path");
+
+                        if (pathArg.Value.Value is string pathValue && !string.IsNullOrEmpty(pathValue))
                         {
                             endpoint = pathValue;
                         }
                     }
+                    if (endpointAttribute.NamedArguments.Any(na => na.Key == "AllowAnonymous"))
+                    {
+                        var pathArg = endpointAttribute.NamedArguments.Single(na => na.Key == "AllowAnonymous");
 
-
-                    return true;
-                });
+                        if (pathArg.Value.Value is bool aa)
+                        {
+                            allowAnonymoous = aa;
+                        }
+                    }
+                }
 
                 return new CqrsSourceGeneratorActivity(
                     true,
@@ -160,7 +172,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     "",
                     null,
                     null,
-                    endpoint);
+                    endpoint,
+                    null,
+                    allowAnonymoous);
             }
         }
 
@@ -202,7 +216,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     string.Empty,
                     null,
                     GetFullyQualifiedName(symbol),
-                    null);
+                    null,
+                    null,
+                    false);
             }
 
             if (SymbolEqualityComparer.Default.Equals(i.ConstructedFrom, queryProcessorInterfaceType))
@@ -215,7 +231,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     string.Empty,
                     null,
                     GetFullyQualifiedName(symbol),
-                    null);
+                    null,
+                    null,
+                    false);
             }
 
         }
@@ -258,7 +276,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     string.Empty,
                     GetFullyQualifiedName(symbol),
                     null,
-                    null);
+                    null,
+                    null,
+                    false);
             }
 
             if (SymbolEqualityComparer.Default.Equals(i.ConstructedFrom, queryValidatorInterfaceType))
@@ -271,7 +291,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     string.Empty,
                     GetFullyQualifiedName(symbol),
                     null,
-                    null);
+                    null,
+                    null,
+                    false);
             }
 
         }
@@ -315,7 +337,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     GetFullyQualifiedName(symbol),
                     null,
                     null,
-                    null);
+                    null,
+                    null,
+                    false);
             }
 
             if (SymbolEqualityComparer.Default.Equals(i.ConstructedFrom, queryHandlerInterfaceType))
@@ -328,7 +352,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     GetFullyQualifiedName(symbol),
                     null,
                     null,
-                    null);
+                    null,
+                    null,
+                    false);
             }
 
         }
@@ -357,7 +383,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 }
             }
 
-            if (markerAttribute is not null)
+            if (markerAttribute?.AttributeClass is not null)
             {
                 return new CqrsSourceGeneratorActivity(
                     false,
@@ -367,7 +393,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     "",
                     null,
                     null,
-                    null);
+                    null,
+                    GetNamespace(symbol),
+                    false);
             }
 
         }
@@ -377,17 +405,19 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
 
     private static void Execute(ImmutableArray<CqrsSourceGeneratorActivity?> source, SourceProductionContext context)
     {
-
         var merged = source
             .OfType<CqrsSourceGeneratorActivity>()
             .GroupBy(_ => _.Key)
             .Select(MergeActivities)
             .ToImmutableArray();
 
-        // CQRSDependecyInjectionExtensions.g.cs
-        // CQRSEndpointRouteBuilderExtensions.g.cs
+        context.AddSource(
+            "CQRSServerDependecyInjectionExtensions.g.cs", 
+            CreateServerDependencyInjectionExtensions(merged));
 
-        context.AddSource($"CQRSServerDependecyInjectionExtensions.g.cs", CreateServerDependencyInjectionExtensions(merged));
+        context.AddSource(
+            "GenerateCQRSEndpointRouteExtensions.g.cs", 
+            CreateServerEndpointRouteExtensions(merged));
     }
 
     private static void CreateServerDependencyRegistrationsForActivityType(
@@ -438,9 +468,93 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         }
     }
 
+    private static void CreateServerEndpointRouteExtensionsForActivityType(
+        ImmutableArray<CqrsSourceGeneratorActivity> source,
+        CQRSActivityType type,
+        StringBuilder builder)
+    {
+        foreach (var activity in source.Where(_ => _.IsRequestDefinition && _.Type == type))
+        {
+            if (type == CQRSActivityType.Command)
+            {
+                builder.AppendLine("            endpoints.MapPost(");
+            }
+            else if (type == CQRSActivityType.Query)
+            {
+                builder.AppendLine("            endpoints.MapGet(");
+            }
+
+            builder.AppendLine($"                \"/api/{activity.Endpoint}\",");
+            builder.AppendLine($"                async (HttpContext context, CancellationToken cancellationToken) =>");
+            builder.AppendLine($"                {{");
+            builder.AppendLine($"                    var dispatcher = context.RequestServices.GetRequiredService<{type}Dispatcher>();");
+
+            if (type == CQRSActivityType.Command)
+            {
+                builder.AppendLine($"                    var request = await WebUtilities.GetRequestFromBody<{activity.Request},{activity.Response}>(context.Request);");
+            }
+            else
+            {
+                builder.AppendLine($"                    var request = await WebUtilities.GetRequestFromQuery<{activity.Request},{activity.Response}>(context.Request);");
+            }
+
+            builder.AppendLine($"                    return await dispatcher.Dispatch<{activity.Request},{activity.Response}>(request, cancellationToken);");
+
+            if (activity.AllowAnonymous)
+            {
+                builder.AppendLine($"                }});");
+            }
+            else
+            {
+                builder.AppendLine($"                }}).RequireAuthorization();");
+            }
+        }
+    }
+
+    private static string CreateServerEndpointRouteExtensions(ImmutableArray<CqrsSourceGeneratorActivity> source)
+    {
+        var builder = new StringBuilder();
+
+        var markerActivity = source.FirstOrDefault(_ => !string.IsNullOrEmpty(_.RootNamespace));
+
+        if (string.IsNullOrEmpty(markerActivity?.RootNamespace))
+        {
+            return string.Empty;
+        }
+
+        builder.AppendLine("using mark.davison.common.CQRS;");
+        builder.AppendLine("using mark.davison.common.server.abstractions.CQRS;");
+        builder.AppendLine("using mark.davison.common.server.Utilities;");
+        builder.AppendLine("using Microsoft.AspNetCore.Builder;");
+        builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+        builder.AppendLine();
+        builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
+        builder.AppendLine("{");
+        builder.AppendLine();
+        builder.AppendLine("    public static class GenerateEndpointRouteExtensions");
+        builder.AppendLine("    {");
+        builder.AppendLine();
+        builder.AppendLine("        public static void MapCQRSEndpoints(this IEndpointRouteBuilder endpoints)");
+        builder.AppendLine("        {");
+        CreateServerEndpointRouteExtensionsForActivityType(source, CQRSActivityType.Command, builder);
+        CreateServerEndpointRouteExtensionsForActivityType(source, CQRSActivityType.Query, builder);
+        builder.AppendLine("        }");
+        builder.AppendLine("    }");
+        builder.AppendLine("}");
+
+        return builder.ToString();
+    }
+
     private static string CreateServerDependencyInjectionExtensions(ImmutableArray<CqrsSourceGeneratorActivity> source)
     {
         var builder = new StringBuilder();
+
+        var markerActivity = source.FirstOrDefault(_ => !string.IsNullOrEmpty(_.RootNamespace));
+
+        if (string.IsNullOrEmpty(markerActivity?.RootNamespace)) 
+        {
+            return string.Empty;
+        }
 
         builder.AppendLine("using mark.davison.common.CQRS;");
         builder.AppendLine("using mark.davison.common.server.abstractions.CQRS;");
@@ -449,7 +563,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using mark.davison.common.server.CQRS.Processors;");
         builder.AppendLine("using mark.davison.common.server.CQRS.Validators;");
         builder.AppendLine("");
-        builder.AppendLine("namespace mark.davison.finance.api");
+        builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
         builder.AppendLine("{");
         builder.AppendLine("");
         builder.AppendLine("    public static class CQRSDependecyInjectionExtensions");
@@ -487,7 +601,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 string.IsNullOrEmpty(root.Handler) ? activity.Handler : root.Handler,
                 string.IsNullOrEmpty(root.Validator) ? activity.Validator : root.Validator,
                 string.IsNullOrEmpty(root.Processor) ? activity.Processor : root.Processor,
-                string.IsNullOrEmpty(root.Endpoint) ? activity.Endpoint : root.Endpoint);
+                string.IsNullOrEmpty(root.Endpoint) ? activity.Endpoint : root.Endpoint,
+                string.IsNullOrEmpty(root.RootNamespace) ? activity.RootNamespace : root.RootNamespace,
+                root.AllowAnonymous || activity.AllowAnonymous);
         }
 
         return root;

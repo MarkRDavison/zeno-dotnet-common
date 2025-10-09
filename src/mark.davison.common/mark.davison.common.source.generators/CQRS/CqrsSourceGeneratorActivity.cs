@@ -10,7 +10,9 @@ public class CqrsSourceGeneratorActivity
         string? handler,
         string? validator,
         string? processor,
-        string? endpoint)
+        string? endpoint,
+        string? rootNamespace,
+        bool allowAnonymous)
     {
         IsRequestDefinition = isRequestDefinition;
         Type = type;
@@ -20,6 +22,8 @@ public class CqrsSourceGeneratorActivity
         Validator = validator;
         Processor = processor;
         Endpoint = endpoint;
+        RootNamespace = rootNamespace;
+        AllowAnonymous = allowAnonymous;
     }
 
     public bool IsRequestDefinition { get; }
@@ -30,6 +34,8 @@ public class CqrsSourceGeneratorActivity
     public string? Validator { get; }
     public string? Processor { get; }
     public string? Endpoint { get; }
+    public string? RootNamespace { get; }
+    public bool AllowAnonymous { get; }
 
-    public string Key => $"{Type}_{Request}_{Response}";
+    public string Key => $"{Type}_{Request}_{Response}_{RootNamespace}";
 }

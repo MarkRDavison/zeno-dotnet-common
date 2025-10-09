@@ -38,7 +38,7 @@ namespace mark.davison.tests.api
 namespace mark.davison.tests.shared
 {
     [ExcludeFromCodeCoverage]
-    [PostRequest(Path = ""test-command"")]
+    [PostRequest(Path = ""test-command"", AllowAnonymous = true)]
     public sealed class TestCommand : ICommand<TestCommand, TestCommandResponse>
     {
 
@@ -125,16 +125,25 @@ namespace mark.davison.tests.shared
                 typeof(SourceGeneratorHelpers)
             ]);
 
-        var expectedHintName = "CQRSServerDependecyInjectionExtensions.g.cs";
+        var expectedHintNameDependencyInjection = "CQRSServerDependecyInjectionExtensions.g.cs";
+        var expectedHintNameEndpointRoute = "GenerateCQRSEndpointRouteExtensions.g.cs";
 
         Assert.HasCount(1, result.Results);
-        Assert.IsTrue(result.Results.First().GeneratedSources.Any(_ => _.HintName == expectedHintName));
+        Assert.IsTrue(result.Results.First().GeneratedSources.Any(_ => _.HintName == expectedHintNameDependencyInjection));
+        Assert.IsTrue(result.Results.First().GeneratedSources.Any(_ => _.HintName == expectedHintNameEndpointRoute));
 
-        var ignitionsource = result.Results
+        var di = result.Results
             .First()
             .GeneratedSources
-            .First(_ => _.HintName == expectedHintName);
+            .First(_ => _.HintName == expectedHintNameDependencyInjection);
 
-        var sourceString = ignitionsource.SourceText.ToString();
+        var sourceStringDi = di.SourceText.ToString();
+
+        var er = result.Results
+            .First()
+            .GeneratedSources
+            .First(_ => _.HintName == expectedHintNameEndpointRoute);
+
+        var sourceStringEr = er.SourceText.ToString();
     }
 }
