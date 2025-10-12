@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\mark.davison.common.client.web.abstractions\mark.davison.common.client.web.abstractions.csproj" />
+    <ProjectReference Include="..\..\..\mark.davison.common.source.generators\mark.davison.common.source.generators.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\Shared\mark.davison.example.shared.models.dto\mark.davison.example.shared.models.dto.csproj" />
   </ItemGroup>
 </Project>

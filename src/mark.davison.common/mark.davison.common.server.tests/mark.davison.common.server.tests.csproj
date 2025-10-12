@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <RunSettingsFilePath>F:\Workspace\Github\zeno-dotnet-common\src\mark.davison.common\mark.davison.common.server.tests\bin\Debug\net9.0\fine-code-coverage\coverage-tool-output\mark.davison.common.server.tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JunitXml.TestLogger" Version="5.0.0" />

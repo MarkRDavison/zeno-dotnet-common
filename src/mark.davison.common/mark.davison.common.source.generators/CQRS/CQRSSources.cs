@@ -10,6 +10,7 @@ using System;
 
 namespace {ns};
 
+//[global::Microsoft.CodeAnalysis.EmbeddedAttribute]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class UseCQRSServerAttribute : Attribute
 {{
@@ -21,6 +22,7 @@ public class UseCQRSServerAttribute : Attribute
     }}
 }}";
     }
+
     public static string UseCQRSClientAttribute(string ns)
     {
         return $@"
@@ -28,6 +30,7 @@ using System;
 
 namespace {ns};
 
+//[global::Microsoft.CodeAnalysis.EmbeddedAttribute]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class UseCQRSClientAttribute : Attribute
 {{

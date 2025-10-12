@@ -14,7 +14,7 @@ namespace mark.davison.common.source.generators.test;
 public sealed class IncrementalCQRSGeneratorTests
 {
     [TestMethod]
-    public void TestMethod1()
+    public void TestCQRSGeneration()
     {
         var source = @"
 using System.Threading;
@@ -25,7 +25,6 @@ using mark.davison.common.server.abstractions.CQRS;
 using mark.davison.common.server.CQRS.Processors;
 using mark.davison.common.server.CQRS.Validators;
 using mark.davison.common.server.abstractions.Authentication;
-using System.Diagnostics.CodeAnalysis;
 
 namespace mark.davison.tests.api
 {
@@ -37,7 +36,6 @@ namespace mark.davison.tests.api
 
 namespace mark.davison.tests.shared
 {
-    [ExcludeFromCodeCoverage]
     [PostRequest(Path = ""test-command"", AllowAnonymous = true)]
     public sealed class TestCommand : ICommand<TestCommand, TestCommandResponse>
     {
@@ -145,5 +143,9 @@ namespace mark.davison.tests.shared
             .First(_ => _.HintName == expectedHintNameEndpointRoute);
 
         var sourceStringEr = er.SourceText.ToString();
+
+        Assert.IsFalse(string.IsNullOrEmpty(sourceStringDi));
+        Assert.IsFalse(string.IsNullOrEmpty(sourceStringEr));
+        Assert.Fail();// TODO: ADD ASSERTIONS
     }
 }

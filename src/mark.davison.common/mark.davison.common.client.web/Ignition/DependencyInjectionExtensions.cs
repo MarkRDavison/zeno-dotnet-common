@@ -18,31 +18,10 @@ public static class DependencyInjectionExtensions
             .AddSingleton<IDateService>(_ => new DateService(DateService.DateMode.Local))
             .AddSingleton<IClientNavigationManager, ClientNavigationManager>();
 
-        // TODO: To source generator
-        {
-            var method = typeof(DependencyInjectionExtensions).GetMethod(nameof(AddTransient), BindingFlags.Static | BindingFlags.NonPublic)!;
-
-            Type formSubmissionType = typeof(IFormSubmission<>);
-            foreach (Type concreteType in (from _ in types.SelectMany((_) => _.Assembly.ExportedTypes)
-                                           where _.GetInterfaces().Any((__) => __.IsGenericType && __.GetGenericTypeDefinition() == formSubmissionType)
-                                           select _).ToList())
-            {
-
-                Type[] genericArguments = concreteType.GetInterfaces().First((__) => __.IsGenericType && __.GetGenericTypeDefinition() == formSubmissionType).GetGenericArguments();
-                if (genericArguments.Length == 1)
-                {
-                    Type type = genericArguments[0];
-                    Type interfaceType = formSubmissionType.MakeGenericType(type);
-                    MethodInfo methodInfo2 = method.MakeGenericMethod(interfaceType, concreteType);
-                    methodInfo2.Invoke(null, new[] { services });
-                }
-
-            }
-        }
-
         return services;
     }
 
+    [Obsolete("Remove this and use the desktop version but for web")]
     public static IServiceCollection UseFluxorState(
         this IServiceCollection services,
         params Type[] types)
@@ -50,6 +29,7 @@ public static class DependencyInjectionExtensions
         return services.UseFluxorState(_ => { }, types);
     }
 
+    [Obsolete("Remove this and use the desktop version but for web")]
     public static IServiceCollection UseFluxorState(
         this IServiceCollection services,
         Action<StoreHelperOptions> configure,
@@ -140,12 +120,6 @@ public static class DependencyInjectionExtensions
         where TImplementation : class, TAbstraction
     {
         services.AddScoped<TAbstraction, TImplementation>();
-    }
-    private static void AddTransient<TAbstraction, TImplementation>(IServiceCollection services)
-        where TAbstraction : class
-        where TImplementation : class, TAbstraction
-    {
-        services.AddTransient<TAbstraction, TImplementation>();
     }
 
     // TODO: To source generator

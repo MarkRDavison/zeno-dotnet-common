@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <RunSettingsFilePath>F:\Workspace\Github\zeno-dotnet-common\src\mark.davison.common\mark.davison.common.client.tests\bin\Debug\net9.0\fine-code-coverage\coverage-tool-output\mark.davison.common.client.web.tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />

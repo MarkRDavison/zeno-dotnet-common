@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Immutable;
+﻿using Microsoft.CodeAnalysis.CSharp;
 
 namespace mark.davison.common.source.generators.CQRS;
 
@@ -12,22 +10,14 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 
+
         context
             // .AddEmbeddedAttributeDefinition() TODO: Once in dotnet 10, need to add [global::Microsoft.CodeAnalysis.EmbeddedAttribute] to the attribute
-            .RegisterPostInitializationOutput(_ =>
+            .RegisterPostInitializationOutput(static _ =>
             {
                 _.AddSource("UseCQRSServerAttribute.g.cs", SourceText.From(CQRSSources.UseCQRSServerAttribute(GeneratorNamespace), Encoding.UTF8));
                 _.AddSource("UseCQRSClientAttribute.g.cs", SourceText.From(CQRSSources.UseCQRSClientAttribute(GeneratorNamespace), Encoding.UTF8));
             });
-
-        context.SyntaxProvider
-            .CreateSyntaxProvider<object?>(
-                predicate: static (SyntaxNode s, CancellationToken token) => s is ClassDeclarationSyntax,
-                transform: static (GeneratorSyntaxContext ctx, CancellationToken token) => {
-                    return null;
-                })
-            .Where(static m => m is not null)
-            .Collect();
 
         var current = context.SyntaxProvider
             .CreateSyntaxProvider<CqrsSourceGeneratorActivity?>(
@@ -80,20 +70,24 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         }
 
         var commandInterfaceType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.CQRS.ICommand`2")
-                ?? throw new InvalidOperationException("Cannot find ICommand<TCommand, TResponse> type");
+            .GetTypeByMetadataName("mark.davison.common.CQRS.ICommand`2");
 
         var queryInterfaceType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.CQRS.IQuery`2")
-                ?? throw new InvalidOperationException("Cannot find IQuery<TCommand, TResponse> type");
+            .GetTypeByMetadataName("mark.davison.common.CQRS.IQuery`2");
 
         var postRequestAttributeType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.CQRS.PostRequestAttribute")
-                ?? throw new InvalidOperationException("Cannot find PostRequestAttribute type");
+            .GetTypeByMetadataName("mark.davison.common.CQRS.PostRequestAttribute");
 
         var getRequestAttributeType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.CQRS.GetRequestAttribute")
-                ?? throw new InvalidOperationException("Cannot find GetRequestAttribute type");
+            .GetTypeByMetadataName("mark.davison.common.CQRS.GetRequestAttribute");
+
+        if (commandInterfaceType is null ||
+            queryInterfaceType is null ||
+            postRequestAttributeType is null ||
+            getRequestAttributeType is null)
+        {
+            return null;
+        }
 
         var definitionType = new List<Tuple<INamedTypeSymbol, CQRSActivityType, INamedTypeSymbol>>
             {
@@ -167,9 +161,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     true,
                     activity,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
-                    "",
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
+                    string.Empty,
                     null,
                     null,
                     endpoint,
@@ -189,12 +183,16 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         }
 
         var commandProcessorInterfaceType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Processors.ICommandProcessor`2")
-                ?? throw new InvalidOperationException("Cannot find ICommandProcessor<TRequest, TResponse> type");
+            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Processors.ICommandProcessor`2");
 
         var queryProcessorInterfaceType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Processors.IQueryProcessor`2")
-                ?? throw new InvalidOperationException("Cannot find IQueryProcessor<TRequest, TResponse> type");
+            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Processors.IQueryProcessor`2");
+
+        if (commandProcessorInterfaceType is null ||
+            queryProcessorInterfaceType is null)
+        {
+            return null;
+        }
 
         foreach (var i in symbol.AllInterfaces)
         {
@@ -211,11 +209,11 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Command,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
                     string.Empty,
                     null,
-                    GetFullyQualifiedName(symbol),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(symbol),
                     null,
                     null,
                     false);
@@ -226,11 +224,11 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Query,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
                     string.Empty,
                     null,
-                    GetFullyQualifiedName(symbol),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(symbol),
                     null,
                     null,
                     false);
@@ -249,12 +247,16 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         }
 
         var commandValidatorInterfaceType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Validators.ICommandValidator`2")
-                ?? throw new InvalidOperationException("Cannot find ICommandValidator<TRequest, TResponse> type");
+            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Validators.ICommandValidator`2");
 
         var queryValidatorInterfaceType = ctx.SemanticModel.Compilation
-            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Validators.IQueryValidator`2")
-                ?? throw new InvalidOperationException("Cannot find IQueryValidator<TRequest, TResponse> type");
+            .GetTypeByMetadataName("mark.davison.common.server.CQRS.Validators.IQueryValidator`2");
+
+        if (commandValidatorInterfaceType is null ||
+            queryValidatorInterfaceType is null)
+        {
+            return null;
+        }
 
         foreach (var i in symbol.AllInterfaces)
         {
@@ -271,10 +273,10 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Command,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
                     string.Empty,
-                    GetFullyQualifiedName(symbol),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(symbol),
                     null,
                     null,
                     null,
@@ -286,10 +288,10 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Query,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
                     string.Empty,
-                    GetFullyQualifiedName(symbol),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(symbol),
                     null,
                     null,
                     null,
@@ -332,9 +334,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Command,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
-                    GetFullyQualifiedName(symbol),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(symbol),
                     null,
                     null,
                     null,
@@ -347,9 +349,9 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Query,
-                    GetFullyQualifiedName(requestType),
-                    GetFullyQualifiedName(responseType),
-                    GetFullyQualifiedName(symbol),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
+                    SourceGeneratorHelpers.GetFullyQualifiedName(symbol),
                     null,
                     null,
                     null,
@@ -388,13 +390,13 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 return new CqrsSourceGeneratorActivity(
                     false,
                     CQRSActivityType.Command,
-                    "",
-                    "",
-                    "",
+                    string.Empty,
+                    string.Empty,
+                    string.Empty,
                     null,
                     null,
                     null,
-                    GetNamespace(symbol),
+                    SourceGeneratorHelpers.GetNamespace(symbol),
                     false);
             }
 
@@ -411,17 +413,19 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
             .Select(MergeActivities)
             .ToImmutableArray();
 
-        context.AddSource(
-            "CQRSServerDependecyInjectionExtensions.g.cs", 
-            CreateServerDependencyInjectionExtensions(merged));
+        if (CreateServerDependencyInjectionExtensions(merged) is {} diSource && !string.IsNullOrEmpty(diSource))
+        {
+            context.AddSource("CQRSServerDependecyInjectionExtensions.g.cs", diSource);
+        }
 
-        context.AddSource(
-            "GenerateCQRSEndpointRouteExtensions.g.cs", 
-            CreateServerEndpointRouteExtensions(merged));
+        if (CreateServerEndpointRouteExtensions(merged) is { } erSource && !string.IsNullOrEmpty(erSource))
+        {
+            context.AddSource("GenerateCQRSEndpointRouteExtensions.g.cs", erSource);
+        }
     }
 
     private static void CreateServerDependencyRegistrationsForActivityType(
-        ImmutableArray<CqrsSourceGeneratorActivity> source, 
+        ImmutableArray<CqrsSourceGeneratorActivity> source,
         CQRSActivityType type,
         StringBuilder builder)
     {
@@ -444,7 +448,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 builder.AppendLine($"            services.AddScoped<I{type}Handler<{activity.Request},{activity.Response}>>(_ =>");
                 builder.AppendLine($"            {{");
                 builder.AppendLine($"                return new mark.davison.common.server.CQRS.ValidateAndProcess{type}Handler<{activity.Request},{activity.Response}>(");
-                
+
                 if (string.IsNullOrEmpty(activity.Validator))
                 {
                     builder.AppendLine($"                    _.GetRequiredService<I{type}Processor<{activity.Request},{activity.Response}>()");
@@ -454,7 +458,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                     builder.AppendLine($"                    _.GetRequiredService<I{type}Processor<{activity.Request},{activity.Response}>(),");
                     builder.AppendLine($"                    _.GetRequiredService<I{type}Validator<{activity.Request},{activity.Response}>()");
                 }
-                
+
                 builder.AppendLine($"                );");
                 builder.AppendLine($"            }});");
             }
@@ -464,7 +468,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
                 continue;
             }
 
-            builder.AppendLine("");
+            builder.AppendLine();
         }
     }
 
@@ -551,7 +555,7 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
 
         var markerActivity = source.FirstOrDefault(_ => !string.IsNullOrEmpty(_.RootNamespace));
 
-        if (string.IsNullOrEmpty(markerActivity?.RootNamespace)) 
+        if (string.IsNullOrEmpty(markerActivity?.RootNamespace))
         {
             return string.Empty;
         }
@@ -562,19 +566,19 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
         builder.AppendLine("using mark.davison.common.server.CQRS.Processors;");
         builder.AppendLine("using mark.davison.common.server.CQRS.Validators;");
-        builder.AppendLine("");
+        builder.AppendLine();
         builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
         builder.AppendLine("{");
-        builder.AppendLine("");
+        builder.AppendLine();
         builder.AppendLine("    public static class CQRSDependecyInjectionExtensions");
         builder.AppendLine("    {");
-        builder.AppendLine("");
+        builder.AppendLine();
         builder.AppendLine("        public static IServiceCollection AddCQRSServer(this IServiceCollection services)");
         builder.AppendLine("        {");
-        builder.AppendLine("");
+        builder.AppendLine();
         builder.AppendLine("            services.AddScoped<mark.davison.common.server.abstractions.CQRS.IQueryDispatcher, mark.davison.common.server.CQRS.QueryDispatcher>();");
         builder.AppendLine("            services.AddScoped<mark.davison.common.server.abstractions.CQRS.ICommandDispatcher, mark.davison.common.server.CQRS.CommandDispatcher>();");
-        builder.AppendLine("");
+        builder.AppendLine();
 
         CreateServerDependencyRegistrationsForActivityType(source, CQRSActivityType.Command, builder);
         CreateServerDependencyRegistrationsForActivityType(source, CQRSActivityType.Query, builder);
@@ -607,25 +611,5 @@ public class IncrementalCQRSGenerator : IIncrementalGenerator
         }
 
         return root;
-    }
-
-    public static string GetFullyQualifiedName(ITypeSymbol symbol)
-    {
-        return $"{GetNamespace(symbol)}.{symbol.Name}";
-    }
-
-    public static string GetNamespace(ITypeSymbol syntax)
-    {
-        string nameSpace = string.Empty;
-
-        INamespaceSymbol? namespaceSymbol = syntax.ContainingNamespace;
-
-        while (!string.IsNullOrEmpty(namespaceSymbol?.Name))
-        {
-            nameSpace = namespaceSymbol!.Name + (string.IsNullOrEmpty(nameSpace) ? "" : ".") + nameSpace;
-            namespaceSymbol = namespaceSymbol.ContainingNamespace;
-        }
-
-        return nameSpace;
     }
 }
