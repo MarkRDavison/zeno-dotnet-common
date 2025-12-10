@@ -1,0 +1,62 @@
+<Solution>
+  <Folder Name="/0. common/">
+    <Project Path="mark.davison.common.abstractions/mark.davison.common.abstractions.csproj" />
+    <Project Path="mark.davison.common.generators/mark.davison.common.generators.csproj" />
+    <Project Path="mark.davison.common.test/mark.davison.common.test.csproj" />
+    <Project Path="mark.davison.common/mark.davison.common.csproj" />
+  </Folder>
+  <Folder Name="/0. common/tests/">
+    <Project Path="tests/mark.davison.common.generators.tests/mark.davison.common.generators.tests.csproj" />
+    <Project Path="tests/mark.davison.common.tests/mark.davison.common.tests.csproj" />
+  </Folder>
+  <Folder Name="/1. server/">
+    <Project Path="mark.davison.common.authentication.server.abstractions/mark.davison.common.authentication.server.abstractions.csproj" />
+    <Project Path="mark.davison.common.authentication.server/mark.davison.common.authentication.server.csproj" />
+    <Project Path="mark.davison.common.persistence.abstractions/mark.davison.common.persistence.csproj" />
+    <Project Path="mark.davison.common.persistence.migrations.postgres/mark.davison.common.persistence.migrations.postgres.csproj" />
+    <Project Path="mark.davison.common.persistence.migrations.sqlite/mark.davison.common.persistence.migrations.sqlite.csproj" />
+    <Project Path="mark.davison.common.server.abstractions/mark.davison.common.server.abstractions.csproj" />
+    <Project Path="mark.davison.common.server.test/mark.davison.common.server.test.csproj" />
+    <Project Path="mark.davison.common.server/mark.davison.common.server.csproj" />
+  </Folder>
+  <Folder Name="/1. server/Tests/">
+    <Project Path="tests/mark.davison.common.authentication.tests/mark.davison.common.authentication.tests.csproj" />
+    <Project Path="tests/mark.davison.common.persistence.tests/mark.davison.common.persistence.tests.csproj" />
+    <Project Path="tests/mark.davison.common.server.sample.api/mark.davison.common.server.sample.api.csproj" />
+    <Project Path="tests/mark.davison.common.server.tests/mark.davison.common.server.tests.csproj" />
+  </Folder>
+  <Folder Name="/2. client/">
+    <Project Path="mark.davison.common.client.abstractions/mark.davison.common.client.abstractions.csproj" />
+    <Project Path="mark.davison.common.client.web.abstractions/mark.davison.common.client.web.abstractions.csproj" />
+    <Project Path="mark.davison.common.client.web/mark.davison.common.client.web.csproj" />
+    <Project Path="mark.davison.common.client/mark.davison.common.client.csproj" />
+  </Folder>
+  <Folder Name="/2. client/tests/">
+    <Project Path="tests/mark.davison.common.client.tests/mark.davison.common.client.tests.csproj" />
+    <Project Path="tests/mark.davison.common.client.web.tests/mark.davison.common.client.web.tests.csproj" />
+  </Folder>
+  <Folder Name="/3. example/" />
+  <Folder Name="/3. example/api/">
+    <Project Path="example/api/mark.davison.example.api.models.configuration/mark.davison.example.api.models.configuration.csproj" />
+    <Project Path="example/api/mark.davison.example.api.models/mark.davison.example.api.models.csproj" />
+    <Project Path="example/api/mark.davison.example.api/mark.davison.example.api.csproj" />
+    <Project Path="example/api/mark.davison.example.commands/mark.davison.example.commands.csproj" />
+    <Project Path="example/api/mark.davison.example.persistence/mark.davison.example.persistence.csproj" />
+    <Project Path="example/api/mark.davison.example.queries/mark.davison.example.queries.csproj" />
+  </Folder>
+  <Folder Name="/3. example/api/migrations/">
+    <Project Path="example/api/migrations/mark.davison.example.api.migrations.sqlite/mark.davison.example.api.migrations.sqlite.csproj" />
+  </Folder>
+  <Folder Name="/3. example/bff/">
+    <Project Path="example/bff/mark.davison.example.bff/mark.davison.example.bff.csproj" />
+  </Folder>
+  <Folder Name="/3. example/shared/">
+    <Project Path="example/shared/mark.davison.example.shared.constants/mark.davison.example.shared.constants.csproj" />
+    <Project Path="example/shared/mark.davison.example.shared.models.dto/mark.davison.example.shared.models.dto.csproj" />
+  </Folder>
+  <Folder Name="/3. example/web/">
+    <Project Path="example/web/mark.davison.example.web.components/mark.davison.example.web.components.csproj" />
+    <Project Path="example/web/mark.davison.example.web.features/mark.davison.example.web.features.csproj" />
+    <Project Path="example/web/mark.davison.example.web.ui/mark.davison.example.web.ui.csproj" />
+  </Folder>
+</Solution>

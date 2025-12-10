@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>markdavison.common.client.abstrations</PackageId>
+    <IsPackable>true</IsPackable>
+    <Author>Mark Davison</Author>
+    <Description>Common client abstractions</Description>
+    <PackageVersion>9.0.0</PackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mark.davison.common\mark.davison.common.csproj" />
+  </ItemGroup>
+
+</Project>

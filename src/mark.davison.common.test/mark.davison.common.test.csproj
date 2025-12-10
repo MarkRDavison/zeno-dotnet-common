@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>markdavison.common.test</PackageId>
+    <IsPackable>true</IsPackable>
+    <Author>Mark Davison</Author>
+    <Description>Common test utilities</Description>
+    <PackageVersion>10.0.0</PackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="TUnit" Version="1.5.6" />
+  </ItemGroup>
+
+</Project>
