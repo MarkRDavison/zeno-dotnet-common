@@ -12,7 +12,6 @@
     <PackageVersion>10.0.0</PackageVersion>
   </PropertyGroup>
 
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
