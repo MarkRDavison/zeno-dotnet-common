@@ -59,4 +59,7 @@
     <Project Path="example/web/mark.davison.example.web.features/mark.davison.example.web.features.csproj" />
     <Project Path="example/web/mark.davison.example.web.ui/mark.davison.example.web.ui.csproj" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="global.json" />
+  </Folder>
 </Solution>
