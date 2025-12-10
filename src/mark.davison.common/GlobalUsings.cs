@@ -1,4 +1,5 @@
 ﻿global using mark.davison.common.abstractions.Services;
+global using mark.davison.common.Changeset;
 global using mark.davison.common.Instrumentation;
 global using Microsoft.Extensions.Logging;
 global using System.Diagnostics;
