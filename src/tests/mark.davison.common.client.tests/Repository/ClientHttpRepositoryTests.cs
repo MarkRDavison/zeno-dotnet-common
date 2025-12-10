@@ -66,7 +66,7 @@ public sealed class ClientHttpRepositoryTests
                 new TestGetRequest(),
                 CancellationToken.None);
 
-        await Assert.That(response.TestValue).IsEqualTo(expectedResponse.TestValue);
+        await Assert.That(response.TestValue).IsEqualTo(expectedResponse.TestValue + "FAIL");
     }
 
     [Test]
