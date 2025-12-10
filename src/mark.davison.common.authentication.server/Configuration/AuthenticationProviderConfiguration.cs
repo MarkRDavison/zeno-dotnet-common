@@ -7,9 +7,5 @@ public sealed class AuthenticationProviderConfiguration
     public string? Authority { get; init; }
     public string? ClientId { get; init; }
     public string? ClientSecret { get; init; }
-    public string? AuthorizationEndpoint { get; init; }
-    public string? TokenEndpoint { get; init; }
-    public string? UserInformationEndpoint { get; init; }
-    public string? EndSessionEndpoint { get; init; }
     public string[]? Scope { get; init; }
 }

@@ -42,7 +42,23 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
             _applicationHealthState.Ready = false;
         });
 
-        _ = BaseStartAsync(cancellationToken);
+        if (_appSettings.Value.PRODUCTION_MODE)
+        {
+            _ = BaseStartAsync(cancellationToken);
+        }
+        else
+        {
+            try
+            {
+                await BaseStartAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                Console.Error.WriteLine(e.StackTrace);
+                throw;
+            }
+        }
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

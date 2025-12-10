@@ -6,6 +6,7 @@ public static class DependencyInjectionExtensions
         where TDbContext : DbContext
     {
         var authBuilder = services
+            .AddMemoryCache()
             .AddSingleton<IUserRoleService, UserRoleService<TDbContext>>()
             .AddSingleton<IAuthenticationProvidersService, AuthenticationProvidersService>()
             .AddScoped<ICurrentUserContext, CurrentUserContext<TDbContext>>()
@@ -52,7 +53,7 @@ public static class DependencyInjectionExtensions
                         throw new InvalidOperationException("Missing or unknown authentication header");
                     }
 
-                    foreach (var provider in authenticationSettings.Providers)
+                    foreach (var provider in authenticationSettings.PROVIDERS)
                     {
                         if (!string.IsNullOrWhiteSpace(provider.Authority) &&
                             provider.Authority.StartsWith(issuer))
@@ -66,7 +67,7 @@ public static class DependencyInjectionExtensions
             })
             .AddScheme<AuthenticationSchemeOptions, NoOpAuthenticationHandler>("Anonymous", _ => { }); ;
 
-        foreach (var provider in authenticationSettings.Providers)
+        foreach (var provider in authenticationSettings.PROVIDERS)
         {
             authBuilder
                 .AddJwtBearer(provider.Name, options =>
@@ -159,7 +160,7 @@ public static class DependencyInjectionExtensions
 
     private static IServiceCollection AddAuthenticationProviders(this IServiceCollection services, AuthenticationSettings authenticationSettings, Func<IServiceProvider, string, string, UserDto> createUser)
     {
-        foreach (var provider in authenticationSettings.Providers)
+        foreach (var provider in authenticationSettings.PROVIDERS)
         {
             if (string.Equals(provider.Type, AuthConstants.ProviderType_Oidc, StringComparison.OrdinalIgnoreCase))
             {
@@ -211,9 +212,6 @@ public static class DependencyInjectionExtensions
                 options.ClientId = providerConfiguration.ClientId ?? string.Empty;
                 options.ClientSecret = providerConfiguration.ClientSecret ?? string.Empty;
                 options.CallbackPath = $"/signin-{providerConfiguration.Name}";
-                options.AuthorizationEndpoint = providerConfiguration.AuthorizationEndpoint ?? string.Empty;
-                options.TokenEndpoint = providerConfiguration.TokenEndpoint ?? string.Empty;
-                options.UserInformationEndpoint = providerConfiguration.UserInformationEndpoint ?? string.Empty;
                 options.SaveTokens = true;
                 options.Scope.Clear();
                 foreach (var s in providerConfiguration.Scope ?? [])

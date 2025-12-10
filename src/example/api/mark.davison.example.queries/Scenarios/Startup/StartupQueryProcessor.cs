@@ -15,7 +15,7 @@ public sealed class StartupQueryProcessor : IQueryProcessor<StartupQueryRequest,
 
     public async Task<StartupQueryResponse> ProcessAsync(StartupQueryRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var providers = _authSettings.Value.Providers.Select(_ => _.Name).ToList();
+        var providers = _authSettings.Value.PROVIDERS.Select(_ => _.Name).ToList();
 
         var roles = await _dbContext.Set<UserRole>().AsNoTracking().Select(_ => _.Role!.Name).ToListAsync(cancellationToken);
 

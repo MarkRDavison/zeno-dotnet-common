@@ -23,6 +23,8 @@ public static class DependencyInjectionExtensions
             _.Configuration = redis.Configuration;
         });
 
+
+
         return services;
     }
 

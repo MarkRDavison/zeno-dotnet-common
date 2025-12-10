@@ -1,21 +1,25 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace mark.davison.common.authentication.server.Services;
+﻿namespace mark.davison.common.authentication.server.Services;
 
 public class UserRoleService<TDbContext> : IUserRoleService
     where TDbContext : DbContext
 {
-    private readonly TDbContext _db;
+    private readonly IDbContextFactory<TDbContext> _dbContextFactory;
     private readonly IMemoryCache _cache;
+    private readonly IDateService _dateService;
     private readonly ILogger<UserRoleService<TDbContext>> _logger;
 
     // TODO: Config?
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
 
-    public UserRoleService(TDbContext db, IMemoryCache cache, ILogger<UserRoleService<TDbContext>> logger)
+    public UserRoleService(
+        IDbContextFactory<TDbContext> dbContextFactory,
+        IMemoryCache cache,
+        IDateService dateService,
+        ILogger<UserRoleService<TDbContext>> logger)
     {
-        _db = db;
+        _dbContextFactory = dbContextFactory;
         _cache = cache;
+        _dateService = dateService;
         _logger = logger;
     }
 
@@ -26,7 +30,9 @@ public class UserRoleService<TDbContext> : IUserRoleService
             return roles!;
         }
 
-        roles = await _db.Set<UserRole>()
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        roles = await dbContext.Set<UserRole>()
             .Where(ur => ur.UserId == userId)
             .Select(ur => new UserRoleDto(ur.Id, userId, ur.Role!.Name))
             .ToListAsync();
@@ -45,19 +51,21 @@ public class UserRoleService<TDbContext> : IUserRoleService
 
     public async Task EnsureUserHasRole(Guid userId, string roleName, CancellationToken cancellationToken)
     {
-        var adminRole = await _db.Set<Role>().FirstAsync(r => r.Name == roleName, cancellationToken);
-        var alreadyHasRole = await _db.Set<UserRole>().AnyAsync(ur => ur.UserId == userId && ur.RoleId == adminRole.Id, cancellationToken);
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var adminRole = await dbContext.Set<Role>().FirstAsync(r => r.Name == roleName, cancellationToken);
+        var alreadyHasRole = await dbContext.Set<UserRole>().AnyAsync(ur => ur.UserId == userId && ur.RoleId == adminRole.Id, cancellationToken);
         if (!alreadyHasRole)
         {
-            _db.Set<UserRole>().Add(new UserRole
+            dbContext.Set<UserRole>().Add(new UserRole
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
                 RoleId = adminRole.Id,
-                Created = DateTime.UtcNow,
-                LastModified = DateTime.UtcNow // TODO: DateTime.UtcNow -> IDateService.Now
+                Created = _dateService.Now,
+                LastModified = _dateService.Now
             });
-            await _db.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
             await InvalidateUserRolesAsync(userId);
         }
 
