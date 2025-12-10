@@ -36,13 +36,13 @@ public static class DependencyInjectionExtensions
                         var scheme = headerValue.Scheme;
                         if (!string.Equals(scheme, "Bearer", StringComparison.OrdinalIgnoreCase))
                         {
-                            throw new InvalidOperationException("Missing or unknown authentication scheme");
+                            throw new InvalidOperationException("Unknown authentication scheme");
                         }
                         var parameter = headerValue.Parameter;
                         var handler = new JwtSecurityTokenHandler();
                         if (!handler.CanReadToken(parameter))
                         {
-                            throw new InvalidOperationException("Missing or unknown authentication provider");
+                            throw new InvalidOperationException("Cannot parse authorization token");
                         }
 
                         var jwt = handler.ReadJwtToken(parameter);
@@ -50,7 +50,7 @@ public static class DependencyInjectionExtensions
                     }
                     else
                     {
-                        throw new InvalidOperationException("Missing or unknown authentication header");
+                        return "Anonymous"; // no auth required
                     }
 
                     foreach (var provider in authenticationSettings.PROVIDERS)
