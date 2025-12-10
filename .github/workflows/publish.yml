@@ -22,13 +22,13 @@ jobs:
         with:
           python-version: 3.x
       - name: Update project versions
-        run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src/mark.davison.common --version ${{ github.ref_name }}
+        run: python3 ./cicd/Nuget/writeProjectVersion.py --projectDir ./src --version ${{ github.ref_name }}
       - name: Restore dependencies
-        working-directory: ./src/mark.davison.common
+        working-directory: ./src
         run: dotnet restore
       - name: Create nuget packages
-        working-directory: ./src/mark.davison.common
+        working-directory: ./src
         run: dotnet pack -c Release -o "$PWD/nuget" --include-symbols
       - name: Push nuget packages
-        working-directory: ./src/mark.davison.common
+        working-directory: ./src
         run: dotnet nuget push "$PWD/nuget/**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-service-endpoint
