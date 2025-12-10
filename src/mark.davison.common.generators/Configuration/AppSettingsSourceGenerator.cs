@@ -140,7 +140,12 @@ public class AppSettingsSourceGenerator : IIncrementalGenerator
 
     private static void Execute(ImmutableArray<AppSettingInfo?> source, SourceProductionContext spc)
     {
-        var root = source.Where(s => s is not null && s.IsRoot).First() ?? throw new InvalidOperationException();
+        var root = source.Where(s => s is not null && s.IsRoot).FirstOrDefault();
+
+        if (root is null)
+        {
+            return;
+        }
 
         var builder = new StringBuilder();
 
