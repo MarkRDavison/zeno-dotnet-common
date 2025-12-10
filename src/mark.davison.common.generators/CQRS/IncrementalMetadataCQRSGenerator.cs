@@ -199,6 +199,11 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
     {
         foreach (var activity in source.Where(_ => _.IsRequestDefinition && _.Type == type))
         {
+            if (string.IsNullOrEmpty(activity.Endpoint))
+            {
+                continue;
+            }
+
             if (type == CQRSActivityType.Command)
             {
                 builder.AppendLine("            endpoints.MapPost(");
@@ -256,7 +261,10 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using mark.davison.common.server.CQRS;");
         builder.AppendLine("using mark.davison.common.server.abstractions.CQRS;");
         builder.AppendLine("using mark.davison.common.server.Utilities;");
+        builder.AppendLine("using System.Net.Http;");
+        builder.AppendLine("using Microsoft.AspNetCore.Http;");
         builder.AppendLine("using Microsoft.AspNetCore.Builder;");
+        builder.AppendLine("using Microsoft.AspNetCore.Routing;");
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
         builder.AppendLine();
         builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
