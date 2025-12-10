@@ -8,6 +8,11 @@ public static class DependencyInjectionExtensions
             .AddHttpContextAccessor()
             .AddSingleton<IDateService>(_ => new DateService(DateService.DateMode.Utc));
     }
+    public static IServiceCollection AddNotificationsCore(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<INotificationHub, NotificationHub>();
+    }
 
     public static IServiceCollection AddRedis(this IServiceCollection services, RedisSettings settings, string instanceName)
     {
@@ -17,14 +22,12 @@ public static class DependencyInjectionExtensions
             Password = settings.PASSWORD
         };
         var redis = ConnectionMultiplexer.Connect(config);
+        services.AddSingleton<IConnectionMultiplexer>(redis);
         services.AddStackExchangeRedisCache(_ =>
         {
             _.InstanceName = instanceName;
             _.Configuration = redis.Configuration;
         });
-
-
-
         return services;
     }
 

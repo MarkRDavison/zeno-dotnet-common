@@ -11,6 +11,7 @@ global using mark.davison.common.server.abstractions.Notifications.Matrix;
 global using mark.davison.common.server.Configuration;
 global using mark.davison.common.server.Cron;
 global using mark.davison.common.server.Health;
+global using mark.davison.common.server.Notifications;
 global using mark.davison.common.server.Notifications.Matrix.Client;
 global using mark.davison.common.Services;
 global using Microsoft.AspNetCore.Authentication;
