@@ -1,7 +1,13 @@
-﻿@attribute [Authorize]
+﻿@using mark.davison.common.client.abstractions.Store
+@using mark.davison.common.client.web
+@using mark.davison.example.web.features.Store.StartupUseCase
+
+@attribute [Authorize]
 @attribute [Route(Routes.UserSettings)]
 
-@inject IClientHttpRepository _clientRepository
+@inherits StateComponent
+
+@inject IStoreHelper _storeHelper
 
 <h1>User Settings</h1>
 
@@ -22,12 +28,12 @@
 				<li>@role.Value</li>
 			}
 		</ul>
-		@if (_startupData is not null)
+		@if (StartupState.Loaded)
 		{
 			<br />
 			<span>These providers are configured</span>
 			<ul>
-				@foreach (var provider in _startupData.AvailableProviders)
+				@foreach (var provider in StartupState.Data.AvailableProviders)
 				{
 					<li>@provider</li>
 				}
@@ -35,7 +41,7 @@
 			<br />
 			<span>These roles are configured</span>
 			<ul>
-				@foreach (var role in _startupData.Roles)
+				@foreach (var role in StartupState.Data.Roles)
 				{
 					<li>@role</li>
 				}
@@ -45,15 +51,10 @@
 </AuthorizeView>
 
 @code {
-	private StartupQueryDto? _startupData;
 
-	protected override async Task OnInitializedAsync()
+	protected override void OnInitialized()
 	{
-		var response = await _clientRepository.Get<StartupQueryRequest, StartupQueryResponse>(new StartupQueryRequest(), CancellationToken.None);
-
-		if (response.SuccessWithValue)
-		{
-			_startupData = response.Value;
-		}
+		base.OnInitialized();
+		_storeHelper.Dispatch(new FetchStartupAction());
 	}
 }

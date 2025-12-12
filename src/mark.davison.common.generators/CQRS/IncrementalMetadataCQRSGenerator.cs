@@ -1,9 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
-using System.Text;
-
-namespace mark.davison.common.generators.CQRS;
+﻿namespace mark.davison.common.generators.CQRS;
 
 [Generator(LanguageNames.CSharp)]
 public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
@@ -267,6 +262,8 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using Microsoft.AspNetCore.Routing;");
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
         builder.AppendLine();
+        builder.AppendLine($"// Generated at: {DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}");
+        builder.AppendLine();
         builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
         builder.AppendLine("{");
         builder.AppendLine();
@@ -301,6 +298,8 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using mark.davison.common.server.abstractions.CQRS;");
         builder.AppendLine("using mark.davison.common.server.Utilities;");
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+        builder.AppendLine();
+        builder.AppendLine($"// Generated at: {DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}");
         builder.AppendLine();
         builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
         builder.AppendLine("{");

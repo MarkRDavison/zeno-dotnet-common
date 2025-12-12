@@ -83,7 +83,7 @@ public static class GeneratorTestHelpers
 
         var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
 
-        if (suppressErrors && errors.Count is not 0)
+        if (!suppressErrors && errors.Count is not 0)
         {
             var message = string.Join("\n", errors.Select(d => d.ToString()));
             throw new InvalidOperationException($"Compilation has errors:\n{message}");

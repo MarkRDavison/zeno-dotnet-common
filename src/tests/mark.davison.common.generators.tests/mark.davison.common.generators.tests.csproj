@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\mark.davison.common.authentication.server\mark.davison.common.authentication.server.csproj" />
+    <ProjectReference Include="..\..\mark.davison.common.client.abstractions\mark.davison.common.client.abstractions.csproj" />
+    <ProjectReference Include="..\..\mark.davison.common.client.web\mark.davison.common.client.web.csproj" />
     <ProjectReference Include="..\..\mark.davison.common.generators\mark.davison.common.generators.csproj" />
     <ProjectReference Include="..\..\mark.davison.common.server.abstractions\mark.davison.common.server.abstractions.csproj" />
     <ProjectReference Include="..\..\mark.davison.common.server\mark.davison.common.server.csproj" />
