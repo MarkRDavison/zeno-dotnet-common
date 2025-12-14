@@ -77,7 +77,7 @@ namespace mark.davison.generator.tests
 
         await Assert.That(sourceString).Contains("public static class ClientStateDependecyInjectionExtensions");
         await Assert.That(sourceString).Contains("services.AddSingleton(typeof(IState<>), typeof(StateImplementation<>));");
-        await Assert.That(sourceString).Contains("services.AddTransient<mark.davison.generator.tests.SomeStateEffects>();\r\n");
+        await Assert.That(sourceString).Contains("services.AddTransient<mark.davison.generator.tests.SomeStateEffects>();");
         await Assert.That(sourceString).Contains("mark.davison.common.client.Store.StateStore.RegisterEffectCallback<global::mark.davison.generator.tests.SomeEffectAction1, mark.davison.generator.tests.SomeStateEffects>((services, action, dispatcher) => services.GetRequiredService<mark.davison.generator.tests.SomeStateEffects>().HandleSomeStateEffectMethod1(action, dispatcher));");
         await Assert.That(sourceString).Contains("mark.davison.common.client.Store.StateStore.RegisterReducerCallback<global::mark.davison.generator.tests.SomeEffectActionResponse1, global::mark.davison.generator.tests.SomeState>((state, action) => mark.davison.generator.tests.SomeStateReducer.HandleSomeEffectActionResponse1(state, action));");
     }
