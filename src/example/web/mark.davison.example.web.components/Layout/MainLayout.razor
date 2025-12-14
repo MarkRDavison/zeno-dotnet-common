@@ -29,6 +29,8 @@
                         <MudIconButton data-testid="@DataTestIds.ManageIcon" Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" Edge="Edge.End" />
                     </ActivatorContent>
                     <ChildContent>
+                        <MudMenuItem Href="@Routes.Counter">Counter Page</MudMenuItem>
+                        <MudDivider />
                         <MudMenuItem Href="@Routes.UserSettings">Settings</MudMenuItem>
                         @if (context.User.IsInRole("Admin"))
                         {

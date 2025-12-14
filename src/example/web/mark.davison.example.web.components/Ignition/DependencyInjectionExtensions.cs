@@ -8,6 +8,7 @@ public static class DependencyInjectionExtensions
         services.UseAuthentication(WebConstants.ApiClientName);
         services.UseClientCQRS(typeof(Routes));
         services.UseCommonClient();
+        services.AddClientState();
 
         return services;
     }

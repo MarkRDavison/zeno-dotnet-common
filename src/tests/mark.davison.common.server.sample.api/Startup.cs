@@ -1,5 +1,6 @@
 ﻿using mark.davison.common.authentication.server.Configuration;
 using mark.davison.common.authentication.server.Ignition;
+using mark.davison.common.server.abstractions;
 
 namespace mark.davison.common.server.sample.api;
 

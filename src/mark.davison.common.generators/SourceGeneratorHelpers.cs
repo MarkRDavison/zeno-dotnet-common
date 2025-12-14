@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Diagnostics.CodeAnalysis;
-
-namespace mark.davison.common.generators;
+﻿namespace mark.davison.common.generators;
 
 [ExcludeFromCodeCoverage]
 public static class SourceGeneratorHelpers

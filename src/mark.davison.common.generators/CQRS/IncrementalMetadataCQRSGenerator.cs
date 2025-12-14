@@ -1,9 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
-using System.Text;
-
-namespace mark.davison.common.generators.CQRS;
+﻿namespace mark.davison.common.generators.CQRS;
 
 [Generator(LanguageNames.CSharp)]
 public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
@@ -11,14 +6,6 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
     public const string GeneratorNamespace = "mark.davison.common.source.generators.CQRS";
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context
-            .RegisterPostInitializationOutput(static _ =>
-            {
-                // .AddEmbeddedAttributeDefinition() TODO: Once in dotnet 10, need to add [global::Microsoft.CodeAnalysis.EmbeddedAttribute] to the attribute
-                _.AddSource("UseCQRSServerAttribute.g.cs", SourceText.From(CQRSSources.UseCQRSServerAttribute(GeneratorNamespace), Encoding.UTF8));
-                _.AddSource("UseCQRSClientAttribute.g.cs", SourceText.From(CQRSSources.UseCQRSClientAttribute(GeneratorNamespace), Encoding.UTF8));
-            });
-
         var assemblyTypesProvider = context.CompilationProvider
             .Select((compilation, cancellationToken) =>
             {
@@ -48,7 +35,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
                     continue;
                 }
 
-                if (type.GetAttributes().Any(_ => _.AttributeClass?.ToDisplayString() == "mark.davison.common.source.generators.CQRS.UseCQRSServerAttribute"))
+                if (type.GetAttributes().Any(_ => _.AttributeClass?.ToDisplayString() == "mark.davison.common.server.abstractions.UseCQRSServerAttribute"))
                 {
                     activities.Add(new CQRSSourceGeneratorActivity(
                         false,
@@ -267,6 +254,8 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using Microsoft.AspNetCore.Routing;");
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
         builder.AppendLine();
+        builder.AppendLine($"// Generated at: {DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}");
+        builder.AppendLine();
         builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
         builder.AppendLine("{");
         builder.AppendLine();
@@ -301,6 +290,8 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
         builder.AppendLine("using mark.davison.common.server.abstractions.CQRS;");
         builder.AppendLine("using mark.davison.common.server.Utilities;");
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+        builder.AppendLine();
+        builder.AppendLine($"// Generated at: {DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}");
         builder.AppendLine();
         builder.AppendLine($"namespace {markerActivity!.RootNamespace}");
         builder.AppendLine("{");

@@ -16,18 +16,26 @@ public static class DependencyInjectionExtensions
 
     public static IServiceCollection AddRedis(this IServiceCollection services, RedisSettings settings, string instanceName)
     {
-        var config = new ConfigurationOptions
+        if (string.IsNullOrEmpty(settings.HOST))
         {
-            EndPoints = { settings.HOST + ":" + settings.PORT },
-            Password = settings.PASSWORD
-        };
-        var redis = ConnectionMultiplexer.Connect(config);
-        services.AddSingleton<IConnectionMultiplexer>(redis);
-        services.AddStackExchangeRedisCache(_ =>
+            services.AddDistributedMemoryCache();
+        }
+        else
         {
-            _.InstanceName = instanceName;
-            _.Configuration = redis.Configuration;
-        });
+            var config = new ConfigurationOptions
+            {
+                EndPoints = { settings.HOST + ":" + settings.PORT },
+                Password = settings.PASSWORD
+            };
+            var redis = ConnectionMultiplexer.Connect(config);
+            services.AddSingleton<IConnectionMultiplexer>(redis);
+            services.AddStackExchangeRedisCache(_ =>
+            {
+                _.InstanceName = instanceName;
+                _.Configuration = redis.Configuration;
+            });
+        }
+
         return services;
     }
 

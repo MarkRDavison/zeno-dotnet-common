@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\mark.davison.common.client.web\mark.davison.common.client.web.csproj" />
+    <ProjectReference Include="..\..\..\mark.davison.common.generators\mark.davison.common.generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\mark.davison.example.web.features\mark.davison.example.web.features.csproj" />
   </ItemGroup>
 

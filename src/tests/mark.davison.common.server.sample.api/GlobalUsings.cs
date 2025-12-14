@@ -10,6 +10,5 @@ global using mark.davison.common.server.sample.api.Configuration;
 global using mark.davison.common.server.sample.api.Entities;
 global using mark.davison.common.server.sample.api.Persistence;
 global using mark.davison.common.server.sample.api.Persistence.Configuration;
-global using mark.davison.common.source.generators.CQRS;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
