@@ -1,0 +1,112 @@
+﻿@typeparam TModalViewModel where TModalViewModel : class, IModalViewModel<TFormViewModel, TForm>
+@typeparam TFormViewModel where TFormViewModel : class, IFormViewModel, new()
+@typeparam TForm where TForm : ComponentBase, IForm<TFormViewModel>
+
+@inject IServiceProvider _serviceProvider;
+
+<MudDialog>
+    <DialogContent>
+        <EditForm EditContext="@_editContext" OnSubmit="@Primary">
+            <fieldset disabled="@_inProgress">
+                @ModalContent
+            </fieldset>
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Secondary">@SecondaryText</MudButton>
+        <MudButton Disabled="@_primaryDisabled" Color="Color.Success" OnClick="Primary">
+            @if (_inProgress)
+            {
+                <MudProgressCircular Size="Size.Small" Color="Color.Success" Indeterminate="true" />
+            }
+            else
+            {
+                @PrimaryText
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    private bool _inProgress;
+    public bool _primaryDisabled => _inProgress || !ModalViewModel.FormViewModel.Valid;
+
+    private EditContext? _editContext;
+
+    [CascadingParameter, EditorRequired]
+    public required IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string PrimaryText { get; set; } = "Ok";
+
+    [Parameter]
+    public string SecondaryText { get; set; } = "Cancel";
+
+    [Parameter]
+    public RenderFragment ModalContent { get; set; } = default!;
+
+    [Parameter]
+    public TModalViewModel ModalViewModel { get; set; } = default!;
+
+    [Parameter]
+    public TFormViewModel? Instance { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ModalContent = _ =>
+        {
+            _.OpenComponent<TForm>(0);
+            _.AddAttribute(1, nameof(Form<TFormViewModel>.FormViewModel), ModalViewModel.FormViewModel);
+            _.CloseComponent();
+        };
+
+        Reset();
+    }
+
+    protected void Reset()
+    {
+        ModalViewModel = _serviceProvider.GetRequiredService<TModalViewModel>();
+
+        if (Instance != null)
+        {
+            ModalViewModel.FormViewModel = Instance;
+            Instance = null;
+        }
+
+        if (_editContext != null)
+        {
+            _editContext.OnFieldChanged -= FieldChanged;
+        }
+
+        _editContext = new EditContext(ModalViewModel.FormViewModel);
+        _editContext.OnFieldChanged += FieldChanged;
+    }
+
+    private async Task Primary()
+    {
+        _inProgress = true;
+
+        if (ModalViewModel.FormViewModel.Valid)
+        {
+            var response = await ModalViewModel.Primary(ModalViewModel.FormViewModel);
+
+            if (response.Success)
+            {
+                MudDialog.Close(DialogResult.Ok(response));
+            }
+            else
+            {
+                Console.Error.WriteLine("TODO: How to handle errors in Modal.Primary, add to message bar/toast???");
+                response.Errors.ForEach(Console.Error.WriteLine);
+                response.Warnings.ForEach(Console.WriteLine);
+            }
+        }
+
+        _inProgress = false;
+    }
+
+    private void Secondary() => MudDialog.Cancel();
+
+    private void FieldChanged(object? sender, FieldChangedEventArgs args) => InvokeAsync(StateHasChanged);
+}

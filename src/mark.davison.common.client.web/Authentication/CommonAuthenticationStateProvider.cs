@@ -25,6 +25,7 @@ public sealed class CommonAuthenticationStateProvider : AuthenticationStateProvi
         {
             await _authenticationService.EvaluateAuthentication();
         }
+
         return _authenticationState;
     }
 }

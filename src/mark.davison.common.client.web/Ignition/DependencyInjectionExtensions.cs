@@ -1,7 +1,4 @@
-﻿using mark.davison.common.client.web.CQRS;
-using System.Reflection;
-
-namespace mark.davison.common.client.web.Ignition;
+﻿namespace mark.davison.common.client.web.Ignition;
 
 public static class DependencyInjectionExtensions
 {
@@ -16,11 +13,40 @@ public static class DependencyInjectionExtensions
 
         return services;
     }
+    private static void AddTransient<TAbstraction, TImplementation>(IServiceCollection services)
+        where TAbstraction : class
+        where TImplementation : class, TAbstraction
+    {
+        services.AddTransient<TAbstraction, TImplementation>();
+    }
 
-    public static IServiceCollection UseCommonClient(this IServiceCollection services)
+    public static IServiceCollection UseCommonClient(this IServiceCollection services, params Type[] types)
     {
         services
+            .AddTransient(typeof(ModalViewModel<,>))
             .AddMudServices();
+
+        // TODO: To source generator
+        {
+            var method = typeof(DependencyInjectionExtensions).GetMethod(nameof(AddTransient), BindingFlags.Static | BindingFlags.NonPublic)!;
+
+            Type formSubmissionType = typeof(IFormSubmission<>);
+            foreach (Type concreteType in (from _ in types.SelectMany((_) => _.Assembly.ExportedTypes)
+                                           where _.GetInterfaces().Any((__) => __.IsGenericType && __.GetGenericTypeDefinition() == formSubmissionType)
+                                           select _).ToList())
+            {
+
+                Type[] genericArguments = concreteType.GetInterfaces().First((__) => __.IsGenericType && __.GetGenericTypeDefinition() == formSubmissionType).GetGenericArguments();
+                if (genericArguments.Length == 1)
+                {
+                    Type type = genericArguments[0];
+                    Type interfaceType = formSubmissionType.MakeGenericType(type);
+                    MethodInfo methodInfo2 = method.MakeGenericMethod(interfaceType, concreteType);
+                    methodInfo2.Invoke(null, new[] { services });
+                }
+
+            }
+        }
 
         return services;
     }
