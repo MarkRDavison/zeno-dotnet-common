@@ -7,6 +7,7 @@ public sealed class Routes
     public const string NotFound = "/not-found";
     public const string UserSettings = "/settings/user";
     public const string AdminSettings = "/settings/admin";
+    public const string Counter = "/counter";
 }
 
 public sealed class RouteHelpers

@@ -40,7 +40,7 @@ namespace mark.davison.generator.tests
 
     public static class SomeStateReducer
     {
-        [Reducer]
+        [ReducerMethod]
         public static SomeState HandleSomeEffectActionResponse1(SomeState state, SomeEffectActionResponse1 response)
         {
             return state;

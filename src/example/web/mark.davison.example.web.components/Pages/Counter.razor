@@ -1,0 +1,14 @@
+﻿@attribute [Authorize]
+@attribute [Route(Routes.Counter)]
+
+@inherits StateComponent
+
+<h1>Counter</h1>
+
+<div class="d-flex flex-row gap-4 align-center">
+    <MudButton OnClick="@(() => Decrease(5))" Variant="Variant.Filled" Color="Color.Primary">Decrease 5</MudButton>
+    <MudButton OnClick="@(() => Decrease(1))" Variant="Variant.Filled" Color="Color.Primary">Decrease 1</MudButton>
+    <MudText>@($"Value: {CounterState.CounterValue}")</MudText>
+    <MudButton OnClick="@(() => Increase(1))" Variant="Variant.Filled" Color="Color.Primary">Increase 1</MudButton>
+    <MudButton OnClick="@(() => Increase(5))" Variant="Variant.Filled" Color="Color.Primary">Increase 5</MudButton>
+</div>

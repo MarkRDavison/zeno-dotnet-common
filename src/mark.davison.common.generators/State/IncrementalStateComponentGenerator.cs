@@ -101,6 +101,8 @@ public class IncrementalStateComponentGenerator : IIncrementalGenerator
     {
         var builder = new StringBuilder();
 
+        builder.AppendLine($"#nullable enable");
+        builder.AppendLine();
         builder.AppendLine($"using Microsoft.AspNetCore.Components;");
         builder.AppendLine($"using mark.davison.common.client.abstractions.Store;");
         builder.AppendLine($"using {source.ComponentNamespace};");

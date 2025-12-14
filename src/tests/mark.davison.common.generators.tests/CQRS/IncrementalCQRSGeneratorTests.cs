@@ -1,7 +1,6 @@
 ﻿using mark.davison.common.CQRS;
 using mark.davison.common.generators.CQRS;
 using mark.davison.common.server.abstractions.CQRS;
-using System.Runtime;
 
 namespace mark.davison.common.generators.tests.CQRS;
 
@@ -18,7 +17,9 @@ using mark.davison.common.source.generators.CQRS;
 using mark.davison.common.server.abstractions.CQRS;
 using mark.davison.common.server.CQRS.Processors;
 using mark.davison.common.server.CQRS.Validators;
+using mark.davison.common.server.abstractions;
 using mark.davison.common.server.abstractions.Authentication;
+using mark.davison.common.authentication.server.abstractions.Services;
 
 namespace mark.davison.tests.api
 {
@@ -116,7 +117,7 @@ namespace mark.davison.tests.shared
                 typeof(PostRequestAttribute),
                 typeof(GetRequestAttribute),
                 typeof(SourceGeneratorHelpers)
-            ]);
+            ], true);
 
         var expectedHintNameDependencyInjection = "CQRSServerDependecyInjectionExtensions.g.cs";
         var expectedHintNameEndpointRoute = "GenerateCQRSEndpointRouteExtensions.g.cs";

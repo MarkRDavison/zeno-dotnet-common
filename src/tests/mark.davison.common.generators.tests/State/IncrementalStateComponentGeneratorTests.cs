@@ -49,5 +49,18 @@ namespace mark.davison.generators.tests
             .FirstOrDefault(_ => _.HintName == "ExampleStateComponent_StateComponent.g.cs");
 
         var sourceString = componentSource.SourceText.ToString();
+
+        await Assert.That(sourceString).Contains("public partial class ExampleStateComponent");
+        await Assert.That(sourceString).Contains("protected override void SubscribeToStateChanges()");
+        await Assert.That(sourceString).Contains("ExampleStateInstance.OnStateChange += OnExampleStateChange;");
+        await Assert.That(sourceString).Contains("AnotherStateInstance.OnStateChange += OnAnotherStateChange;");
+        await Assert.That(sourceString).Contains("ExampleStateInstance.OnStateChange -= OnExampleStateChange;");
+        await Assert.That(sourceString).Contains("AnotherStateInstance.OnStateChange -= OnAnotherStateChange;");
+        await Assert.That(sourceString).Contains("private void OnExampleStateChange(object? sender, EventArgs args)");
+        await Assert.That(sourceString).Contains("private void OnAnotherStateChange(object? sender, EventArgs args)");
+        await Assert.That(sourceString).Contains("public required IState<ExampleState> ExampleStateInstance { get; set; }");
+        await Assert.That(sourceString).Contains("public required IState<AnotherState> AnotherStateInstance { get; set; }");
+        await Assert.That(sourceString).Contains("public ExampleState ExampleState => ExampleStateInstance.Value;");
+        await Assert.That(sourceString).Contains("public AnotherState AnotherState => AnotherStateInstance.Value;");
     }
 }
