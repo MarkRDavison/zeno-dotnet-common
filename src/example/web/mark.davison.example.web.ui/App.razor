@@ -1,4 +1,9 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" 
+﻿@using mark.davison.common.client.abstractions.Store
+@using mark.davison.example.web.features.Store.StartupUseCase
+
+@inject IStoreHelper _storeHelper
+
+<Router AppAssembly="@typeof(App).Assembly" 
         AdditionalAssemblies="new[]{ typeof(Routes).Assembly }" 
         NotFoundPage="typeof(NotFound)">
     <Found Context="routeData">
@@ -21,3 +26,11 @@
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
 </Router>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        _storeHelper.Dispatch(new FetchStartupAction());
+    }
+}

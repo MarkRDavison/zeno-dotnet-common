@@ -66,7 +66,7 @@ public static class IEndpointRouteBuilderExtensions
                 Errors = ["BAD_REQUEST", $"{response.StatusCode}", content]
             });
         })
-        .RequireAuthorization(); // TODO: Not always required??? link to cqrs AllowAnonymous
+        .AllowAnonymous(); // TODO: Not always required??? link to cqrs AllowAnonymous
 
         return endpoints;
     }
