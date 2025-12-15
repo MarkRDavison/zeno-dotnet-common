@@ -79,7 +79,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
 
                     }
 
-                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.IQueryHandler<TRequest, TResponse>")
+                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.IQueryValidator<TRequest, TResponse>")
                     {
                         if (ProcessQueryValidator(type, iface) is { } activity)
                         {
@@ -95,7 +95,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
                         }
                     }
 
-                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.ICommandHandler<TRequest, TResponse>")
+                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.ICommandValidator<TRequest, TResponse>")
                     {
                         if (ProcessCommandValidator(type, iface) is { } activity)
                         {

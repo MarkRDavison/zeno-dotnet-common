@@ -149,6 +149,10 @@ namespace mark.davison.tests.shared
         await Assert.That(sourceStringDi).Contains("services.AddScoped<mark.davison.common.CQRS.ICommandDispatcher, mark.davison.common.server.CQRS.CommandDispatcher>();");
         await Assert.That(sourceStringDi).Contains("services.AddScoped<ICommandProcessor<global::mark.davison.tests.shared.TestCommand,global::mark.davison.tests.shared.TestCommandResponse>,global::mark.davison.tests.shared.TestCommandProcessor>();");
         await Assert.That(sourceStringDi).Contains("services.AddScoped<IQueryProcessor<global::mark.davison.tests.shared.TestQuery,global::mark.davison.tests.shared.TestQueryResponse>,global::mark.davison.tests.shared.TestQueryProcessor>();");
+        await Assert.That(sourceStringDi).Contains("_.GetRequiredService<ICommandValidator<global::mark.davison.tests.shared.TestCommand,global::mark.davison.tests.shared.TestCommandResponse>>()");
+        await Assert.That(sourceStringDi).Contains("_.GetRequiredService<ICommandProcessor<global::mark.davison.tests.shared.TestCommand,global::mark.davison.tests.shared.TestCommandResponse>>()");
+        await Assert.That(sourceStringDi).Contains("_.GetRequiredService<IQueryValidator<global::mark.davison.tests.shared.TestQuery,global::mark.davison.tests.shared.TestQueryResponse>>()");
+        await Assert.That(sourceStringDi).Contains("_.GetRequiredService<IQueryProcessor<global::mark.davison.tests.shared.TestQuery,global::mark.davison.tests.shared.TestQueryResponse>>()");
 
         await Assert.That(sourceStringEr).Contains("namespace mark.davison.tests.api");
         await Assert.That(sourceStringEr).Contains("public static class GenerateEndpointRouteExtensions");

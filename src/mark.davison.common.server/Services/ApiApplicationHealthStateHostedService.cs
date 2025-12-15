@@ -71,8 +71,7 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
 
     protected virtual async Task InitDatabaseDevelopment(TDbContext dbContext, CancellationToken cancellationToken)
     {
-        Console.WriteLine("TODO: NOCHECKIN: just for now");
-        // await dbContext.Database.EnsureDeletedAsync(cancellationToken);
+        await dbContext.Database.EnsureDeletedAsync(cancellationToken);
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
     }
 
