@@ -1,6 +1,4 @@
-﻿using mark.davison.common.client.abstractions.Store;
-
-namespace mark.davison.common.generators.tests.State;
+﻿namespace mark.davison.common.generators.tests.State;
 
 public sealed class IncrementalMetadataStateGeneratorTests
 {
@@ -35,6 +33,11 @@ namespace mark.davison.generator.tests
         public async Task HandleSomeStateEffectMethod1(SomeEffectAction1 action, IDispatcher dispatcher)
         {
             await Task.CompletedTask;
+        }
+
+        public Task HandleSomeEffectActionResponse1(SomeEffectActionResponse1 response, IDispatcher dispatcher)
+        {
+            return Task.CompletedTask;
         }
     }
 
@@ -79,6 +82,7 @@ namespace mark.davison.generator.tests
         await Assert.That(sourceString).Contains("services.AddSingleton(typeof(IState<>), typeof(StateImplementation<>));");
         await Assert.That(sourceString).Contains("services.AddTransient<mark.davison.generator.tests.SomeStateEffects>();");
         await Assert.That(sourceString).Contains("mark.davison.common.client.Store.StateStore.RegisterEffectCallback<global::mark.davison.generator.tests.SomeEffectAction1, mark.davison.generator.tests.SomeStateEffects>((services, action, dispatcher) => services.GetRequiredService<mark.davison.generator.tests.SomeStateEffects>().HandleSomeStateEffectMethod1(action, dispatcher));");
+        await Assert.That(sourceString).Contains("mark.davison.common.client.Store.StateStore.RegisterEffectCallback<global::mark.davison.generator.tests.SomeEffectActionResponse1, mark.davison.generator.tests.SomeStateEffects>((services, action, dispatcher) => services.GetRequiredService<mark.davison.generator.tests.SomeStateEffects>().HandleSomeEffectActionResponse1(action, dispatcher));");
         await Assert.That(sourceString).Contains("mark.davison.common.client.Store.StateStore.RegisterReducerCallback<global::mark.davison.generator.tests.SomeEffectActionResponse1, global::mark.davison.generator.tests.SomeState>((state, action) => mark.davison.generator.tests.SomeStateReducer.HandleSomeEffectActionResponse1(state, action));");
     }
 }

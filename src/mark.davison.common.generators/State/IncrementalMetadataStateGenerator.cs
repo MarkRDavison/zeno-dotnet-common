@@ -45,7 +45,7 @@ public class IncrementalMetadataStateGenerator : IIncrementalGenerator
                         {
                             var effectMembers = members.Select(_ =>
                             {
-                                if (_ is IMethodSymbol { IsStatic: false, IsAsync: true } methodSymbol)
+                                if (_ is IMethodSymbol { IsStatic: false } methodSymbol)
                                 {
                                     if (methodSymbol.ReturnType.Name != "Task" ||
                                         methodSymbol.Parameters.Length != 2 ||
