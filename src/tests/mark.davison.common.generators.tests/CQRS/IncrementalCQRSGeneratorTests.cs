@@ -4,6 +4,8 @@ using mark.davison.common.server.abstractions.CQRS;
 
 namespace mark.davison.common.generators.tests.CQRS;
 
+
+
 public sealed class IncrementalCQRSGeneratorTests
 {
     [Test]
@@ -13,17 +15,13 @@ public sealed class IncrementalCQRSGeneratorTests
 using System.Threading;
 using System.Threading.Tasks;
 using mark.davison.common.CQRS;
-using mark.davison.common.source.generators.CQRS;
 using mark.davison.common.server.abstractions.CQRS;
-using mark.davison.common.server.CQRS.Processors;
-using mark.davison.common.server.CQRS.Validators;
 using mark.davison.common.server.abstractions;
-using mark.davison.common.server.abstractions.Authentication;
 using mark.davison.common.authentication.server.abstractions.Services;
 
 namespace mark.davison.tests.api
 {
-    [UseCQRSServer(typeof(ApiRoot))]
+    [UseCQRSServer]
     public class ApiRoot
     {
     }
@@ -31,6 +29,48 @@ namespace mark.davison.tests.api
 
 namespace mark.davison.tests.shared
 {
+    [PostRequest(Path = ""test-handler-command"", AllowAnonymous = true)]
+    public sealed class TestHandlerCommand : ICommand<TestHandlerCommand, TestHandlerCommandResponse>
+    {
+
+    }
+
+    public sealed class TestHandlerCommandResponse : Response
+    {
+
+    }
+
+    public abstract class ValidateAndProcessAbstractCommandHandler<TRequest, TResponse> : ICommandHandler<TRequest, TResponse>
+        where TRequest : class, ICommand<TRequest, TResponse>, new()
+        where TResponse : Response, new()
+    {
+        public abstract Task<TResponse> Handle(TRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellation);
+    }
+
+    public sealed class TestHandlerCommandHandler : ValidateAndProcessAbstractCommandHandler<TestHandlerCommand, TestHandlerCommandResponse>
+    {
+        public override async Task<TestHandlerCommandResponse> Handle(TestHandlerCommand command, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+        {
+            return await Task.FromResult(new TestHandlerCommandResponse());
+        }
+    }
+
+    public sealed class TestHandlerCommandProcessor : ICommandProcessor<TestHandlerCommand, TestHandlerCommandResponse>
+    {
+        public async Task<TestHandlerCommandResponse> ProcessAsync(TestHandlerCommand request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+        {
+            return await Task.FromResult(new TestHandlerCommandResponse());
+        }
+    }
+
+    public sealed class TestHandlerCommandValidator : ICommandValidator<TestHandlerCommand, TestHandlerCommandResponse>
+    {
+        public async Task<TestHandlerCommandResponse> ValidateAsync(TestHandlerCommand request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+        {
+            return await Task.FromResult(new TestHandlerCommandResponse());
+        }
+    }
+
     [PostRequest(Path = ""test-command"", AllowAnonymous = true)]
     public sealed class TestCommand : ICommand<TestCommand, TestCommandResponse>
     {
@@ -40,14 +80,6 @@ namespace mark.davison.tests.shared
     public sealed class TestCommandResponse : Response
     {
 
-    }
-
-    public sealed class TestCommandHandler : ICommandHandler<TestCommand, TestCommandResponse>
-    {
-        public async Task<TestCommandResponse> Handle(TestCommand command, ICurrentUserContext currentUserContext, CancellationToken cancellation)
-        {
-            return await Task.FromResult(new TestCommandResponse());
-        }
     }
 
     public sealed class TestCommandProcessor : ICommandProcessor<TestCommand, TestCommandResponse>
@@ -75,14 +107,6 @@ namespace mark.davison.tests.shared
     public sealed class TestQueryResponse : Response
     {
 
-    }
-
-    public sealed class TestQueryHandler : IQueryHandler<TestQuery, TestQueryResponse>
-    {
-        public async Task<TestQueryResponse> Handle(TestQuery Query, ICurrentUserContext currentUserContext, CancellationToken cancellation)
-        {
-            return await Task.FromResult(new TestQueryResponse());
-        }
     }
 
     public sealed class TestQueryProcessor : IQueryProcessor<TestQuery, TestQueryResponse>
@@ -117,7 +141,7 @@ namespace mark.davison.tests.shared
                 typeof(PostRequestAttribute),
                 typeof(GetRequestAttribute),
                 typeof(SourceGeneratorHelpers)
-            ], true);
+            ]);
 
         var expectedHintNameDependencyInjection = "CQRSServerDependecyInjectionExtensions.g.cs";
         var expectedHintNameEndpointRoute = "GenerateCQRSEndpointRouteExtensions.g.cs";
@@ -153,6 +177,9 @@ namespace mark.davison.tests.shared
         await Assert.That(sourceStringDi).Contains("_.GetRequiredService<ICommandProcessor<global::mark.davison.tests.shared.TestCommand,global::mark.davison.tests.shared.TestCommandResponse>>()");
         await Assert.That(sourceStringDi).Contains("_.GetRequiredService<IQueryValidator<global::mark.davison.tests.shared.TestQuery,global::mark.davison.tests.shared.TestQueryResponse>>()");
         await Assert.That(sourceStringDi).Contains("_.GetRequiredService<IQueryProcessor<global::mark.davison.tests.shared.TestQuery,global::mark.davison.tests.shared.TestQueryResponse>>()");
+
+        await Assert.That(sourceStringDi).DoesNotContain("mark.davison.common.server.CQRS.ValidateAndProcessCommandHandler<TestHandlerCommand,global::mark.davison.tests.shared.TestHandlerCommandResponse>");
+        await Assert.That(sourceStringDi).Contains("services.AddScoped<ICommandHandler<global::mark.davison.tests.shared.TestHandlerCommand,global::mark.davison.tests.shared.TestHandlerCommandResponse>,global::mark.davison.tests.shared.TestHandlerCommandHandler>()");
 
         await Assert.That(sourceStringEr).Contains("namespace mark.davison.tests.api");
         await Assert.That(sourceStringEr).Contains("public static class GenerateEndpointRouteExtensions");

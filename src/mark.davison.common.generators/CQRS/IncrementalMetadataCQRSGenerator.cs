@@ -69,14 +69,20 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
                         }
                     }
 
-                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.ICommandHandler<in TCommand, TCommandResult>")
+                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.ICommandHandler<TCommand, TCommandResult>")
                     {
-
+                        if (ProcessCommandHandler(type, iface) is { } activity)
+                        {
+                            activities.Add(activity);
+                        }
                     }
 
-                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.IQueryHandler<in TQuery, TQueryResult>")
+                    if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.IQueryHandler<TQuery, TQueryResult>")
                     {
-
+                        if (ProcessQueryHandler(type, iface) is { } activity)
+                        {
+                            activities.Add(activity);
+                        }
                     }
 
                     if (iface.IsGenericType && iface.ConstructedFrom.ToDisplayString() == "mark.davison.common.server.abstractions.CQRS.IQueryValidator<TRequest, TResponse>")
@@ -138,7 +144,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
     {
         foreach (var activity in source.Where(_ => _.IsRequestDefinition && _.Type == type))
         {
-            if (!string.IsNullOrEmpty(activity.Handler))
+            if (!string.IsNullOrEmpty(activity.Handler) && !activity.Handler!.Equals($"global::mark.davison.common.server.CQRS.ValidateAndProcess{type}Handler<TRequest, TResponse>"))
             {
                 // If a handler is defined it takes priority.
                 builder.AppendLine($"            services.AddScoped<I{type}Handler<{activity.Request},{activity.Response}>,{activity.Handler}>();");
@@ -381,13 +387,51 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             CQRSActivityType.Command,
             SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
             SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
-            string.Empty,
+            null,
             null,
             null,
             path,
             null,
             allowAnonymous,
             [.. roles]);
+    }
+
+    private CQRSSourceGeneratorActivity? ProcessCommandHandler(INamedTypeSymbol type, INamedTypeSymbol iface)
+    {
+        var requestType = iface.TypeArguments[0];
+        var responseType = iface.TypeArguments[1];
+
+        return new CQRSSourceGeneratorActivity(
+            false,
+            CQRSActivityType.Command,
+            SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+            SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
+            SourceGeneratorHelpers.GetFullyQualifiedName(type),
+            null,
+            null,
+            null,
+            null,
+            false,
+            []);
+    }
+
+    private CQRSSourceGeneratorActivity? ProcessQueryHandler(INamedTypeSymbol type, INamedTypeSymbol iface)
+    {
+        var requestType = iface.TypeArguments[0];
+        var responseType = iface.TypeArguments[1];
+
+        return new CQRSSourceGeneratorActivity(
+            false,
+            CQRSActivityType.Query,
+            SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
+            SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
+            SourceGeneratorHelpers.GetFullyQualifiedName(type),
+            null,
+            null,
+            null,
+            null,
+            false,
+            []);
     }
 
     private CQRSSourceGeneratorActivity? ProcessCommandProcessor(INamedTypeSymbol type, INamedTypeSymbol iface)
@@ -400,7 +444,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             CQRSActivityType.Command,
             SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
             SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
-            string.Empty,
+            null,
             null,
             SourceGeneratorHelpers.GetFullyQualifiedName(type),
             null,
@@ -419,7 +463,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             CQRSActivityType.Command,
             SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
             SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
-            string.Empty,
+            null,
             SourceGeneratorHelpers.GetFullyQualifiedName(type),
             null,
             null,
@@ -438,7 +482,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             CQRSActivityType.Query,
             SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
             SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
-            string.Empty,
+            null,
             null,
             SourceGeneratorHelpers.GetFullyQualifiedName(type),
             null,
@@ -457,7 +501,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             CQRSActivityType.Query,
             SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
             SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
-            string.Empty,
+            null,
             SourceGeneratorHelpers.GetFullyQualifiedName(type),
             null,
             null,
@@ -507,7 +551,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             CQRSActivityType.Query,
             SourceGeneratorHelpers.GetFullyQualifiedName(requestType),
             SourceGeneratorHelpers.GetFullyQualifiedName(responseType),
-            string.Empty,
+            null,
             null,
             null,
             path,
