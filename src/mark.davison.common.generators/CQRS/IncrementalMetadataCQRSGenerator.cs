@@ -144,6 +144,16 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
     {
         foreach (var activity in source.Where(_ => _.IsRequestDefinition && _.Type == type))
         {
+            if (!string.IsNullOrEmpty(activity.Processor))
+            {
+                builder.AppendLine($"            services.AddScoped<I{type}Processor<{activity.Request},{activity.Response}>,{activity.Processor}>();");
+            }
+            if (!string.IsNullOrEmpty(activity.Validator))
+            {
+                builder.AppendLine($"            services.AddScoped<I{type}Validator<{activity.Request},{activity.Response}>,{activity.Validator}>();");
+            }
+
+
             if (!string.IsNullOrEmpty(activity.Handler) && !activity.Handler!.Equals($"global::mark.davison.common.server.CQRS.ValidateAndProcess{type}Handler<TRequest, TResponse>"))
             {
                 // If a handler is defined it takes priority.
@@ -151,13 +161,7 @@ public class IncrementalMetadataCQRSGenerator : IIncrementalGenerator
             }
             else if (!string.IsNullOrEmpty(activity.Processor))
             {
-                builder.AppendLine($"            services.AddScoped<I{type}Processor<{activity.Request},{activity.Response}>,{activity.Processor}>();");
-
-                if (!string.IsNullOrEmpty(activity.Validator))
-                {
-                    builder.AppendLine($"            services.AddScoped<I{type}Validator<{activity.Request},{activity.Response}>,{activity.Validator}>();");
-                }
-
+                // Else try create the ValidateAndProcess handler
                 builder.AppendLine($"            services.AddScoped<I{type}Handler<{activity.Request},{activity.Response}>>(_ =>");
                 builder.AppendLine($"            {{");
                 builder.AppendLine($"                return new mark.davison.common.server.CQRS.ValidateAndProcess{type}Handler<{activity.Request},{activity.Response}>(");
