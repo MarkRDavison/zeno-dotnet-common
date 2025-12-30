@@ -97,11 +97,11 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
 
             await AdditionalStartAsync(cancellationToken);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
             Console.Error.WriteLine(e.StackTrace);
-            _applicationHealthState.ReadySource.SetException(ex);
+            _applicationHealthState.ReadySource.SetException(e);
             throw;
         }
 
