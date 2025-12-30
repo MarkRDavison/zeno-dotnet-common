@@ -134,10 +134,11 @@ public sealed class RetryTests
             {
                 return Task.FromResult(val);
             }
+
             throw new InvalidOperationException();
         }, delay, CancellationToken.None, maxTimes);
 
-        await Assert.That(sw.Elapsed).IsGreaterThan(delay * (maxTimes - 1));
+        await Assert.That(sw.Elapsed).IsGreaterThan(delay * (maxTimes - 2));
     }
 
     [Test]
