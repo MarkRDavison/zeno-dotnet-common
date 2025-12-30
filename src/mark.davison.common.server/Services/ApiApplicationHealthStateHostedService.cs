@@ -77,6 +77,7 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
 
     private async Task BaseStartAsync(CancellationToken cancellationToken)
     {
+        try
         {
             var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
@@ -93,9 +94,16 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
             {
                 await _dataSeeder.SeedDataAsync(cancellationToken);
             }
-        }
 
-        await AdditionalStartAsync(cancellationToken);
+            await AdditionalStartAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(e.Message);
+            Console.Error.WriteLine(e.StackTrace);
+            _applicationHealthState.ReadySource.SetException(ex);
+            throw;
+        }
 
         _applicationHealthState.Ready = true;
         _applicationHealthState.ReadySource.SetResult();
