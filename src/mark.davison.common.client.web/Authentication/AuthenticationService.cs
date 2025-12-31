@@ -1,10 +1,10 @@
-﻿using System.Text.Json;
-
-namespace mark.davison.common.client.web.Authentication;
+﻿namespace mark.davison.common.client.web.Authentication;
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly HttpClient _client;
+
+    public string BffRoot { get; set; } = string.Empty;
 
     public AuthenticationService(IHttpClientFactory httpClientFactory, string clientName)
     {

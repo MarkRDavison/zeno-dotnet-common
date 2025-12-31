@@ -146,6 +146,8 @@ public static class DependencyInjectionExtensions
                     }
                 }
 
+                authStateService.BffRoot = localBffRoot;
+
                 var clientHttpRepository = new ClientHttpRepository(
                         localBffRoot,
                         _.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientName),

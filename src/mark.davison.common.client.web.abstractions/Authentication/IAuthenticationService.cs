@@ -6,4 +6,6 @@ public interface IAuthenticationService
     void AuthenticateUser(ClaimsPrincipal user);
 
     event EventHandler<ClaimsPrincipal> UserChanged;
+
+    string BffRoot { get; set; }
 }
