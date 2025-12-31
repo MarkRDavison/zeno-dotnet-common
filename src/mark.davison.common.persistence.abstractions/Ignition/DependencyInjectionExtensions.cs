@@ -33,7 +33,6 @@ public static class DependencyInjectionExtensions
         }
         else if (databaseAppSettings.DATABASE_TYPE == DatabaseType.Postgres)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             var conn = new NpgsqlConnectionStringBuilder
             {
                 IncludeErrorDetail = !productionMode,
