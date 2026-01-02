@@ -79,7 +79,7 @@ public class AuthenticationService : IAuthenticationService
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri("https://localhost:40000/account/user") // TODO: Constants -> /auth/user
+            RequestUri = new Uri($"{BffRoot.TrimEnd('/')}/account/user") // TODO: Constants -> /auth/user
         };
 
         var response = await _client.SendAsync(request);
