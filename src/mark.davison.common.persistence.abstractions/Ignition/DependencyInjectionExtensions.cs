@@ -40,8 +40,10 @@ public static class DependencyInjectionExtensions
                 Database = databaseAppSettings.DB_DATABASE,
                 Port = databaseAppSettings.DB_PORT,
                 Username = databaseAppSettings.DB_USERNAME,
-                Password = databaseAppSettings.DB_PASSWORD
+                Password = databaseAppSettings.DB_PASSWORD,
+                GssEncryptionMode = GssEncryptionMode.Disable
             };
+
 
             services.AddDbContextFactory<TDbContext>(_ => _
                 .UseNpgsql(
