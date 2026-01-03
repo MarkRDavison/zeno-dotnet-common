@@ -1,6 +1,4 @@
-﻿using mark.davison.common.authentication.server.abstractions.Services;
-
-namespace mark.davison.example.bff;
+﻿namespace mark.davison.example.bff;
 
 public class Startup(IConfiguration Configuration)
 {
@@ -25,7 +23,7 @@ public class Startup(IConfiguration Configuration)
             .AddLogging()
             .AddServerCore()
             .AddScoped<IUserAuthenticationService, RemoteUserAuthenticationService>()
-            .AddRedis(AppSettings.REDIS, "zeno_example_dev_")
+            .AddRedis(AppSettings.REDIS, AppSettings.PRODUCTION_MODE)
             .AddRemoteForwarderAuthentication(AppSettings.API_ENDPOINT)
             .AddOidcCookieAuthentication(
                 AppSettings.AUTHENTICATION,
