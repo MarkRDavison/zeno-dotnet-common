@@ -1,4 +1,6 @@
-﻿namespace mark.davison.common.server.Ignition;
+﻿using Microsoft.AspNetCore.DataProtection;
+
+namespace mark.davison.common.server.Ignition;
 
 public static class DependencyInjectionExtensions
 {
@@ -14,11 +16,16 @@ public static class DependencyInjectionExtensions
             .AddScoped<INotificationHub, NotificationHub>();
     }
 
-    public static IServiceCollection AddRedis(this IServiceCollection services, RedisSettings settings, string instanceName)
+    public static IServiceCollection AddRedis(this IServiceCollection services, RedisSettings settings, bool productionMode)
     {
+        var instanceName = $"{settings.INSTANCE_NAME}_{(productionMode ? "prod" : "dev")}_";
         if (string.IsNullOrEmpty(settings.HOST))
         {
-            services.AddDistributedMemoryCache();
+            services
+                .AddDistributedMemoryCache()
+                .AddDataProtection()
+                .SetApplicationName(instanceName);
+            //.PersistKeysToFileSystem(new DirectoryInfo(""));
         }
         else
         {
@@ -34,6 +41,10 @@ public static class DependencyInjectionExtensions
                 _.InstanceName = instanceName;
                 _.Configuration = redis.Configuration;
             });
+            services
+                .AddDataProtection()
+                .PersistKeysToStackExchangeRedis(redis, instanceName + "data_protection_keys")
+                .SetApplicationName(instanceName);
         }
 
         return services;

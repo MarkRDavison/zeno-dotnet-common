@@ -95,12 +95,6 @@
             {
                 MudDialog.Close(DialogResult.Ok(response));
             }
-            else
-            {
-                Console.Error.WriteLine("TODO: How to handle errors in Modal.Primary, add to message bar/toast???");
-                response.Errors.ForEach(Console.Error.WriteLine);
-                response.Warnings.ForEach(Console.WriteLine);
-            }
         }
 
         _inProgress = false;
