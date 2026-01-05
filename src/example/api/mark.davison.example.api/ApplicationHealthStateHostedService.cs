@@ -10,8 +10,8 @@ public class ApplicationHealthStateHostedService : ApiApplicationHealthStateHost
     ) : base(
         applicationHealthState,
         hostApplicationLifetime,
-        dbContextFactory,
-        appSettings)
+        appSettings,
+        dbContextFactory)
     {
     }
 
