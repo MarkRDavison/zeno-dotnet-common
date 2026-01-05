@@ -22,10 +22,15 @@ public static class DependencyInjectionExtensions
         if (string.IsNullOrEmpty(settings.HOST))
         {
             services
-                .AddDistributedMemoryCache()
-                .AddDataProtection()
-                .SetApplicationName(instanceName);
-            //.PersistKeysToFileSystem(new DirectoryInfo(""));
+                .AddDistributedMemoryCache();
+
+            if (string.IsNullOrEmpty(settings.DATA_PROTECTION_KEY) && string.IsNullOrEmpty(settings.DATA_PROTECTION_APP_NAME))
+            {
+                services
+                    .AddDataProtection()
+                    .SetApplicationName(settings.DATA_PROTECTION_APP_NAME);
+                //.PersistKeysToFileSystem(new DirectoryInfo(""));
+            }
         }
         else
         {
@@ -41,10 +46,14 @@ public static class DependencyInjectionExtensions
                 _.InstanceName = instanceName;
                 _.Configuration = redis.Configuration;
             });
-            services
+
+            if (string.IsNullOrEmpty(settings.DATA_PROTECTION_KEY) && string.IsNullOrEmpty(settings.DATA_PROTECTION_APP_NAME))
+            {
+                services
                 .AddDataProtection()
-                .PersistKeysToStackExchangeRedis(redis, instanceName + "data_protection_keys")
-                .SetApplicationName(instanceName);
+                .PersistKeysToStackExchangeRedis(redis, settings.DATA_PROTECTION_KEY)
+                .SetApplicationName(settings.DATA_PROTECTION_APP_NAME);
+            }
         }
 
         return services;

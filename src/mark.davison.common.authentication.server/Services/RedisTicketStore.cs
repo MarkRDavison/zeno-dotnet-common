@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
 
 namespace mark.davison.common.authentication.server.Services;
 
 public class RedisTicketStore : IRedisTicketStore
 {
     private readonly IDistributedCache _cache;
-    private readonly TimeSpan _expiration = TimeSpan.FromHours(1);
+    private readonly TimeSpan _expiration = TimeSpan.FromHours(48); // TODO: CONFIG
     private readonly HttpClient _httpClient;
 
     public RedisTicketStore(IDistributedCache cache)

@@ -140,6 +140,7 @@ public static class DependencyInjectionExtensions
                 {
                     options.SessionStore = store;
                     options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromHours(48); // TODO: CONFIG
                     options.Events.OnValidatePrincipal = async context =>
                     {
                         if (await AuthTokenHelpers.RefreshTokenIfNeeded(dateService, store, context.Properties))

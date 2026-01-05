@@ -7,5 +7,6 @@ public class RedisSettings : IAppSettings
     public int PORT { get; set; } = 6379;
     [AppSettingSecret]
     public string? PASSWORD { get; set; }
-    public bool USE_DATA_PROTECTION { get; set; }
+    public string DATA_PROTECTION_KEY { get; set; } = string.Empty;
+    public string DATA_PROTECTION_APP_NAME { get; set; } = string.Empty;
 }
