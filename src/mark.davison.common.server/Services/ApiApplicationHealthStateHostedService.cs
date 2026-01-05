@@ -8,20 +8,17 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
     protected readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly IDbContextFactory<TDbContext> _dbContextFactory;
     private readonly IOptions<TAppSettings> _appSettings;
-    private readonly IDataSeeder? _dataSeeder;
 
     public ApiApplicationHealthStateHostedService(
         IApplicationHealthState applicationHealthState,
         IHostApplicationLifetime hostApplicationLifetime,
         IDbContextFactory<TDbContext> dbContextFactory,
-        IOptions<TAppSettings> appSettings,
-        IDataSeeder? dataSeeder)
+        IOptions<TAppSettings> appSettings)
     {
         _applicationHealthState = applicationHealthState;
         _hostApplicationLifetime = hostApplicationLifetime;
         _dbContextFactory = dbContextFactory;
         _appSettings = appSettings;
-        _dataSeeder = dataSeeder;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -88,11 +85,6 @@ public abstract class ApiApplicationHealthStateHostedService<TDbContext, TAppSet
             else
             {
                 await InitDatabaseDevelopment(dbContext, cancellationToken);
-            }
-
-            if (_dataSeeder is not null)
-            {
-                await _dataSeeder.SeedDataAsync(cancellationToken);
             }
 
             await AdditionalStartAsync(cancellationToken);

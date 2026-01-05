@@ -2,7 +2,7 @@
 
 public class CoreDataSeeder : IDataSeeder
 {
-    public async Task SeedDataAsync(CancellationToken token)
+    public async Task SeedDataAsync(DbContext dbContext, CancellationToken token)
     {
         await Task.CompletedTask;
     }

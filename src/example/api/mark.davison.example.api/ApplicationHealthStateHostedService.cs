@@ -6,14 +6,12 @@ public class ApplicationHealthStateHostedService : ApiApplicationHealthStateHost
         IApplicationHealthState applicationHealthState,
         IHostApplicationLifetime hostApplicationLifetime,
         IDbContextFactory<ExampleDbContext> dbContextFactory,
-        IOptions<AppSettings> appSettings,
-        IDataSeeder? dataSeeder
+        IOptions<AppSettings> appSettings
     ) : base(
         applicationHealthState,
         hostApplicationLifetime,
         dbContextFactory,
-        appSettings,
-        dataSeeder)
+        appSettings)
     {
     }
 

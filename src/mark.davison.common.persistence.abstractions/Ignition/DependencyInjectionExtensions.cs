@@ -19,15 +19,34 @@ public static class DependencyInjectionExtensions
                 }
             }
 
-            services.AddDbContextFactory<TDbContext>(_ =>
+            services.AddDbContextFactory<TDbContext>((sp, options) =>
             {
-                _.UseSqlite(
-                    databaseAppSettings.CONNECTION_STRING,
-                    _ => _.MigrationsAssembly(GetMigrationAssembly(DatabaseType.Sqlite, migrationTypes)));
+                options
+                    .UseSqlite(
+                        databaseAppSettings.CONNECTION_STRING,
+                        o => o.MigrationsAssembly(GetMigrationAssembly(DatabaseType.Sqlite, migrationTypes)))
+                    .UseSeeding((context, _) =>
+                    {
+                        var ds = sp.GetService<IDataSeeder>();
+
+                        if (ds is not null)
+                        {
+                            ds.SeedDataAsync(context, CancellationToken.None).GetAwaiter().GetResult();
+                        }
+                    })
+                    .UseAsyncSeeding(async (context, _, cancellationToken) =>
+                        {
+                            var ds = sp.GetService<IDataSeeder>();
+
+                            if (ds is not null)
+                            {
+                                await ds.SeedDataAsync(context, cancellationToken);
+                            }
+                        });
                 if (!productionMode)
                 {
-                    _.EnableSensitiveDataLogging();
-                    _.EnableDetailedErrors();
+                    options.EnableSensitiveDataLogging();
+                    options.EnableDetailedErrors();
                 }
             });
         }
@@ -45,10 +64,31 @@ public static class DependencyInjectionExtensions
             };
 
 
-            services.AddDbContextFactory<TDbContext>(_ => _
-                .UseNpgsql(
-                    conn.ConnectionString,
-                    _ => _.MigrationsAssembly(GetMigrationAssembly(DatabaseType.Postgres, migrationTypes))));
+            services.AddDbContextFactory<TDbContext>((sp, options) =>
+            {
+                options
+                    .UseNpgsql(
+                        conn.ConnectionString,
+                        _ => _.MigrationsAssembly(GetMigrationAssembly(DatabaseType.Postgres, migrationTypes)))
+                    .UseSeeding((context, _) =>
+                    {
+                        var ds = sp.GetService<IDataSeeder>();
+
+                        if (ds is not null)
+                        {
+                            ds.SeedDataAsync(context, CancellationToken.None).GetAwaiter().GetResult();
+                        }
+                    })
+                    .UseAsyncSeeding(async (context, _, cancellationToken) =>
+                    {
+                        var ds = sp.GetService<IDataSeeder>();
+
+                        if (ds is not null)
+                        {
+                            await ds.SeedDataAsync(context, cancellationToken);
+                        }
+                    });
+            });
         }
         else
         {

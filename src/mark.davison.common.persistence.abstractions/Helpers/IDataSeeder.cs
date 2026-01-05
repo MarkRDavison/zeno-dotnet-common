@@ -2,5 +2,5 @@
 
 public interface IDataSeeder
 {
-    Task SeedDataAsync(CancellationToken token);
+    Task SeedDataAsync(DbContext dbContext, CancellationToken token);
 }

@@ -2,17 +2,8 @@
 
 public sealed class ExampleDataSeeder : IDataSeeder
 {
-    private readonly IDbContextFactory<ExampleDbContext> _dbContextFactory;
-
-    public ExampleDataSeeder(IDbContextFactory<ExampleDbContext> dbContextFactory)
+    public async Task SeedDataAsync(DbContext dbContext, CancellationToken token)
     {
-        _dbContextFactory = dbContextFactory;
-    }
-
-    public async Task SeedDataAsync(CancellationToken token)
-    {
-        await using var dbContext = _dbContextFactory.CreateDbContext();
-
         if (!await ExistsAsync<Tenant>(dbContext, _ => _.Id == TenantIds.SystemTenantId, token))
         {
             await dbContext.AddAsync(new Tenant
@@ -72,7 +63,7 @@ public sealed class ExampleDataSeeder : IDataSeeder
     }
 
     private async Task<bool> ExistsAsync<TEntity>(
-        ExampleDbContext dbContext,
+        DbContext dbContext,
         Expression<Func<TEntity, bool>> predicate,
         CancellationToken token)
         where TEntity : class
