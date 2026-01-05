@@ -4,11 +4,12 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly HttpClient _client;
 
-    public string BffRoot { get; set; } = string.Empty;
+    public string BffRoot { get; }
 
-    public AuthenticationService(IHttpClientFactory httpClientFactory, string clientName)
+    public AuthenticationService(IHttpClientFactory httpClientFactory, string clientName, string bffRoot)
     {
         _client = httpClientFactory.CreateClient(clientName);
+        BffRoot = bffRoot;
     }
 
     public void AuthenticateUser(ClaimsPrincipal user)

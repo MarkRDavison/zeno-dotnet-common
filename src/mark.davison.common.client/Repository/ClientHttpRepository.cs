@@ -144,9 +144,9 @@ public class ClientHttpRepository : IClientHttpRepository
         return Post<TRequest, TResponse>(new TRequest(), cancellationToken);
     }
 
-    public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
+    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
     {
-        return SendAsync(request);
+        return await _httpClient.SendAsync(request);
     }
 
     public QueryParameters CreateQueryParameters<TQuery, TResponse>(TQuery query)

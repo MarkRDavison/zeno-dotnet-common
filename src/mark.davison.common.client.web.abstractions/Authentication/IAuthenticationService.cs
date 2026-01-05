@@ -7,5 +7,5 @@ public interface IAuthenticationService
 
     event EventHandler<ClaimsPrincipal> UserChanged;
 
-    string BffRoot { get; set; }
+    string BffRoot { get; }
 }

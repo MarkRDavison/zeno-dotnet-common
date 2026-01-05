@@ -2,14 +2,29 @@
 
 public static class DependencyInjectionExtensions
 {
-    public static IServiceCollection UseAuthentication(this IServiceCollection services, string clientName)
+    public static IServiceCollection UseAuthentication(this IServiceCollection services, string clientName, string bffRoot)
     {
         services
             .AddAuthorizationCore()
             .AddCascadingAuthenticationState()
             .AddSingleton<AuthenticationStateProvider, CommonAuthenticationStateProvider>()
             .AddSingleton<IClientNavigationManager, ClientNavigationManager>()
-            .AddSingleton<IAuthenticationService>(_ => new AuthenticationService(_.GetRequiredService<IHttpClientFactory>(), clientName));
+            .AddSingleton<IAuthenticationService>(_ =>
+            {
+                var jsRuntime = _.GetRequiredService<IJSRuntime>();
+
+                if (jsRuntime is IJSInProcessRuntime jsInProcessRuntime)
+                {
+                    string indexBffRoot = jsInProcessRuntime.Invoke<string>("GetBffUri", null);
+
+                    if (!string.IsNullOrEmpty(indexBffRoot))
+                    {
+                        bffRoot = indexBffRoot;
+                    }
+                }
+
+                return new AuthenticationService(_.GetRequiredService<IHttpClientFactory>(), clientName, bffRoot);
+            });
 
         return services;
     }
@@ -145,8 +160,6 @@ public static class DependencyInjectionExtensions
                         localBffRoot = bffRoot;
                     }
                 }
-
-                authStateService.BffRoot = localBffRoot;
 
                 var clientHttpRepository = new ClientHttpRepository(
                         localBffRoot,
