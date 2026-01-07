@@ -170,12 +170,12 @@ public static class DependencyInjectionExtensions
                 {
                     if (e.Status == HttpStatusCode.Unauthorized)
                     {
-                        Console.Error.WriteLine("Received 401 - Validating auth state");
+                        Console.WriteLine("Received 401 - Validating auth state");
                         await authStateService.EvaluateAuthentication();
                     }
                     else
                     {
-                        Console.Error.WriteLine("Received HttpStatusCode.{0} - Not handling...", e.Status);
+                        Console.WriteLine("Received HttpStatusCode.{0} - Not handling...", e.Status);
                     }
                 };
 
