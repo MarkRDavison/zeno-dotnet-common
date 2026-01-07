@@ -8,8 +8,8 @@ public class User
     public required string? DisplayName { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public required DateTime CreatedAt { get; set; }
-    public required DateTime LastModified { get; set; }
+    public required DateTimeOffset CreatedAt { get; set; }
+    public required DateTimeOffset LastModified { get; set; }
 
     public virtual Tenant? Tenant { get; set; }
     public virtual ICollection<UserRole> UserRoles { get; set; } = [];
