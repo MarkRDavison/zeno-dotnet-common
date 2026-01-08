@@ -3,4 +3,5 @@
 public interface IDataSeeder
 {
     Task SeedDataAsync(DbContext dbContext, CancellationToken token);
+    Task SeedUserDataAsync(Guid userId, DbContext dbContext, CancellationToken token);
 }

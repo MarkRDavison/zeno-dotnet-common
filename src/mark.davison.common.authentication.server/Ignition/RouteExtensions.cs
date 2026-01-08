@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using mark.davison.common.persistence.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
 namespace mark.davison.common.authentication.server.Ignition;
@@ -227,6 +228,13 @@ public static class RouteExtensions
                 }
 
                 await dbContext.SaveChangesAsync(context.RequestAborted);
+
+                var dataSeeder = context.RequestServices.GetService<IDataSeeder>();
+
+                if (dataSeeder is not null)
+                {
+                    await dataSeeder.SeedUserDataAsync(user.Id, dbContext, context.RequestAborted);
+                }
 
                 return Results.Ok();
             });

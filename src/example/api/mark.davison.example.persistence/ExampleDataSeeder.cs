@@ -62,6 +62,11 @@ public sealed class ExampleDataSeeder : IDataSeeder
         await dbContext.SaveChangesAsync(token);
     }
 
+    public Task SeedUserDataAsync(Guid userId, DbContext dbContext, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
     private async Task<bool> ExistsAsync<TEntity>(
         DbContext dbContext,
         Expression<Func<TEntity, bool>> predicate,
