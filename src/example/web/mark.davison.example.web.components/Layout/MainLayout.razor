@@ -2,8 +2,6 @@
 
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
-@using mark.davison.common.client.web.abstractions.Authentication
-@using mark.davison.example.shared.constants.Identifiers
 
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
 <MudDialogProvider />
@@ -25,7 +23,7 @@
                 }
                 <span data-testid="@DataTestIds.Username">@context.User.Identity?.Name</span>
                 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Size="Size.Large">
-                    <ActivatorContent>
+                    <ActivatorContent Context="activatorContext">
                         <MudIconButton data-testid="@DataTestIds.ManageIcon" Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" Edge="Edge.End" />
                     </ActivatorContent>
                     <ChildContent>

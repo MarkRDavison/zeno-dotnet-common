@@ -1,5 +1,4 @@
 ﻿using mark.davison.common.abstractions.Services;
-using mark.davison.common.authentication.server.abstractions.Services;
 using mark.davison.common.authentication.server.Services;
 using Moq;
 
@@ -91,8 +90,7 @@ public sealed class AuthTokenHelpersTests
                     _dateServiceMock.Object,
                     _redisTicketStoreMock.Object,
                     properties))
-            .IsEqualTo(
-                false);
+            .IsFalse();
     }
 
     [Test]
@@ -124,8 +122,7 @@ public sealed class AuthTokenHelpersTests
                     _dateServiceMock.Object,
                     _redisTicketStoreMock.Object,
                     properties))
-            .IsEqualTo(
-                false);
+            .IsFalse();
     }
 
     [Test]
@@ -160,8 +157,7 @@ public sealed class AuthTokenHelpersTests
                     _dateServiceMock.Object,
                     _redisTicketStoreMock.Object,
                     properties))
-            .IsEqualTo(
-                false);
+            .IsFalse();
     }
 
     [Test]
