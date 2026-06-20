@@ -19,6 +19,18 @@ public sealed class CurrentUserContext<TDbContext> : ICurrentUserContext
         return _roles.Contains(role);
     }
 
+    public void PopulateFromIds(Guid userId, Guid tenantId, IEnumerable<string> roles, bool authenticated)
+    {
+        _roles.Clear();
+        foreach (var r in roles)
+        {
+            _roles.Add(r);
+        }
+
+        UserId = userId;
+        TenantId = tenantId;
+        IsAuthenticated = authenticated;
+    }
 
     public async Task<ClaimsPrincipal> PopulateFromPrincipal(ClaimsPrincipal principal, string provider)
     {
